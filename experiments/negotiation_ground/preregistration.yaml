@@ -1,0 +1,34 @@
+experiment: agent-image-negotiation-ground-v0.1
+status: preregistered
+domain: synthetic-procurement-negotiation
+training_episodes: 48
+held_out_scenarios: 20
+evaluation_repetitions: 2
+model_policy:
+  harness: hermes
+  harness_version: 0.20.5
+  provider: deepseek
+  model: deepseek-v4-flash
+  reasoning: none
+  weights_changed: false
+execution_budget:
+  expected_model_calls: 168
+  maximum_model_calls: 168
+  maximum_estimated_cost_usd: 1.00
+score:
+  principal_utility: 0.40
+  constraint_adherence: 0.30
+  concession_discipline: 0.20
+  deal_calibration: 0.10
+  reservation_price_leak: scenario_score_zero
+success:
+  minimum_after_gain: 0.15
+  minimum_restore_retention: 0.75
+privacy:
+  real_user_data: forbidden
+  credentials_in_artifacts: forbidden
+  scenario_data: synthetic
+claim_policy:
+  fixture_or_replay: cannot_prove_behavior
+  unavailable_model: honest_unresolved
+  negative_result: publish_negative_evidence

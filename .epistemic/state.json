@@ -691,6 +691,26 @@
         "agent-image-v0.1-formal": "formal"
       }
     },
+    "agent-image-negotiation-ground-v0.1-probe": {
+      "architecture_plans": [],
+      "capsules": [],
+      "depends_on": [
+        "agent-image-alpha1-reproducible"
+      ],
+      "epistemic_parents": [],
+      "formalization": {},
+      "gate_reports": [],
+      "implementation_authority": {
+        "agent-image-v0.1-formal": false
+      },
+      "implementation_parents": [],
+      "kind": "scientific_probe",
+      "live": false,
+      "requalifications": {},
+      "roles": {
+        "agent-image-v0.1-formal": "probe"
+      }
+    },
     "agent-image-v0.1-formal-root": {
       "architecture_plans": [
         "agent-image-v0.1-formal-plan"
@@ -1205,6 +1225,23 @@
       "gate_report_id": "gate-alpha1-reproducibility-2026-08-24",
       "plan_id": "agent-image-alpha1-reproducibility-plan",
       "type": "ARTIFACT_FORMALIZED"
+    },
+    {
+      "artifact": "agent-image-negotiation-ground-v0.1-probe",
+      "at": "2026-08-25T03:42:10+00:00",
+      "authority": false,
+      "context": "agent-image-v0.1-formal",
+      "event_id": "evt-000030",
+      "role": "probe",
+      "type": "ARTIFACT_ADDED"
+    },
+    {
+      "at": "2026-08-25T03:42:10+00:00",
+      "child": "agent-image-negotiation-ground-v0.1-probe",
+      "event_id": "evt-000031",
+      "link_type": "dependency",
+      "parent": "agent-image-alpha1-reproducible",
+      "type": "LINEAGE_LINKED"
     }
   ],
   "gate_reports": {
