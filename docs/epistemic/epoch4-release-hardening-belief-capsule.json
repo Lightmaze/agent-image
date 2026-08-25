@@ -1,0 +1,27 @@
+{
+  "kind": "knowledge-capsule",
+  "recorded_at": "2026-08-25",
+  "scope": "Epoch 4 Registry, cross-platform, security, and release evidence",
+  "authority": "none",
+  "observations": [
+    "A Registry record must preserve source harness, privacy, lineage, portability level, and digest-bound evidence; registration must never turn a private artifact into a public download.",
+    "Cross-platform equivalence must compare semantic and native layer digests, not whole archive bytes when created_at truthfully differs.",
+    "CRLF/LF fixture drift can masquerade as state-portability drift; explicit UTF-8 LF test inputs remove that confound without altering real source data.",
+    "A structured secret scanner that treats malformed JSON, YAML, JSONL, or TOML as clean is fail-open; unparseable declared structured data must fail closed.",
+    "Rollback evidence is materially stronger when a real host creates and recognizes the target before deterministic failure injection, then the same real host verifies cleanup.",
+    "Configured hosted CI is not observed cross-platform evidence until the workflow actually runs.",
+    "Wheel and sdist claims require separate fresh-environment installs; build-backend and runtime dependency caches are different reproducibility concerns."
+  ],
+  "release_implications": [
+    "Epoch 4 satisfies the local Registry and hardening gates and leaves a reproducible v0.1.0-beta.1 candidate.",
+    "Seven of eight Human Final Review questions pass; the negative trained-agent Gate E keeps question seven red and forbids rc.1 and v0.1.0.",
+    "No public repository, remote, push, or new tag is authorized or required for the local beta handoff."
+  ],
+  "does_not_define": [
+    "architecture",
+    "lifecycle",
+    "release authority",
+    "P3 behavioral portability",
+    "capability claims beyond linked evidence"
+  ]
+}
