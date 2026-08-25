@@ -8,8 +8,8 @@ one harness as the semantic owner.
 
 ## Current stage
 
-`Epoch 2 gated / Epoch 3 ready` (Hermes and OpenClaw P1 plus the first P2 path
-verified; trained-agent Gate E remains negative).
+`Epoch 3 in progress` (Hermes, OpenClaw, and DSH P1 plus the first P2 path
+verified; vHarness and fifth-adapter gates remain).
 
 The current evidence proves pinned native round-trips for Hermes and OpenClaw
 and the declared Hermes-to-OpenClaw semantic migration. It does not prove
@@ -23,7 +23,7 @@ developed-skill retention or behavioral portability.
 | Core toolchain | Formal epoch pass | 46 tests; locked environment; wheel/sdist and installed CLI smoke; typed adapter SDK; production build/inspect/verify/redact/diff/restore/migrate and reports |
 | Hermes | P1 pass, pinned | Hermes 0.20.5 / v2026.8.19 / fcbd107; Windows named-profile round-trip |
 | OpenClaw | P1 and P2-consumer pass, pinned | 2026.7.1-2 / 0790d9f / Node 24.15.0; real Windows agent/workspace round-trip and Hermes migration |
-| DSH | Reconnaissance only | CLI visible; current public contract must be pinned before implementation |
+| DSH | P1 pass, pinned | `@deepseek-ai/dsh@0.1.0-rc.6`; ordered in-box bundles and official dump round-trip on Windows; arbitrary external dependency reinstall not claimed |
 | vHarness | Reconnaissance complete | Mapping exists; live Guest integration is absent |
 | Security/privacy | Current pass with remaining hardening | 46 tests; both adapters fail closed on secrets; target scans clean; source immutability and loss accounting pass; real cross-platform rollback injection and Epoch 4 matrix pending |
 | Trained-agent demonstration | Honest negative | 168 real calls; before 0.790960, after 0.743703, restored 0.710293; Gate E remains red |

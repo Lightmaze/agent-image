@@ -9,6 +9,7 @@ from pathlib import Path
 
 from agent_image.container import pack_entries
 from agent_image.errors import AgentImageError
+from agent_image.scanner import secret_filename_reason
 from agent_image.service import build_fixture_image, verify_image
 
 
@@ -16,6 +17,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class SecurityTests(unittest.TestCase):
+    def test_hidden_credentials_filename_is_rejected(self) -> None:
+        self.assertIsNotNone(secret_filename_reason("profile/.credentials.yaml"))
+
     def test_secret_filename_is_rejected(self) -> None:
         fixture = ROOT / "tests" / "fixtures" / "secret-file"
         with tempfile.TemporaryDirectory() as temporary:

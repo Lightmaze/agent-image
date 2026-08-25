@@ -14,9 +14,9 @@ or a renamed profile archive.
 
 This repository is an **experimental v0.1 alpha**. It contains the protocol,
 schema, deterministic `.aimg` container, privacy-first verification, and the
-two production adapters: pinned Hermes Agent and OpenClaw P1 paths verified on
-Windows, plus a Hermes-to-OpenClaw P2 semantic migration. DSH and vHarness
-remain planned adapters. No P3 claim is made.
+three production adapters: pinned Hermes Agent, OpenClaw, and DSH P1 paths
+verified on Windows, plus a Hermes-to-OpenClaw P2 semantic migration. vHarness
+remains a planned adapter. No P3 claim is made.
 
 Create the reproducible development environment and verify the installed CLI:
 
@@ -83,9 +83,9 @@ and target provenance points back to the source image digest.
 
 - Implemented now: Spec/schema; build, inspect, verify, redact, diff, restore,
   and dry-run-first migrate; deterministic packing; archive safety; secret
-  checks; pinned Hermes and OpenClaw P1; Hermes-to-OpenClaw P2 with provenance
-  and complete loss reports.
-- Not started: production DSH/vHarness adapters, registry, OCI
+  checks; pinned Hermes, OpenClaw, and DSH P1; Hermes-to-OpenClaw P2 with
+  provenance and complete loss reports.
+- Not started: production vHarness adapter, registry, OCI
   transport, and P3 behavioral portability. The first trained-agent Gate E run
   completed with an honest negative result; no behavioral claim is made.
 
@@ -93,6 +93,7 @@ See the [capability matrix](docs/CAPABILITY_MATRIX.md), [project status](docs/PR
 [Hermes P1 evidence](docs/evidence/hermes-p1-v0.20.5.md),
 [OpenClaw P1 evidence](docs/evidence/openclaw-p1-v2026.7.1-2.md),
 [Hermes-to-OpenClaw P2 evidence](docs/evidence/hermes-to-openclaw-p2-2026-08-25.md),
+[DSH P1 evidence](docs/evidence/dsh-p1-v0.1.0-rc.6.md),
 [context inheritance](docs/CONTEXT_INHERITANCE.md), [the v0.1 spec](spec/v0.1/SPEC.md),
 [ADR-0001](docs/adr/0001-protocol-root-and-bootstrap.md), and the archived
 [context pack](docs/source/context-pack/README_CODEX_HANDOFF.md).

@@ -5,7 +5,7 @@
 
 ## Summary
 
-- Total mock points: 6
+- Total mock points: 7
 - Issues: 0
 - Production blockers: 0
 
@@ -13,8 +13,8 @@
 
 | Dimension | Value | Count |
 |---|---|---:|
-| Type | `test_fixture` | 6 |
-| Status | `accepted_test_only` | 6 |
+| Type | `test_fixture` | 7 |
+| Status | `accepted_test_only` | 7 |
 
 ## Mock Points
 
@@ -25,6 +25,7 @@
 | MOCK-TEST-SECRET-FILENAME-001 | test_fixture | accepted_test_only | False | tests/fixtures/secret-file/inventory.yaml:1 | never; accepted test-only regression evidence | Permanent negative security conformance fixture |
 | MOCK-TEST-SECRET-JSON-001 | test_fixture | accepted_test_only | False | tests/fixtures/secret-key/inventory.yaml:1 | never; accepted test-only regression evidence | Permanent negative security conformance fixture |
 | MOCK-TEST-SECRET-YAML-001 | test_fixture | accepted_test_only | False | tests/fixtures/secret-yaml/inventory.yaml:1 | never; accepted test-only regression evidence | Permanent negative security conformance fixture |
+| MOCK-DSH-CLI-TEST-001 | test_fixture | accepted_test_only | False | tests/test_dsh_adapter.py:15 | before_dsh_p1_capability_claim | SubprocessDshCLI against @deepseek-ai/dsh@0.1.0-rc.6 |
 | MOCK-OPENCLAW-CLI-TEST-001 | test_fixture | accepted_test_only | False | tests/test_openclaw_adapter.py:21 | before_openclaw_p1_or_p2_capability_claim | SubprocessOpenClawCLI against openclaw@2026.7.1-2 |
 
 ## Issues

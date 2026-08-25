@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Added the production DSH adapter pinned to `@deepseek-ai/dsh@0.1.0-rc.6`.
+  It preserves ordered bundles, dependency metadata, profile patches, unknown
+  safe profile files, and official `--dump-config` output in typed native
+  state without inventing a universal plugin graph.
+- Verified a real Windows DSH P1 round-trip for the shipped headless profile;
+  unresolved dependencies fail loudly and roll back under fault injection.
+- Extended secret filename handling to reject hidden `.credentials.*` files.
 - Added the production OpenClaw adapter pinned to `2026.7.1-2`, including
   detection, complete inventory, privacy-safe export, typed native restore,
   target recognition, explicit Node execution on Windows, and fail-loud

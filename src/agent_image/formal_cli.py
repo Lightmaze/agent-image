@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from agent_image import __version__
+from agent_image.adapters.dsh import DshAdapter, SubprocessDshCLI
 from agent_image.adapters.hermes import HermesAdapter, SubprocessHermesCLI
 from agent_image.adapters.openclaw import OpenClawAdapter, SubprocessOpenClawCLI
 from agent_image.errors import AgentImageError
@@ -40,6 +41,9 @@ def _parser() -> argparse.ArgumentParser:
     build.add_argument("--include-workspace", action="store_true")
     build.add_argument("--yes", action="store_true")
     build.add_argument("--hermes-binary", default=os.environ.get("AGENT_IMAGE_HERMES_BIN", "hermes"))
+    build.add_argument("--dsh-binary", default=os.environ.get("AGENT_IMAGE_DSH_BIN", "dsh"))
+    build.add_argument("--dsh-node-binary", default=os.environ.get("AGENT_IMAGE_DSH_NODE_BIN"))
+    build.add_argument("--dsh-home", type=Path)
     build.add_argument("--openclaw-binary", default=os.environ.get("AGENT_IMAGE_OPENCLAW_BIN", "openclaw"))
     build.add_argument("--openclaw-node-binary", default=os.environ.get("AGENT_IMAGE_OPENCLAW_NODE_BIN"))
     build.add_argument("--openclaw-workspace-root", type=Path)
@@ -64,6 +68,9 @@ def _parser() -> argparse.ArgumentParser:
     restore.add_argument("--to", dest="target", required=True)
     restore.add_argument("--yes", action="store_true")
     restore.add_argument("--hermes-binary", default=os.environ.get("AGENT_IMAGE_HERMES_BIN", "hermes"))
+    restore.add_argument("--dsh-binary", default=os.environ.get("AGENT_IMAGE_DSH_BIN", "dsh"))
+    restore.add_argument("--dsh-node-binary", default=os.environ.get("AGENT_IMAGE_DSH_NODE_BIN"))
+    restore.add_argument("--dsh-home", type=Path)
     restore.add_argument("--openclaw-binary", default=os.environ.get("AGENT_IMAGE_OPENCLAW_BIN", "openclaw"))
     restore.add_argument("--openclaw-node-binary", default=os.environ.get("AGENT_IMAGE_OPENCLAW_NODE_BIN"))
     restore.add_argument("--openclaw-workspace-root", type=Path)
@@ -95,6 +102,16 @@ def _hermes(binary: str) -> HermesAdapter:
     return HermesAdapter(cli=SubprocessHermesCLI(binary=binary))
 
 
+def _dsh(binary: str, node_binary: str | None, dsh_home: Path | None) -> DshAdapter:
+    return DshAdapter(
+        cli=SubprocessDshCLI(
+            binary=binary,
+            node_binary=node_binary,
+            dsh_home=dsh_home,
+        )
+    )
+
+
 def _openclaw(binary: str, node_binary: str | None, workspace_root: Path | None) -> OpenClawAdapter:
     return OpenClawAdapter(
         cli=SubprocessOpenClawCLI(
@@ -121,6 +138,8 @@ def _run(args: argparse.Namespace) -> Any:
         adapter_id, source = _split(args.locator)
         if adapter_id == "hermes":
             adapter = _hermes(args.hermes_binary)
+        elif adapter_id == "dsh":
+            adapter = _dsh(args.dsh_binary, args.dsh_node_binary, args.dsh_home)
         elif adapter_id == "openclaw":
             adapter = _openclaw(args.openclaw_binary, args.openclaw_node_binary, args.openclaw_workspace_root)
         else:
@@ -153,6 +172,8 @@ def _run(args: argparse.Namespace) -> Any:
         adapter_id, target = _split(args.target)
         if adapter_id == "hermes":
             adapter = _hermes(args.hermes_binary)
+        elif adapter_id == "dsh":
+            adapter = _dsh(args.dsh_binary, args.dsh_node_binary, args.dsh_home)
         elif adapter_id == "openclaw":
             adapter = _openclaw(args.openclaw_binary, args.openclaw_node_binary, args.openclaw_workspace_root)
         else:
@@ -167,7 +188,7 @@ def _run(args: argparse.Namespace) -> Any:
             return plan_migration(adapter, image=args.image, target=target)
         return migrate_image(adapter, image=args.image, target=target)
     if args.command == "adapters" and args.adapter_command == "list":
-        adapters = [HermesAdapter(), OpenClawAdapter()]
+        adapters = [HermesAdapter(), OpenClawAdapter(), DshAdapter()]
         return {
             "adapters": [
                 {

@@ -1,0 +1,68 @@
+{
+  "evidence_version": "agent-image-capability-evidence/v0.1",
+  "date": "2026-08-25",
+  "verdict": "PASS",
+  "claim": "DSH P1 native composition restore on the pinned Windows contract",
+  "contract": {
+    "package": "@deepseek-ai/dsh@0.1.0-rc.6",
+    "npm_integrity": "sha512-brpZfED7ieRa2PQ5tUxMhHrM1pb2CmKFVM/f6yMULBDMicahk+Z2OsHgTwTDnoiZm23Ftu9rQz0NN4pflaoJcg==",
+    "installed_package_json_sha256": "3736cbf834f99298c644da821dbb08878223065bdf19242d6c64768ac9e97fe2",
+    "installed_readme_sha256": "800b93592c9fe99f5af4e2cac9eacf56388792af07542a7934b7e2e1bd210b61",
+    "installed_bin_sha256": "c0226687bb20f45c603ec6fe50f3de16d1c3510c3a803304ec575ef9bc366c62",
+    "node": "24.15.0",
+    "npm": "11.12.1"
+  },
+  "source": {
+    "locator": "dsh:headless",
+    "created_by_official_cli": true,
+    "profile_digest_in_image": "sha256:266b5506f50507b7c85d85fb4223f5cf769620d2cf080ca3d299e5a036103ce7",
+    "profile_digest_after_restore": "sha256:266b5506f50507b7c85d85fb4223f5cf769620d2cf080ca3d299e5a036103ce7",
+    "immutable": true,
+    "bundle_order": [
+      "@deepseek-ai/dsh-base",
+      "@deepseek-ai/dsh-headless"
+    ],
+    "dependencies": {}
+  },
+  "image": {
+    "manifest_digest": "sha256:631a78a81a70084b180424f2f649193e9e2388597743ed71b9c234856392f356",
+    "archive_sha256": "a091a86a3eb84eec3f1dd24d2645b9d9da8b32591ea83bbbb474ba4175f4363a",
+    "verified": true,
+    "layers": 1,
+    "native_media_type": "application/vnd.deepseek-harness.profile.v0.1.0-rc.6+tar+gzip"
+  },
+  "restore": {
+    "target": "dsh:restored",
+    "recognized_by_official_dump_config": true,
+    "validated": true,
+    "portability": "P1",
+    "inventory_count": 7,
+    "loss_summary": {
+      "preserved": 7,
+      "transformed": 0,
+      "redacted": 0,
+      "unsupported": 0,
+      "dropped_by_user": 0
+    },
+    "dump_config_source_sha256": "a0a0e9f380872097cb7f8b7356f36433a2afeb8de5044a9e63d4ed47b4bee9f5",
+    "dump_config_target_sha256": "a0a0e9f380872097cb7f8b7356f36433a2afeb8de5044a9e63d4ed47b4bee9f5",
+    "dump_config_byte_equal": true
+  },
+  "selected_byte_equal_items": {
+    "package.json": "563c0b6082748a6e93daad51514f01335c51fc9c44f5f88253383f18ac2557b5",
+    "cordis.patch.yml": "ef189a8c27db6d63930aa3046a3040482e952eafcb7487c644d508e8d461f027",
+    "cordis.yml": "c300dcf2ebc5f02062d6591268d29d3db6fe45e0cb138f5467276fe2ba06076e",
+    "pnpm-workspace.yaml": "ae7c5b68e2f157528e62885804e69e88583897b775e03c86fcbe52feaf498aba"
+  },
+  "fault_injection": {
+    "unresolved_dependency": "PASS: E_NATIVE_INCOMPATIBLE and target rollback",
+    "secret_filename": "PASS: E_SECRET_DETECTED",
+    "fixture_authority": false
+  },
+  "claim_limits": [
+    "No arbitrary third-party dependency reinstall claim",
+    "No DSH session-state portability claim",
+    "No DSH P2 or P3 claim",
+    "Linux/macOS real DSH smoke remains pending"
+  ]
+}

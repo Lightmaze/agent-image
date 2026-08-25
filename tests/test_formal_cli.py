@@ -19,6 +19,7 @@ def test_adapters_list_exposes_built_in_contracts_without_claiming_runtime_verif
     output = json.loads(capsys.readouterr().out)
     assert code == 0
     assert {item["id"] for item in output["adapters"]} == {
+        "org.agentimage.dsh",
         "org.agentimage.hermes",
         "org.agentimage.openclaw",
     }

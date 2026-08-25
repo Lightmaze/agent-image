@@ -23,9 +23,10 @@ _SECRET_KEYS = {
 
 def secret_filename_reason(path: str) -> str | None:
     name = PurePosixPath(path.replace("\\", "/")).name.casefold()
+    normalized_name = name.lstrip(".")
     if name == ".env" or name == "auth.json":
         return f"forbidden secret filename {name}"
-    if name.startswith("credentials") or "token" in name:
+    if normalized_name.startswith("credentials") or "token" in normalized_name:
         return f"credential/token filename {name}"
     if name.endswith((".pem", ".key")) or name in {"id_rsa", "id_ed25519"}:
         return f"private-key filename {name}"
@@ -61,4 +62,3 @@ def structured_secret_findings(path: str, media_type: str, data: bytes) -> list[
     except (UnicodeDecodeError, json.JSONDecodeError, yaml.YAMLError):
         return []
     return _secret_key_paths(value)
-
