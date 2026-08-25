@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import json
 import re
+import tomllib
 from pathlib import PurePosixPath
 from typing import Any
 
 import yaml
+
+from agent_image.errors import AgentImageError
 
 
 _SECRET_KEYS = {
@@ -53,12 +56,29 @@ def _secret_key_paths(value: Any, path: str = "$") -> list[str]:
 
 def structured_secret_findings(path: str, media_type: str, data: bytes) -> list[str]:
     suffix = PurePosixPath(path).suffix.casefold()
-    structured = media_type in {"application/json", "application/yaml", "text/yaml"} or suffix in {".json", ".yaml", ".yml"}
+    structured = media_type in {
+        "application/json",
+        "application/x-ndjson",
+        "application/toml",
+        "application/yaml",
+        "text/yaml",
+    } or suffix in {".json", ".jsonl", ".toml", ".yaml", ".yml"}
     if not structured:
         return []
     try:
         text = data.decode("utf-8", errors="strict")
-        value = json.loads(text) if suffix == ".json" or media_type == "application/json" else yaml.safe_load(text)
-    except (UnicodeDecodeError, json.JSONDecodeError, yaml.YAMLError):
-        return []
+        if suffix == ".jsonl" or media_type == "application/x-ndjson":
+            value = [json.loads(line) for line in text.splitlines() if line.strip()]
+        elif suffix == ".json" or media_type == "application/json":
+            value = json.loads(text)
+        elif suffix == ".toml" or media_type == "application/toml":
+            value = tomllib.loads(text)
+        else:
+            value = yaml.safe_load(text)
+    except (UnicodeDecodeError, json.JSONDecodeError, tomllib.TOMLDecodeError, yaml.YAMLError) as error:
+        raise AgentImageError(
+            "E_SECRET_SCAN_FAILED",
+            f"Structured content could not be safely scanned: {path}",
+            details={"media_type": media_type, "reason": str(error)},
+        ) from error
     return _secret_key_paths(value)

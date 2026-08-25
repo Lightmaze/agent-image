@@ -1,0 +1,31 @@
+{
+  "evidence_version": "agent-image-failure-injection/v0.1",
+  "date": "2026-08-25",
+  "verdict": "PASS_WINDOWS",
+  "operation": "openclaw-native-restore-rollback",
+  "contract": {
+    "openclaw": "2026.7.1-2",
+    "node": "24.15.0",
+    "host": "real pinned official CLI in isolated OPENCLAW_STATE_DIR"
+  },
+  "fault": {
+    "code": "E_FAULT_INJECTED",
+    "point": "after official target creation and recognition, before final adapter validation",
+    "nature": "deterministic test-only exception"
+  },
+  "rollback": {
+    "official_delete_used": true,
+    "official_host_registration_absent": true,
+    "workspace_absent": true,
+    "complete": true
+  },
+  "source": {
+    "archive_sha256_before": "6dca01349783b33b20afd3b84ba4a70cfeb305df05f7f137148b3d9f4b2ca288",
+    "archive_sha256_after": "6dca01349783b33b20afd3b84ba4a70cfeb305df05f7f137148b3d9f4b2ca288",
+    "immutable": true
+  },
+  "claim_limits": [
+    "The failure point is injected; creation, deletion, and residual checks use the real host.",
+    "This run is Windows evidence, not cross-platform OpenClaw rollback evidence."
+  ]
+}

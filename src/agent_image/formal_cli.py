@@ -22,6 +22,7 @@ from agent_image.formal_service import (
     restore_image,
 )
 from agent_image.image_archive import diff_images, inspect_image, redact_image, verify_image
+from agent_image.registry import validate_registry
 
 
 def _common(parser: argparse.ArgumentParser) -> None:
@@ -96,6 +97,11 @@ def _parser() -> argparse.ArgumentParser:
     adapter_commands = adapters.add_subparsers(dest="adapter_command", required=True)
     adapter_list = adapter_commands.add_parser("list", help="List built-in and discovered adapters.")
     _common(adapter_list)
+    registry = commands.add_parser("registry", help="Validate the static Agent Image Registry.")
+    registry_commands = registry.add_subparsers(dest="registry_command", required=True)
+    registry_validate = registry_commands.add_parser("validate", help="Validate records and evidence digests.")
+    registry_validate.add_argument("registry", type=Path)
+    _common(registry_validate)
     return parser
 
 
@@ -265,6 +271,8 @@ def _run(args: argparse.Namespace) -> Any:
             "entry_point_group": "agent_image.adapters",
             "adapters": declarations,
         }
+    if args.command == "registry" and args.registry_command == "validate":
+        return validate_registry(args.registry)
     raise AgentImageError("E_SPEC_INVALID", f"Unknown command: {args.command}")
 
 

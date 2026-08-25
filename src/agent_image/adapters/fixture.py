@@ -79,7 +79,9 @@ def export_fixture(root: Path, policy: str) -> ExportedImage:
         target = validate_archive_path(_required_string(raw_item, "path", f"/items/{index}"))
         kind = _required_string(raw_item, "kind", f"/items/{index}")
         media_type = _required_string(raw_item, "media_type", f"/items/{index}")
-        privacy = _required_string(raw_item, "privacy", f"/items/{index}")
+        privacy = raw_item.get("privacy", "unknown")
+        if not isinstance(privacy, str) or not privacy:
+            raise AgentImageError("E_SPEC_INVALID", f"/items/{index}/privacy must be a non-empty string.")
         portability = _required_string(raw_item, "portability", f"/items/{index}")
         if item_id in seen_ids or target in seen_paths:
             raise AgentImageError("E_SPEC_INVALID", f"Duplicate inventory id or target at item {index}.")
@@ -112,7 +114,15 @@ def export_fixture(root: Path, policy: str) -> ExportedImage:
 
         include = policy == "private" or privacy == "public"
         if not include:
-            outcomes.append({"id": item_id, "source": source_relative, "action": "redacted", "reason": f"{privacy} item excluded by public policy"})
+            outcomes.append(
+                {
+                    "id": item_id,
+                    "source": source_relative,
+                    "privacy": privacy,
+                    "action": "redacted",
+                    "reason": f"{privacy} item excluded by public policy",
+                }
+            )
             continue
         payloads[target] = data
         layer = {
@@ -127,7 +137,15 @@ def export_fixture(root: Path, policy: str) -> ExportedImage:
             "source": {"path": source_relative, "reason": "explicit fixture inventory"},
         }
         layers.append(layer)
-        outcomes.append({"id": item_id, "source": source_relative, "action": "preserved", "reason": "explicit fixture inventory"})
+        outcomes.append(
+            {
+                "id": item_id,
+                "source": source_relative,
+                "privacy": privacy,
+                "action": "preserved",
+                "reason": "explicit fixture inventory",
+            }
+        )
 
     layers.sort(key=lambda item: item["path"])
     adapter = inventory["adapter"]

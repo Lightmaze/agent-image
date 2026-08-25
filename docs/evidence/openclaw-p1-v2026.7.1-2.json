@@ -66,12 +66,13 @@
   "rollback_status": {
     "unit_failure_injection": "PASS",
     "incomplete_cleanup_is_machine_error": "E_ROLLBACK_FAILED",
-    "real_cross_platform_failure_injection": "PENDING_EPOCH_4"
+    "real_windows_host_failure_injection": "PASS",
+    "real_cross_platform_failure_injection": "PARTIAL_WINDOWS_ONLY"
   },
   "claim_limits": [
     "No P3 behavioral portability claim",
     "No later-version compatibility claim",
     "No whole-home portability claim",
-    "Real failure-injection rollback hardening remains pending"
+    "Real-host rollback failure injection is verified on Windows, not across platforms"
   ]
 }

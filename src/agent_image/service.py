@@ -226,11 +226,22 @@ def inspect_image(image: Path) -> dict[str, Any]:
         bucket = privacy.setdefault(layer["privacy"], {"count": 0, "bytes": 0})
         bucket["count"] += 1
         bucket["bytes"] += layer["size"]
+    layer_inventory = [
+        {
+            key: layer[key]
+            for key in ("id", "kind", "media_type", "path", "digest", "size", "privacy", "portability")
+        }
+        for layer in manifest["layers"]
+    ]
     return {
         "spec": manifest["spec"],
         "image": manifest["image"],
         "runtime": manifest.get("runtime"),
-        "layers": {"total": len(manifest["layers"]), "by_kind": dict(sorted(kinds.items()))},
+        "layers": {
+            "total": len(manifest["layers"]),
+            "by_kind": dict(sorted(kinds.items())),
+            "items": layer_inventory,
+        },
         "privacy": {"policy": manifest["privacy"], "summary": dict(sorted(privacy.items()))},
         "development": manifest.get("development"),
         "lineage": manifest.get("lineage"),
@@ -303,4 +314,3 @@ def diff_images(before: Path, after: Path) -> dict[str, Any]:
         "metadata": metadata,
         "privacy": privacy,
     }
-

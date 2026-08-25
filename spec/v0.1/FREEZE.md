@@ -11,4 +11,5 @@ version rather than silently changing v0.1 semantics.
 
 This freeze does not assert that final release gates have passed. In
 particular, the trained-agent Gate E remains negative, cross-platform hardening
-and Registry work remain, and no P3 claim is permitted.
+has only local Windows/WSL evidence until hosted CI runs, and no P3 claim is
+permitted. The Registry is outside the frozen Core manifest schema.

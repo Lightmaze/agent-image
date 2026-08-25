@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- Added a strict static Registry schema, five private/withheld initial records,
+  digest-bound evidence validation, and `agent-image registry validate`.
+- Added full per-layer privacy metadata to `inspect` without exposing payloads.
+- Hardened structured-secret scanning for JSON, YAML, JSONL, and TOML; malformed
+  declared structured content now fails closed with `E_SECRET_SCAN_FAILED`.
+- Added Windows/UNC/POSIX path-form tests, private-payload diff coverage, and
+  unknown-privacy public-redaction coverage.
+- Verified Hermes P1 on Windows and local WSL Linux with equal paths, sizes, and
+  layer digests after eliminating CRLF/LF fixture drift.
+- Added a real pinned OpenClaw Windows post-create failure injection that proves
+  official host registration and adapter workspace rollback.
+- Expanded the installed-package gate to install both wheel and sdist in fresh
+  environments and exercise inspect, verify, redact, diff, and Registry flows.
+- Pinned hosted Hermes CI source checkout to a full upstream commit; the final
+  release remains held because trained-agent Gate E is negative.
+
 - Added the vHarness adapter pinned to local `0.1.0-alpha.1`, Node `24.15.0`,
   pnpm `11.7.0`, source-tree digest, runtime-build digest, and lockfile digest.
 - Verified vHarness P1 through a fresh vhd authority domain and a live non-mock

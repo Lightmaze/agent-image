@@ -11,7 +11,9 @@ security contact is established.
 
 The v0.1 policy is fail closed: secret items are never packable; public redaction
 removes private and unknown items; restore must eventually validate into staging
-before activation; image content never confers runtime authority.
+before activation; image content never confers runtime authority. Declared
+JSON, YAML, JSONL, and TOML that cannot be parsed also fails closed because an
+unscannable structured file cannot be treated as secret-free.
 
 SHA-256 checksums provide content integrity, not publisher authenticity. The
 bootstrap alpha has no signatures, trust store, encryption, or universal DLP.

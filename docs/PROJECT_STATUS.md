@@ -8,8 +8,9 @@ one harness as the semantic owner.
 
 ## Current stage
 
-`Epoch 3 implementation complete; beta evidence audit pending` (all four
-adapters, the first P2 path, and the fifth-adapter extension gate are verified).
+`Epoch 4 implementation complete; final release held by evidence` (all four
+adapters, the first P2 path, fifth-adapter extension, Registry, and local
+hardening gates are implemented).
 
 The current evidence proves pinned native round-trips for Hermes, OpenClaw,
 DSH, and the scoped vHarness reference Guest, plus the declared
@@ -21,15 +22,15 @@ retention or behavioral portability.
 | Gate | Status | Evidence / blocker |
 |---|---|---|
 | Protocol | Beta schema freeze pass | `spec/v0.1/`, compatibility freeze, Apache-2.0; external review pending |
-| Core toolchain | Formal epoch pass | 56 tests; locked environment; wheel/sdist and installed CLI smoke; typed adapter SDK and public entry points; production build/inspect/verify/redact/diff/restore/migrate and reports |
-| Hermes | P1 pass, pinned | Hermes 0.20.5 / v2026.8.19 / fcbd107; Windows named-profile round-trip |
+| Core toolchain | Formal epoch pass | 65 tests; locked environment; wheel/sdist installed CLI smoke; typed adapter SDK and public entry points; production build/inspect/verify/redact/diff/restore/migrate/registry and reports |
+| Hermes | P1 pass, pinned | Hermes 0.20.5 / v2026.8.19 / fcbd107; Windows and local WSL Linux named-profile round-trip with equal layer digests |
 | OpenClaw | P1 and P2-consumer pass, pinned | 2026.7.1-2 / 0790d9f / Node 24.15.0; real Windows agent/workspace round-trip and Hermes migration |
 | DSH | P1 pass, pinned | `@deepseek-ai/dsh@0.1.0-rc.6`; ordered in-box bundles and official dump round-trip on Windows; arbitrary external dependency reinstall not claimed |
 | vHarness | P1 pass, scoped and pinned | `0.1.0-alpha.1`; real vhd/vh and non-mock persistent process-Guest; fresh Host authority and Host-recorded provenance; strong isolation and DSH Guest are not claimed |
 | Fifth adapter | C0/P0 extension pass | Separate wheel discovered through `agent_image.adapters` in a fresh offline venv; no Core schema fork |
-| Security/privacy | Current pass with remaining hardening | 56 tests; adapters fail closed on secrets; target scans clean; source immutability and loss accounting pass; real cross-platform rollback injection and Epoch 4 matrix pending |
+| Security/privacy | Local hardening pass | path/symlink/structured-secret/privacy/no-overwrite/no-silent-loss matrix; malformed structured data fails closed; real OpenClaw rollback injection passes on Windows |
 | Trained-agent demonstration | Honest negative | 168 real calls; before 0.790960, after 0.743703, restored 0.710293; Gate E remains red |
-| Registry | Not started | Epoch 4 next work |
+| Registry | Pass | five digest-bound private/withheld records; source harness, lineage, privacy, portability, and positive/negative evidence validated in CI |
 
 Release verdict: **LOCAL v0.1.0-beta.1 CANDIDATE; HOLD PUBLIC RELEASE AND v0.1.0.**
 
@@ -52,9 +53,10 @@ was built behind the adapter boundary and formalized from real gate evidence.
 
 ## Next release gate
 
-Freeze the v0.1 schema after the Epoch 3 evidence audit, then implement the
-Registry and hardening matrix. Gate E must be rerun successfully before a final
-`v0.1.0` tag is allowed.
+Gate E must be rerun successfully before a final `v0.1.0` tag is allowed.
+An authorized remote run must also turn the configured Windows/Linux/macOS CI
+matrix into observed evidence. Until then the honest result is beta + HOLD,
+not an RC or final release.
 
 ## Source provenance
 

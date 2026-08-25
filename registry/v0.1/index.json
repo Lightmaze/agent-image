@@ -1,0 +1,125 @@
+{
+  "registry_version": "agent-image-registry/v0.1",
+  "updated_at": "2026-08-25T00:00:00Z",
+  "entries": [
+    {
+      "id": "hermes-synthetic-p1",
+      "name": "Hermes synthetic P1 evidence image",
+      "artifact_uri": "withheld://local-private/hermes-synthetic-p1",
+      "artifact_digest": "sha256:3ac4d7efcb66704caa22f4cd211bbbb6587b213165f723d4a5c8778f26591168",
+      "source_harness": {"id": "hermes", "version": "0.20.5"},
+      "license": "NOASSERTION",
+      "privacy": {"classification": "private", "distribution": "withheld"},
+      "lineage": {"parent_digests": []},
+      "portability": {
+        "level": "P1",
+        "archive": "verified",
+        "native_restore": "verified",
+        "semantic_migration": "unverified",
+        "behavioral": "unverified"
+      },
+      "evidence": {
+        "status": "verified",
+        "path": "docs/evidence/hermes-p1-v0.20.5.json",
+        "digest": "sha256:84ea3060e9f355d64ea48f4ae82ad26726bb2d7f72b2ef1a43029aa4efcda5e3",
+        "scope": "Hermes 0.20.5 native restore on Windows"
+      }
+    },
+    {
+      "id": "openclaw-synthetic-p1",
+      "name": "OpenClaw synthetic P1 evidence image",
+      "artifact_uri": "withheld://local-private/openclaw-synthetic-p1",
+      "artifact_digest": "sha256:ffc71d1b5d007f518979b2ad0e9aaabb282295cbb11353c5a91b97c1edeb3b5a",
+      "source_harness": {"id": "openclaw", "version": "2026.7.1-2"},
+      "license": "NOASSERTION",
+      "privacy": {"classification": "private", "distribution": "withheld"},
+      "lineage": {"parent_digests": []},
+      "portability": {
+        "level": "P1",
+        "archive": "verified",
+        "native_restore": "verified",
+        "semantic_migration": "unverified",
+        "behavioral": "unverified"
+      },
+      "evidence": {
+        "status": "verified",
+        "path": "docs/evidence/openclaw-p1-v2026.7.1-2.json",
+        "digest": "sha256:f894384c06c2b841e5c481b98b3318ecdab9cdae4efc5eb22b244a7262021011",
+        "scope": "OpenClaw 2026.7.1-2 native restore on Windows"
+      }
+    },
+    {
+      "id": "dsh-headless-p1",
+      "name": "DSH headless P1 evidence image",
+      "artifact_uri": "withheld://local-private/dsh-headless-p1",
+      "artifact_digest": "sha256:631a78a81a70084b180424f2f649193e9e2388597743ed71b9c234856392f356",
+      "source_harness": {"id": "dsh", "version": "0.1.0-rc.6"},
+      "license": "NOASSERTION",
+      "privacy": {"classification": "private", "distribution": "withheld"},
+      "lineage": {"parent_digests": []},
+      "portability": {
+        "level": "P1",
+        "archive": "verified",
+        "native_restore": "verified",
+        "semantic_migration": "unverified",
+        "behavioral": "unverified"
+      },
+      "evidence": {
+        "status": "verified",
+        "path": "docs/evidence/dsh-p1-v0.1.0-rc.6.json",
+        "digest": "sha256:c674fd3551537fdd20f44b7eb7d87925ba1316521165d9c034242ae60fccd2a0",
+        "scope": "DSH 0.1.0-rc.6 shipped headless composition on Windows"
+      }
+    },
+    {
+      "id": "vharness-reference-p1",
+      "name": "vHarness reference persistent Guest P1 evidence image",
+      "artifact_uri": "withheld://local-private/vharness-reference-p1",
+      "artifact_digest": "sha256:a0a22d1d3ba3ef63a612247a4a40a5238a1ccaca17d8c3db326c7d5da1ab280a",
+      "source_harness": {"id": "vharness", "version": "0.1.0-alpha.1"},
+      "license": "NOASSERTION",
+      "privacy": {"classification": "private", "distribution": "withheld"},
+      "lineage": {"parent_digests": []},
+      "portability": {
+        "level": "P1",
+        "archive": "verified",
+        "native_restore": "verified",
+        "semantic_migration": "unverified",
+        "behavioral": "unverified"
+      },
+      "evidence": {
+        "status": "verified",
+        "path": "docs/evidence/vharness-p1-v0.1.0-alpha.1.json",
+        "digest": "sha256:f58476067ef1f8e56b1ef83d24a227c3f8ec8889022ee0d282a25eb719a2a657",
+        "scope": "vHarness 0.1.0-alpha.1 reference persistent process-Guest on Windows"
+      }
+    },
+    {
+      "id": "negotiator-48-negative",
+      "name": "Negotiation Training Ground 48-episode negative result",
+      "artifact_uri": "withheld://local-private/negotiator-48-negative",
+      "artifact_digest": "sha256:8e0bb5aba1202befc073a0bfcf02029a12033920155af05b5ad6c7602a553faf",
+      "source_harness": {"id": "hermes", "version": "0.20.5"},
+      "license": "NOASSERTION",
+      "privacy": {"classification": "private", "distribution": "withheld"},
+      "lineage": {
+        "parent_digests": [
+          "sha256:f6ec9824cd414db557a8d9a072c8fc5c63f733503ae11163f0023220d82a8876"
+        ]
+      },
+      "portability": {
+        "level": "P1",
+        "archive": "verified",
+        "native_restore": "verified",
+        "semantic_migration": "unverified",
+        "behavioral": "negative"
+      },
+      "evidence": {
+        "status": "negative",
+        "path": "docs/evidence/trained-agent-gate-e-negative-2026-08-25.json",
+        "digest": "sha256:2c0bd9a2a7869f456383d192b4eff233ffc54bf90c35e9a6c3f03320acf8e1d0",
+        "scope": "Persistent files restored; behavioral improvement and retention were not demonstrated"
+      }
+    }
+  ]
+}

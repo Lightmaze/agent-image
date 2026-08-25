@@ -11,6 +11,7 @@ uv sync --locked --extra dev
 uv run pytest
 uv run python scripts/scan_mock_points.py --root . --fail-on-issues
 uv run python scripts/scan_mojibake.py .
+uv run agent-image registry validate registry/v0.1/index.json --json
 uv build
 ```
 

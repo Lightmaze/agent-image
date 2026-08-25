@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from collections import Counter
@@ -52,19 +53,30 @@ class Issue:
 
 
 def iter_files(root: Path):
-    for path in root.rglob("*"):
-        if not path.is_file():
-            continue
-        relative = path.relative_to(root)
-        if set(relative.parts) & EXCLUDED_DIRS:
-            continue
-        if any(part.startswith(".venv") for part in relative.parts):
-            continue
-        if any(part.endswith(".egg-info") for part in relative.parts):
-            continue
-        if relative.as_posix() in EXCLUDED_FILES or path.suffix.casefold() in BINARY_SUFFIXES:
-            continue
-        yield path
+    for current, directories, files in os.walk(root, topdown=True, followlinks=False):
+        current_path = Path(current)
+        kept_directories: list[str] = []
+        for name in directories:
+            candidate = current_path / name
+            if name in EXCLUDED_DIRS or name.startswith(".venv") or name.endswith(".egg-info"):
+                continue
+            try:
+                if candidate.is_symlink():
+                    continue
+            except OSError:
+                continue
+            kept_directories.append(name)
+        directories[:] = kept_directories
+        for name in files:
+            path = current_path / name
+            relative = path.relative_to(root)
+            if relative.as_posix() in EXCLUDED_FILES or path.suffix.casefold() in BINARY_SUFFIXES:
+                continue
+            try:
+                if path.is_file():
+                    yield path
+            except OSError:
+                continue
 
 
 def validate(path: Path, line: int, data: dict[str, Any]) -> list[Issue]:

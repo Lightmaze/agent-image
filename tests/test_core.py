@@ -59,6 +59,10 @@ class CoreToolchainTests(unittest.TestCase):
             result = inspect_image(image)
             rendered = str(result)
             self.assertIn("memory", rendered)
+            self.assertEqual(
+                {item["privacy"] for item in result["layers"]["items"]},
+                {"public", "private"},
+            )
             self.assertNotIn("greenhouse observation", rendered)
 
     def test_public_redaction_creates_new_verified_image(self) -> None:
@@ -86,6 +90,26 @@ class CoreToolchainTests(unittest.TestCase):
             self.assertEqual(actions["memory-main"], "redacted")
             self.assertTrue(verify_image(image)["valid"])
 
+    def test_missing_privacy_defaults_to_unknown_and_public_export_redacts_it(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            fixture = root / "unknown-privacy"
+            shutil.copytree(FIXTURE, fixture)
+            inventory = fixture / "inventory.yaml"
+            content = inventory.read_text(encoding="utf-8")
+            inventory.write_text(content.replace("    privacy: private\n", "", 1), encoding="utf-8", newline="\n")
+            image = root / "public.aimg"
+
+            build_fixture_image(fixture, image, policy="public")
+
+            entries = read_entries(image)
+            report = json.loads(entries["meta/source-report.json"])
+            outcomes = {item["id"]: item for item in report["outcomes"]}
+            self.assertEqual(outcomes["memory-main"]["privacy"], "unknown")
+            self.assertEqual(outcomes["memory-main"]["action"], "redacted")
+            self.assertNotIn("layers/memory/MEMORY.md", entries)
+            self.assertTrue(verify_image(image)["valid"])
+
     def test_diff_is_empty_for_equal_content_and_reports_change(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -103,6 +127,23 @@ class CoreToolchainTests(unittest.TestCase):
             result = diff_images(unchanged_a, changed)
             self.assertFalse(result["empty"])
             self.assertEqual(result["layers"]["modified"], ["identity-main"])
+
+    def test_diff_reports_private_metadata_without_private_payload(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            before = root / "before.aimg"
+            after = root / "after.aimg"
+            build_fixture_image(FIXTURE, before, policy="private")
+            changed_fixture = root / "changed-private"
+            shutil.copytree(FIXTURE, changed_fixture)
+            private_text = "private payload must never appear in diff output"
+            (changed_fixture / "MEMORY.md").write_text(private_text, encoding="utf-8", newline="\n")
+            build_fixture_image(changed_fixture, after, policy="private")
+
+            result = diff_images(before, after)
+
+            self.assertEqual(result["layers"]["modified"], ["memory-main"])
+            self.assertNotIn(private_text, json.dumps(result))
 
     def test_tampered_payload_fails_digest_check(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

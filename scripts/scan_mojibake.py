@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -19,18 +20,30 @@ EXCLUDED_DIRS = {
 
 
 def candidates(target: Path):
-    if target.is_file():
-        yield target
+    try:
+        if target.is_file():
+            yield target
+            return
+    except OSError:
         return
-    for path in target.rglob("*"):
-        if (
-            path.is_file()
-            and path.suffix.casefold() in TEXT_SUFFIXES
-            and not (set(path.parts) & EXCLUDED_DIRS)
-            and not any(part.startswith(".venv") for part in path.parts)
-            and not any(part.endswith(".egg-info") for part in path.parts)
-        ):
-            yield path
+    for current, directories, files in os.walk(target, topdown=True, followlinks=False):
+        current_path = Path(current)
+        kept_directories: list[str] = []
+        for name in directories:
+            candidate = current_path / name
+            if name in EXCLUDED_DIRS or name.startswith(".venv") or name.endswith(".egg-info"):
+                continue
+            try:
+                if candidate.is_symlink():
+                    continue
+            except OSError:
+                continue
+            kept_directories.append(name)
+        directories[:] = kept_directories
+        for name in files:
+            path = current_path / name
+            if path.suffix.casefold() in TEXT_SUFFIXES:
+                yield path
 
 
 def main(argv: list[str]) -> int:

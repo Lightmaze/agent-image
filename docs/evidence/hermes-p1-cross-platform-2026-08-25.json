@@ -1,0 +1,49 @@
+{
+  "evidence_version": "agent-image-cross-platform-evidence/v0.1",
+  "date": "2026-08-25",
+  "verdict": "PASS_LOCAL_WINDOWS_AND_WSL_LINUX",
+  "contract": {
+    "harness": "hermes-agent==0.20.5",
+    "tag": "v2026.8.19",
+    "commit": "fcbd1076a93841fa88855acce810e342a5b78101",
+    "install": "editable checkout required by upstream"
+  },
+  "environments": [
+    {
+      "name": "Windows",
+      "status": "PASS",
+      "source_immutable": true,
+      "native_restore": "P1",
+      "target_validated": true
+    },
+    {
+      "name": "WSL Linux",
+      "status": "PASS",
+      "source_immutable": true,
+      "native_restore": "P1",
+      "target_validated": true
+    }
+  ],
+  "content": {
+    "image_digest": "sha256:a30d66aa30aafaa8137eefb7744764a60a72cfe2e54a330675b575961044c31a",
+    "layer_count": 7,
+    "all_layer_paths_digests_and_sizes_equal": true,
+    "archive_bytes_equal": false,
+    "archive_difference_reason": "manifest created_at records the actual export time"
+  },
+  "lessons": [
+    "The exact Hermes release is not distributed on PyPI.",
+    "The pinned official source deliberately rejects wheel/sdist builds and requires editable installation.",
+    "An initial Windows CRLF versus Linux LF fixture drift changed every relevant layer digest; the smoke now writes explicit UTF-8 LF bytes."
+  ],
+  "automation": {
+    "github_actions_matrix_configured": ["windows-latest", "ubuntu-latest"],
+    "official_checkout_pinned_to_full_commit": true,
+    "external_run_observed": false
+  },
+  "claim_limits": [
+    "WSL Linux is local Linux evidence, not an observed GitHub-hosted Ubuntu run.",
+    "macOS has Core CI coverage configured but no real Hermes smoke claim.",
+    "No P3 behavioral portability claim."
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-image.org/registry/v0.1/registry.schema.json",
+  "title": "Open Agent Image Registry v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["registry_version", "updated_at", "entries"],
+  "properties": {
+    "registry_version": {"const": "agent-image-registry/v0.1"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id", "name", "artifact_uri", "artifact_digest", "source_harness", "license",
+          "privacy", "lineage", "portability", "evidence"
+        ],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$"},
+          "name": {"type": "string", "minLength": 1},
+          "artifact_uri": {"type": "string", "minLength": 1},
+          "artifact_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+          "source_harness": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "version"],
+            "properties": {
+              "id": {"type": "string", "minLength": 1},
+              "version": {"type": "string", "minLength": 1}
+            }
+          },
+          "license": {"type": "string", "minLength": 1},
+          "privacy": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["classification", "distribution"],
+            "properties": {
+              "classification": {"enum": ["public", "private", "unknown"]},
+              "distribution": {"enum": ["publishable", "withheld"]}
+            }
+          },
+          "lineage": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["parent_digests"],
+            "properties": {
+              "parent_digests": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+              }
+            }
+          },
+          "portability": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["level", "archive", "native_restore", "semantic_migration", "behavioral"],
+            "properties": {
+              "level": {"enum": ["P0", "P1", "P2", "P3"]},
+              "archive": {"enum": ["verified", "negative", "unverified", "not_applicable"]},
+              "native_restore": {"enum": ["verified", "negative", "unverified", "not_applicable"]},
+              "semantic_migration": {"enum": ["verified", "negative", "unverified", "not_applicable"]},
+              "behavioral": {"enum": ["verified", "negative", "unverified", "not_applicable"]}
+            }
+          },
+          "evidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["status", "path", "digest", "scope"],
+            "properties": {
+              "status": {"enum": ["verified", "negative", "unverified"]},
+              "path": {"type": "string", "minLength": 1},
+              "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+              "scope": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    }
+  }
+}

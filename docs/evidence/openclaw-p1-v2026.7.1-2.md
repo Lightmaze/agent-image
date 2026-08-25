@@ -48,14 +48,16 @@ and removed through the official delete command.
 The formal path now executes the official `openclaw.mjs` with an explicit Node
 binary. Rollback verifies both host registration and workspace removal and
 raises `E_ROLLBACK_FAILED` if either survives. Deterministic failure injection
-is covered by tests; real cross-platform failure-injection remains an Epoch 4
-security gate.
+is covered by tests. A later Epoch 4 smoke also created a target through the
+real pinned Windows host, injected a post-create validation failure, and
+verified official deletion plus complete workspace cleanup. Cross-platform
+OpenClaw failure injection remains unclaimed.
 
 ## Claim boundary
 
 This is P1 for one pinned OpenClaw version and tested Windows environment. It
 does not prove later-version compatibility, whole-home portability, session
-semantic migration, P3, or completed cross-platform rollback hardening.
+semantic migration, P3, or cross-platform OpenClaw rollback behavior.
 
 The machine-readable record is
 `docs/evidence/openclaw-p1-v2026.7.1-2.json`.

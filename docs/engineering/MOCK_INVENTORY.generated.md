@@ -5,7 +5,7 @@
 
 ## Summary
 
-- Total mock points: 8
+- Total mock points: 9
 - Issues: 0
 - Production blockers: 0
 
@@ -13,13 +13,14 @@
 
 | Dimension | Value | Count |
 |---|---|---:|
-| Type | `test_fixture` | 8 |
-| Status | `accepted_test_only` | 8 |
+| Type | `test_fixture` | 9 |
+| Status | `accepted_test_only` | 9 |
 
 ## Mock Points
 
 | ID | Type | Status | Production | Location | Replace By | Target |
 |---|---|---|---|---|---|---|
+| MOCK-OPENCLAW-POST-CREATE-FAULT-001 | test_fixture | accepted_test_only | False | scripts/openclaw_rollback_smoke.py:22 | never; deterministic failure injection remains test-only | OpenClaw post-create validation failure |
 | MOCK-CORE-FIXTURE-ADAPTER-001 | test_fixture | accepted_test_only | False | src/agent_image/adapters/fixture.py:16 | before any production adapter capability claim | Production Hermes, OpenClaw, DSH, and vHarness adapters implementing AgentImageAdapter |
 | MOCK-TEST-MINIMAL-IMAGE-001 | test_fixture | accepted_test_only | False | tests/fixtures/minimal/inventory.yaml:1 | before any production adapter capability claim | Real harness round-trip fixtures for release adapter gates |
 | MOCK-TEST-SECRET-FILENAME-001 | test_fixture | accepted_test_only | False | tests/fixtures/secret-file/inventory.yaml:1 | never; accepted test-only regression evidence | Permanent negative security conformance fixture |
