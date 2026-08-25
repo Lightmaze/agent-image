@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import asdict
 from pathlib import Path
 
 import pytest
@@ -20,6 +21,7 @@ from experiments.situated_negotiation_ground.domain import (
     aggregate,
     analyze_gate,
     bootstrap_paired_difference,
+    consolidation_prompt,
     decision_prompt,
     evaluate_decision,
     generate_scenarios,
@@ -193,6 +195,45 @@ def test_invalid_auxiliary_reflection_is_preserved_without_becoming_policy() -> 
     assert evidence["expected_cohort"] == "cohort-17"
     assert evidence["raw_response_digest"].startswith("sha256:")
     assert "between zero and one" in str(error)
+
+
+def test_formal_consolidation_transport_fits_windows_without_dropping_episodes() -> None:
+    scenarios = generate_scenarios("transport", 16, TRAINING_SEED)
+    rows = []
+    for scenario in scenarios:
+        decision = ideal_decision(scenario)
+        score = evaluate_decision(scenario, decision)
+        rows.append(
+            {
+                "scenario": asdict(scenario),
+                "decision": asdict(decision),
+                "score": asdict(score),
+                "reflection": {
+                    "valid": True,
+                    "lesson": "causal evidence",
+                    "cohort_hypothesis": {
+                        "cohort": scenario.cohort,
+                        "estimated_ratio": COHORT_POLICIES[scenario.cohort],
+                        "confidence": 0.9,
+                    },
+                    "next_time": "reuse the learned floor",
+                },
+            }
+        )
+    playbook = {
+        "cohort_policies": [
+            {"cohort": cohort, "estimated_ratio": ratio, "confidence": 0.9}
+            for cohort, ratio in COHORT_POLICIES.items()
+        ],
+        "decision_procedure": ["Estimate the floor, gate feasibility, then counter or walk."],
+        "uncertainties": [],
+    }
+
+    prompt = consolidation_prompt(rows, playbook, COHORT_POLICIES)
+
+    assert len(prompt.encode("utf-8")) < 20_000
+    assert all(scenario.id in prompt for scenario in scenarios)
+    assert prompt.count('"seller_floor"') == 16
 
 
 def test_frozen_preregistration_matches_acceptance_constants() -> None:

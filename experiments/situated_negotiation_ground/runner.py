@@ -391,7 +391,10 @@ class HermesRunner:
             profile=profile,
         )
         if not usage_path.is_file():
-            raise RuntimeError(f"Hermes produced no usage ledger for {call_id}")
+            raise RuntimeError(
+                f"Hermes produced no usage ledger for {call_id}: "
+                f"exit={result.returncode}; output={(result.stderr or result.stdout).strip()}"
+            )
         usage = json.loads(usage_path.read_text(encoding="utf-8"))
         self.budget.record(usage)
         if usage.get("provider") != self.provider or usage.get("model") != self.model:
@@ -1056,13 +1059,20 @@ def execute_experiment(
             return 0
         return 0 if evidence["verdict"]["behavioral_claim_allowed"] else 2
 
-    registration = validate_registration(repository, config)
+    current_registration = validate_registration(repository, config)
+    registration = current_registration
     metadata_path = root / "run-metadata.json"
     if metadata_path.is_file():
         metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
         expected = {"provider": provider, "model": model, "reasoning": REASONING}
         if metadata["model"] != expected or metadata["mode"] != config.mode:
             raise RuntimeError("resume parameters do not match the persisted run metadata")
+        registration = dict(metadata["preregistration"])
+        if (
+            registration.get("digest") != current_registration.get("digest")
+            or registration.get("status") != current_registration.get("status")
+        ):
+            raise RuntimeError("the frozen preregistration changed after formal calls began")
     else:
         metadata = {
             "experiment": EXPERIMENT_ID,
@@ -1239,6 +1249,20 @@ def execute_experiment(
         "started_at": metadata["started_at"],
         "completed_at": utc_now(),
         "preregistration": registration,
+        "infrastructure_amendments": [
+            {
+                "id": "AMENDMENT-001-WINDOWS-TRANSPORT",
+                "path": "experiments/situated_negotiation_ground/AMENDMENT-001-WINDOWS-TRANSPORT.md",
+                "digest": file_digest(
+                    repository
+                    / "experiments"
+                    / "situated_negotiation_ground"
+                    / "AMENDMENT-001-WINDOWS-TRANSPORT.md"
+                ),
+                "git_commit": _git_value(repository, ["rev-parse", "HEAD"]),
+                "changed_samples_or_thresholds": False,
+            }
+        ],
         "model": metadata["model"],
         "harness": metadata["harness"],
         "harness_prompt_surfaces": surface_checks,

@@ -470,11 +470,25 @@ def consolidation_prompt(
     current_playbook: Mapping[str, Any] | None,
     expected_cohorts: Mapping[str, float],
 ) -> str:
+    # Keep the provider-bound representation below the Windows CreateProcess
+    # command-line ceiling. The authoritative episode ledger still retains the
+    # complete decision, rationale, consequence, reflection, usage, and raw
+    # response references. Consolidation needs only the causal sufficient
+    # statistics below; no episode is sampled or dropped.
     evidence = [
         {
-            "scenario": row["scenario"],
-            "decision": row["decision"],
-            "score": row["score"],
+            "id": row["scenario"]["id"],
+            "cohort": row["scenario"]["cohort"],
+            "market_reference": row["scenario"]["market_reference"],
+            "seller_ask": row["scenario"]["seller_ask"],
+            "principal_max": row["scenario"]["principal_max"],
+            "action": None if row["decision"] is None else row["decision"]["action"],
+            "offer": None if row["decision"] is None else row["decision"]["offer"],
+            "seller_floor": row["score"]["seller_floor"],
+            "ideal_action": row["score"]["ideal_action"],
+            "ideal_offer": row["score"]["ideal_offer"],
+            "score": row["score"]["score"],
+            "regret": row["score"]["regret"],
             "reflection": row["reflection"],
         }
         for row in block_rows
