@@ -163,3 +163,19 @@ def test_hermes_clone_does_not_mix_clone_and_no_skills_flags(tmp_path: Path) -> 
     assert "--clone-all" in runner.recorded
     assert "--clone-from" in runner.recorded
     assert "--no-skills" not in runner.recorded
+
+
+def test_published_gate_e_evidence_keeps_the_negative_claim_boundary() -> None:
+    evidence = json.loads(
+        (
+            ROOT
+            / "docs"
+            / "evidence"
+            / "trained-agent-gate-e-negative-2026-08-25.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert evidence["gate_e"] == "fail"
+    assert evidence["claim"] == "behavioral portability not demonstrated"
+    assert evidence["scores"]["verdict"]["after_gain"] < 0
+    assert evidence["call_accounting"]["recorded_model_calls"] == 168
+    assert evidence["call_accounting"]["resampled_calls"] == 0

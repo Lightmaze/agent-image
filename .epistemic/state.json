@@ -693,7 +693,9 @@
     },
     "agent-image-negotiation-ground-v0.1-probe": {
       "architecture_plans": [],
-      "capsules": [],
+      "capsules": [
+        "agent-image-trained-agent-negative-2026-08-25"
+      ],
       "depends_on": [
         "agent-image-alpha1-reproducible"
       ],
@@ -767,6 +769,19 @@
       ],
       "sealed_at": "2026-08-25T00:10:10+00:00",
       "source_artifact": "agent-image-core-bootstrap",
+      "status": "sealed"
+    },
+    "agent-image-trained-agent-negative-2026-08-25": {
+      "belief_file": "beliefs\\agent-image-trained-agent-negative-2026-08-25.json",
+      "context": "agent-image-v0.1-formal",
+      "raw_evidence": [
+        "docs\\evidence\\trained-agent-gate-e-negative-2026-08-25.json",
+        "docs\\evidence\\trained-agent-gate-e-negative-2026-08-25.md",
+        "experiments\\negotiation_ground\\preregistration.yaml",
+        ".tmp\\negotiation-ground-20260825\\final-evidence.json"
+      ],
+      "sealed_at": "2026-08-25T04:23:00+00:00",
+      "source_artifact": "agent-image-negotiation-ground-v0.1-probe",
       "status": "sealed"
     },
     "agent-image-v0.1-formal-root-2026-08-24": {
@@ -1242,6 +1257,14 @@
       "link_type": "dependency",
       "parent": "agent-image-alpha1-reproducible",
       "type": "LINEAGE_LINKED"
+    },
+    {
+      "at": "2026-08-25T04:23:00+00:00",
+      "capsule_id": "agent-image-trained-agent-negative-2026-08-25",
+      "context": "agent-image-v0.1-formal",
+      "event_id": "evt-000032",
+      "source_artifact": "agent-image-negotiation-ground-v0.1-probe",
+      "type": "CAPSULE_SEALED"
     }
   ],
   "gate_reports": {

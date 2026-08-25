@@ -1,0 +1,153 @@
+{
+  "evidence_version": "agent-image-trained-agent-gate/v0.1",
+  "experiment": "agent-image-negotiation-ground-v0.1",
+  "result": "honest_negative",
+  "gate_e": "fail",
+  "claim": "behavioral portability not demonstrated",
+  "preregistration": {
+    "path": "experiments/negotiation_ground/preregistration.yaml",
+    "commit": "e3d34e35ed3d0c9edb0efbc87a77e755dbe81b48"
+  },
+  "environment": {
+    "platform": "windows",
+    "harness": "hermes-agent==0.20.5",
+    "provider_client": "openai==2.24.0",
+    "http_client": "httpx==0.28.1",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "reasoning": "none",
+    "sampling_policy": "same Hermes/provider defaults at before, after, and restored; provider seed unavailable",
+    "weights_changed": false,
+    "live_session_reused_after_restore": false
+  },
+  "dataset": {
+    "privacy": "synthetic_only",
+    "practice_episodes": 48,
+    "held_out_scenarios": 20,
+    "evaluation_repetitions": 2,
+    "records": {
+      "before": 40,
+      "practice": 48,
+      "after": 40,
+      "restored": 40
+    }
+  },
+  "scores": {
+    "before": {
+      "score": 0.79096,
+      "principal_utility": 0.714638,
+      "constraint_adherence": 1.0,
+      "concession_discipline": 0.563023,
+      "deal_calibration": 0.925,
+      "reservation_price_leaks": 0
+    },
+    "after": {
+      "score": 0.743703,
+      "principal_utility": 0.641018,
+      "constraint_adherence": 1.0,
+      "concession_discipline": 0.511476,
+      "deal_calibration": 0.85,
+      "reservation_price_leaks": 0
+    },
+    "restored": {
+      "score": 0.710293,
+      "principal_utility": 0.599532,
+      "constraint_adherence": 0.975,
+      "concession_discipline": 0.502398,
+      "deal_calibration": 0.775,
+      "reservation_price_leaks": 0
+    },
+    "verdict": {
+      "minimum_after_gain": 0.15,
+      "minimum_restore_retention": 0.75,
+      "after_gain": -0.047257,
+      "restored_gain": -0.080667,
+      "restore_retention": 0.0
+    }
+  },
+  "call_accounting": {
+    "expected_model_calls": 168,
+    "recorded_model_calls": 168,
+    "usage_files": 168,
+    "estimated_cost_usd": 0.04021738,
+    "parse_errors": 1,
+    "missing_raw_responses": 1,
+    "resampled_calls": 0,
+    "invalid_call_policy": "zero_score"
+  },
+  "images": {
+    "before": {
+      "manifest_digest": "sha256:f6ec9824cd414db557a8d9a072c8fc5c63f733503ae11163f0023220d82a8876",
+      "file_sha256": "3834efcfe80a24710ae19d9db4a6b2cc85392b5399ddfa3480431638bba93e71",
+      "verify": "pass",
+      "layers": 3
+    },
+    "trained": {
+      "manifest_digest": "sha256:8e0bb5aba1202befc073a0bfcf02029a12033920155af05b5ad6c7602a553faf",
+      "file_sha256": "2eddb06b6e35002cae31943c9477252f9299cef85c63b846809bda015fa93883",
+      "verify": "pass",
+      "layers": 4,
+      "privacy": "private"
+    }
+  },
+  "restored_state_checks": [
+    {
+      "path": "SOUL.md",
+      "source_sha256": "ece0bdbc497370cbb2ce1fcbe09a8ace2fb301d9a5a7ad3eee4d19acf633d3b",
+      "target_sha256": "ece0bdbc497370cbb2ce1fcbe09a8ace2fb301d9a5a7ad3eee4d19acf633d3b",
+      "equal": true
+    },
+    {
+      "path": "memories/MEMORY.md",
+      "source_sha256": "fa7a7ad2a44bced02269764ced6078d7ffa96f8d79c566779b69c57c817142df",
+      "target_sha256": "fa7a7ad2a44bced02269764ced6078d7ffa96f8d79c566779b69c57c817142df",
+      "equal": true
+    },
+    {
+      "path": "sessions/training-ground.jsonl",
+      "source_sha256": "d4ff109c1d68db867b882470e74d151f35ae10911d39760c6bae9629bdfbbfd4",
+      "target_sha256": "d4ff109c1d68db867b882470e74d151f35ae10911d39760c6bae9629bdfbbfd4",
+      "equal": true
+    },
+    {
+      "path": "config.yaml",
+      "source_sha256": "b07f45cbb8e4485a590c70e6c521634119e97ef8d5e30f9d39c02060b19eb739",
+      "target_sha256": "b07f45cbb8e4485a590c70e6c521634119e97ef8d5e30f9d39c02060b19eb739",
+      "equal": true
+    }
+  ],
+  "raw_evidence": {
+    "location": ".tmp/negotiation-ground-20260825",
+    "availability": "local_only_not_release_artifact",
+    "digests": {
+      "scenario-manifest.json": "e8ac660176abb715f3709ce623b2e189bcc592a702328719cf3dae4a193463c8",
+      "run-metadata.json": "6d5ab55af4351330531a6cc5ad204b3f81c55c5acef505044c2859d672a58f35",
+      "before-evaluation.jsonl": "095ef54f6cd700988e5dde4c4e1411d115bd7e8c88ba4122ea7cce10b9c43f59",
+      "practice.jsonl": "d4ff109c1d68db867b882470e74d151f35ae10911d39760c6bae9629bdfbbfd4",
+      "after-evaluation.jsonl": "92cf43b5278736f9bc9a2043cc72dc516e157e5e8ca392be0fd6bc7b52528f58",
+      "restored-evaluation.jsonl": "21ba2b2d5e6327850e4439fe4d613cba02c58880dc2233f86a99947e5d65e623",
+      "final-evidence.json": "eea05ce4bb102fcf8574d281a25348e2b25046c87f018f259b89291d5b2b0a8f"
+    }
+  },
+  "privacy": {
+    "exact_provider_credential_matches": 0,
+    "files_scanned": 251,
+    "trained_image_default": "private"
+  },
+  "limitations": [
+    "One completed restored-evaluation provider call returned malformed JSON; its raw response was not persisted by the pre-fix runner, was not resampled, and was scored zero.",
+    "The provider exposes no reproducible sampling seed through this Hermes path; identical defaults do not eliminate stochastic variance.",
+    "The experiment tests one synthetic curriculum, one memory representation, one model, and one run; it cannot reject contextual training as a general mechanism.",
+    "Hash equality proves preservation of four checked persistent state surfaces, not behavioral equivalence."
+  ],
+  "runner_repairs": [
+    {
+      "commit": "d9632990846a49fad934292cacd927333f8ffc1a",
+      "scope": "Hermes clone flag compatibility; occurred before the first model call"
+    },
+    {
+      "commit": "d5a8418f7a52eef8f7a5092c5c85bf900a2ca99f",
+      "scope": "Invalid structured response accounting without resampling; threshold and score weights unchanged"
+    }
+  ]
+}

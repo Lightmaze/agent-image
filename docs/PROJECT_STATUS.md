@@ -8,8 +8,8 @@ one harness as the semantic owner.
 
 ## Current stage
 
-`P1 alpha 工程闭环` (formal architecture anchored; first real adapter gated;
-standalone reproducibility gate in progress).
+`Epoch 1 honest negative / Epoch 2 ready` (independent alpha and Hermes P1
+gated; trained-agent Gate E executed without a behavioral claim).
 
 The current epoch proves a native round-trip for a real named Hermes profile
 against a pinned official contract. It does not prove cross-harness migration,
@@ -20,17 +20,18 @@ developed-skill retention, or behavioral portability.
 | Gate | Status | Evidence / blocker |
 |---|---|---|
 | Protocol | Alpha draft pass | `spec/v0.1/`, schema parse, Apache-2.0; external review pending |
-| Core toolchain | Formal epoch pass | 28 tests; locked environment; wheel/sdist and installed CLI smoke; production build/inspect/verify/redact/diff plus adapter-dispatched restore |
+| Core toolchain | Formal epoch pass | 38 tests; locked environment; wheel/sdist and installed CLI smoke; production build/inspect/verify/redact/diff plus adapter-dispatched restore |
 | Hermes | P1 pass, pinned | Hermes 0.20.5 / v2026.8.19 / fcbd107; Windows named-profile round-trip |
 | OpenClaw | Not started | CLI/runtime unavailable in current environment |
 | DSH | Reconnaissance only | CLI visible; current public contract must be pinned before implementation |
 | vHarness | Reconnaissance complete | Mapping exists; live Guest integration is absent |
-| Security/privacy | Current pass | 28 tests, second-pass Hermes scanning, opt-in native experience/workspace, encoding and mock scans; external audit pending |
-| Demonstration/registry | Not started | Depends on real adapters |
+| Security/privacy | Current pass | 38 tests, second-pass Hermes scanning, opt-in native experience/workspace, encoding and mock scans; experiment credential scan found zero exact matches; external audit pending |
+| Trained-agent demonstration | Honest negative | 168 real calls; before 0.790960, after 0.743703, restored 0.710293; Gate E remains red |
+| Registry | Not started | Depends on real adapters and evidence labels |
 
 Release verdict: **LOCAL v0.1.0-alpha.1 CANDIDATE; HOLD v0.1.0.**
 
-Current epistemic state: `FORMALIZE:hermes-p1`.
+Current epistemic state: `EXTRACT:trained-agent-negative-evidence`.
 
 Only the independently selected content kernel was requalified from the
 bootstrap. Fixture-bound service/CLI code remains non-authoritative. Hermes P1
@@ -46,10 +47,9 @@ was built behind the adapter boundary and formalized from real gate evidence.
 
 ## Next release gate
 
-Complete the preregistered same-model trained-agent experiment before schema
-freeze. If real model access is unavailable or the result is negative, preserve
-that evidence honestly and continue with OpenClaw P1 plus the required
-Hermes-to-OpenClaw P2 loss-report path without making a behavioral claim.
+Implement OpenClaw P1 and the required Hermes-to-OpenClaw P2 loss-report path
+without making a behavioral claim. Gate E must be rerun successfully before a
+final `v0.1.0` tag is allowed.
 
 ## Source provenance
 

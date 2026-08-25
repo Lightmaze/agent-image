@@ -1,0 +1,163 @@
+{
+  "capsule_version": "2.0",
+  "capsule_id": "agent-image-trained-agent-negative-2026-08-25",
+  "source_artifact": "agent-image-negotiation-ground-v0.1-probe",
+  "context": "agent-image-v0.1-formal",
+  "beliefs": [
+    {
+      "id": "B-TA-001",
+      "statement": "In the exact preregistered Hermes 0.20.5 and deepseek-v4-flash run, 48 append-only synthetic negotiation practice episodes did not improve the held-out composite score.",
+      "type": "observation",
+      "confidence": 1.0,
+      "scope": [
+        "agent-image-negotiation-ground-v0.1 exact run"
+      ],
+      "evidence_scope": [
+        "agent-image-negotiation-ground-v0.1 exact run"
+      ],
+      "supporting_evidence": [
+        "docs/evidence/trained-agent-gate-e-negative-2026-08-25.json"
+      ],
+      "counterevidence": [],
+      "falsifier": "A digest-preserving recomputation of the recorded 40 before and 40 after rows yields after_gain >= 0.15.",
+      "provenance": {
+        "source_artifact": "agent-image-negotiation-ground-v0.1-probe",
+        "source_events": [
+          "trained-agent-run-2026-08-25"
+        ]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "B-TA-002",
+      "statement": "The Hermes P1 round-trip preserved the four checked persistent state surfaces byte-for-byte, while the behavioral gate still failed.",
+      "type": "observation",
+      "confidence": 1.0,
+      "scope": [
+        "SOUL.md, memories/MEMORY.md, sessions/training-ground.jsonl, and config.yaml in the exact run"
+      ],
+      "evidence_scope": [
+        "SOUL.md, memories/MEMORY.md, sessions/training-ground.jsonl, and config.yaml in the exact run"
+      ],
+      "supporting_evidence": [
+        "docs/evidence/trained-agent-gate-e-negative-2026-08-25.json"
+      ],
+      "counterevidence": [],
+      "falsifier": "Any recorded source and restored SHA-256 pair differs when recomputed from the retained artifacts.",
+      "provenance": {
+        "source_artifact": "agent-image-negotiation-ground-v0.1-probe",
+        "source_events": [
+          "trained-agent-run-2026-08-25"
+        ]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "H-TA-001",
+      "statement": "The negative outcome may arise from curriculum quality, append-only context dilution, a high baseline, stochastic sampling, or absent replay and consolidation; this run does not distinguish these explanations.",
+      "type": "hypothesis",
+      "confidence": 0.4,
+      "scope": [
+        "possible explanations for the exact negative result"
+      ],
+      "evidence_scope": [
+        "possible explanations for the exact negative result"
+      ],
+      "supporting_evidence": [
+        "docs/evidence/trained-agent-gate-e-negative-2026-08-25.md"
+      ],
+      "counterevidence": [],
+      "falsifier": "Controlled ablations isolate a different causal explanation or reproduce a robust gain without changing these factors.",
+      "provenance": {
+        "source_artifact": "agent-image-negotiation-ground-v0.1-probe",
+        "source_events": [
+          "trained-agent-run-2026-08-25"
+        ]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "C-TA-001",
+      "statement": "A behavioral portability claim remains forbidden until a preregistered same-model run produces the required positive gain and fresh-restore retention.",
+      "type": "constraint",
+      "confidence": 1.0,
+      "scope": [
+        "Agent Image v0.1 release claims"
+      ],
+      "evidence_scope": [
+        "Agent Image v0.1 release claims"
+      ],
+      "supporting_evidence": [
+        "experiments/negotiation_ground/preregistration.yaml",
+        "docs/evidence/trained-agent-gate-e-negative-2026-08-25.json"
+      ],
+      "counterevidence": [],
+      "falsifier": "A later preregistered Gate E report passes both the gain and retention thresholds.",
+      "provenance": {
+        "source_artifact": "agent-image-negotiation-ground-v0.1-probe",
+        "source_events": [
+          "trained-agent-run-2026-08-25"
+        ]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "F-TA-001",
+      "statement": "One completed restored-evaluation response was structurally invalid and its raw stdout was unavailable after the original runner stopped; the call was not resampled and was scored zero.",
+      "type": "failure",
+      "confidence": 1.0,
+      "scope": [
+        "eval-008 repetition 1 in the exact restored evaluation"
+      ],
+      "evidence_scope": [
+        "eval-008 repetition 1 in the exact restored evaluation"
+      ],
+      "supporting_evidence": [
+        "docs/evidence/trained-agent-gate-e-negative-2026-08-25.json"
+      ],
+      "counterevidence": [],
+      "falsifier": "The original raw stdout is recovered with a digest and parses under the preregistered JSON contract.",
+      "provenance": {
+        "source_artifact": "agent-image-negotiation-ground-v0.1-probe",
+        "source_events": [
+          "trained-agent-run-2026-08-25"
+        ]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "U-TA-001",
+      "statement": "It remains unknown whether another persistent practice design with replay, consolidation, better curriculum, or controlled sampling can create and preserve a positive skill state.",
+      "type": "unknown",
+      "confidence": 0.5,
+      "scope": [
+        "future contextual training designs"
+      ],
+      "evidence_scope": [],
+      "supporting_evidence": [],
+      "counterevidence": [],
+      "falsifier": null,
+      "provenance": {
+        "source_artifact": "agent-image-negotiation-ground-v0.1-probe",
+        "source_events": [
+          "trained-agent-run-2026-08-25"
+        ]
+      },
+      "supersedes": null,
+      "status": "active"
+    }
+  ],
+  "extraction_coverage": {
+    "observations": "captured",
+    "hypotheses": "captured",
+    "constraints": "captured",
+    "failures": "captured",
+    "unknowns": "captured",
+    "raw_evidence": "captured"
+  }
+}

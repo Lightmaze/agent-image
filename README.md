@@ -65,8 +65,9 @@ unsupported state must appear in an operation report.
   build/restore with source and target validation.
 - Present but intentionally blocked: `migrate`, pending OpenClaw and the first
   real cross-harness loss report.
-- Not started: production OpenClaw/DSH/vHarness adapters, trained-agent
-  demonstration, registry, OCI transport, and P3 behavioral portability.
+- Not started: production OpenClaw/DSH/vHarness adapters, registry, OCI
+  transport, and P3 behavioral portability. The first trained-agent Gate E run
+  completed with an honest negative result; no behavioral claim is made.
 
 See the [capability matrix](docs/CAPABILITY_MATRIX.md), [project status](docs/PROJECT_STATUS.md),
 [Hermes P1 evidence](docs/evidence/hermes-p1-v0.20.5.md),

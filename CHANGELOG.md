@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- Preregistered and ran the 168-call same-model Hermes negotiation Training
+  Ground against a real provider.
+- Recorded an honest negative Gate E result: after-practice and fresh-restore
+  scores were below the before-practice baseline, so behavioral portability is
+  not demonstrated.
+- Verified the before and trained images and byte equality for four restored
+  persistent-state surfaces.
+- Added cost limits, resumable checkpoints, raw-response-before-parse capture,
+  and zero-score accounting for invalid structured output without resampling.
+
 ## 0.1.0-alpha.1 — 2026-08-24
 
 - Established an independent repository boundary under Apache-2.0.
