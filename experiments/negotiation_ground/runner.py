@@ -158,6 +158,20 @@ def _clamp(value: float) -> float:
     return round(max(0.0, min(1.0, value)), 6)
 
 
+def invalid_response_score() -> Score:
+    return Score(
+        score=0.0,
+        principal_utility=0.0,
+        constraint_adherence=0.0,
+        concession_discipline=0.0,
+        deal_calibration=0.0,
+        reservation_price_leak=False,
+        deal=False,
+        price=None,
+        consequence="The model response was not valid structured output; no negotiation action was credited.",
+    )
+
+
 def evaluate_decision(scenario: Scenario, decision: Decision) -> Score:
     # Only the seller-facing message crosses the negotiation boundary. The
     # rationale is private evidence for the principal and may legitimately
@@ -419,6 +433,11 @@ class HermesRunner:
             timeout=360,
         )
         usage = json.loads(usage_path.read_text(encoding="utf-8")) if usage_path.is_file() else {}
+        usage_path.with_suffix(".response.txt").write_text(
+            result.stdout,
+            encoding="utf-8",
+            newline="\n",
+        )
         self.budget.record_usage(usage)
         return result.stdout.strip(), usage
 
@@ -496,11 +515,35 @@ def run_phase(
             if key in completed:
                 continue
             usage_path = output.parent / "usage" / output.stem / f"{scenario.id}-r{repetition}.json"
+            response_path = usage_path.with_suffix(".response.txt")
             prompt = prompt_for(scenario, practice=practice)
-            started = utc_now()
-            raw, usage = runner.complete(profile, prompt, usage_path)
-            decision = parse_decision(raw)
-            score = evaluate_decision(scenario, decision)
+            recovered_orphan = usage_path.is_file()
+            if recovered_orphan:
+                usage = json.loads(usage_path.read_text(encoding="utf-8"))
+                if not usage.get("completed"):
+                    raise RuntimeError(f"orphaned provider call did not complete: {usage_path}")
+                raw = response_path.read_text(encoding="utf-8").strip() if response_path.is_file() else ""
+                started = datetime.fromtimestamp(
+                    usage_path.stat().st_mtime,
+                    timezone.utc,
+                ).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+            else:
+                started = utc_now()
+                raw, usage = runner.complete(profile, prompt, usage_path)
+
+            parse_error: str | None = None
+            try:
+                decision = parse_decision(raw)
+                score = evaluate_decision(scenario, decision)
+            except (ValueError, json.JSONDecodeError) as exc:
+                decision = None
+                score = invalid_response_score()
+                if raw:
+                    parse_error = f"{type(exc).__name__}: {exc}"
+                else:
+                    parse_error = (
+                        "completed provider call had no persisted response after an earlier runner interruption"
+                    )
             record = {
                 "experiment": EXPERIMENT_ID,
                 "phase": "practice" if practice else "evaluation",
@@ -508,11 +551,13 @@ def run_phase(
                 "completed_at": utc_now(),
                 "scenario": asdict(scenario),
                 "repetition": repetition,
-                "decision": asdict(decision),
+                "decision": asdict(decision) if decision is not None else None,
                 "score": asdict(score),
                 "model": {"harness": "hermes", "provider": runner.provider, "model": runner.model, "reasoning": REASONING},
                 "usage": usage,
-                "raw_response": raw,
+                "raw_response": raw or None,
+                "parse_error": parse_error,
+                "recovered_orphan_usage": recovered_orphan,
             }
             append_jsonl(output, record)
             rows.append(record)
@@ -522,15 +567,22 @@ def run_phase(
                 append_jsonl(session_log, record)
                 memory = profile_root / "memories" / "MEMORY.md"
                 with memory.open("a", encoding="utf-8", newline="\n") as handle:
+                    action = decision.action if decision is not None else "invalid structured response"
+                    offer = decision.offer if decision is not None else None
+                    reflection = (
+                        decision.reflection
+                        if decision is not None
+                        else "No lesson was inferred from an invalid model response."
+                    )
                     handle.write(
                         f"\n## {scenario.id}\n"
                         f"- Situation: seller asked {scenario.seller_ask}; private authority was {scenario.principal_max}; stance {scenario.stance}.\n"
-                        f"- Action: {decision.action}; offer {decision.offer}.\n"
+                        f"- Action: {action}; offer {offer}.\n"
                         f"- World consequence: {score.consequence}\n"
-                        f"- Agent reflection: {decision.reflection}\n"
+                        f"- Agent reflection: {reflection}\n"
                     )
             print(json.dumps({
-                "event": "model_call",
+                "event": "recovered_model_call" if recovered_orphan else "model_call",
                 "phase": output.stem,
                 "completed": len(rows),
                 "phase_total": len(scenarios) * repetitions,

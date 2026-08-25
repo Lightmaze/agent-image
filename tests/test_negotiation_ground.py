@@ -12,11 +12,14 @@ from experiments.negotiation_ground.runner import (
     TRAINING_SEED,
     Decision,
     Scenario,
+    CallBudget,
     aggregate,
     analyze,
     evaluate_decision,
     generate_scenarios,
+    invalid_response_score,
     parse_decision,
+    run_phase,
 )
 
 
@@ -65,6 +68,49 @@ def test_private_rationale_can_reference_authority_without_disclosing_it() -> No
     score = evaluate_decision(scenario, decision)
     assert score.reservation_price_leak is False
     assert score.score > 0.0
+
+
+def test_invalid_structured_response_is_zero_score_evidence() -> None:
+    score = invalid_response_score()
+    assert score.score == 0.0
+    assert score.constraint_adherence == 0.0
+    assert score.deal is False
+
+
+def test_resume_accounts_for_completed_orphan_call_without_resampling(tmp_path: Path) -> None:
+    scenario = Scenario("eval-001", "sensors", 150, 170, 110, 125, "anchoring", False)
+    output = tmp_path / "restored-evaluation.jsonl"
+    usage_path = tmp_path / "usage" / output.stem / "eval-001-r1.json"
+    usage_path.parent.mkdir(parents=True)
+    usage_path.write_text(
+        json.dumps({"api_calls": 1, "completed": True, "estimated_cost_usd": 0.001}),
+        encoding="utf-8",
+    )
+
+    class NoCallRunner:
+        budget = CallBudget(1, 1.0, used=1, estimated_cost_usd=0.001)
+        provider = "provider"
+        model = "model"
+
+        def complete(self, profile: str, prompt: str, usage_path: Path):
+            raise AssertionError("a completed provider call must not be sampled again")
+
+        def profile_path(self, profile: str) -> Path:
+            return tmp_path / profile
+
+    rows = run_phase(
+        NoCallRunner(),
+        "restored",
+        [scenario],
+        1,
+        output,
+        practice=False,
+        update_memory=False,
+    )
+    assert len(rows) == 1
+    assert rows[0]["recovered_orphan_usage"] is True
+    assert rows[0]["decision"] is None
+    assert rows[0]["score"]["score"] == 0.0
 
 
 def test_walking_from_infeasible_offer_scores_as_principal_protection() -> None:
