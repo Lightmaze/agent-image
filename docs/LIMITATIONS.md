@@ -2,9 +2,11 @@
 
 These are release boundaries, not implied future capability.
 
-- Trained-agent Gate E is negative. Persistent files restored, but the
-  preregistered behavioral improvement and retention thresholds did not pass.
-  No portable-skill or P3 claim is permitted.
+- Trained-agent Gate E passed for one synthetic, mission-specific Hermes 0.20.5
+  experiment. It does not establish real-world negotiation transfer,
+  independent replication, delayed retention, other models or harnesses, or P3
+  cross-harness behavioral portability. The earlier 48-episode append-only
+  probe remains a valid negative result for that exact design.
 - P2 is implemented only for Hermes to OpenClaw. Native Hermes database and
   session state remain explicit unsupported loss rather than being translated.
 - Adapters are pinned to exact tested harness contracts. Later versions are not

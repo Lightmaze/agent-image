@@ -1,0 +1,164 @@
+{
+  "capsule_version": "2.0",
+  "capsule_id": "agent-image-situated-negotiation-positive-2026-08-25",
+  "source_artifact": "agent-image-situated-negotiation-ground-v0.2",
+  "context": "agent-image-v0.1-formal",
+  "beliefs": [
+    {
+      "id": "B-SN-001",
+      "statement": "In the preregistered Hermes 0.20.5 and deepseek-v4-flash v0.2 run, 128 causal practice episodes with reflection and block consolidation improved the disjoint held-out score from 0.414455 to 1.0.",
+      "type": "observation",
+      "confidence": 1.0,
+      "scope": [
+        "agent-image-situated-negotiation-ground-v0.2 exact run"
+      ],
+      "evidence_scope": [
+        "64 synthetic held-out scenarios evaluated three times"
+      ],
+      "supporting_evidence": [
+        "docs/evidence/situated-negotiation-gate-e-positive-2026-08-25.json"
+      ],
+      "counterevidence": [
+        "docs/evidence/trained-agent-gate-e-negative-2026-08-25.json"
+      ],
+      "falsifier": "A digest-preserving recomputation of the recorded ledgers fails a preregistered threshold.",
+      "provenance": {
+        "source_artifact": "agent-image-situated-negotiation-ground-v0.2",
+        "source_events": [
+          "situated-negotiation-formal-run-2026-08-25"
+        ]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "B-SN-002",
+      "statement": "A fresh Hermes P1 restore preserved the trained memory, practice history, and consolidation digests, and matched trained action, offer, and reservation-leak fields on all 192 held-out records.",
+      "type": "observation",
+      "confidence": 1.0,
+      "scope": [
+        "same-harness P1 restore in the exact v0.2 run"
+      ],
+      "evidence_scope": [
+        "three persistent state digests and 192 paired evaluation records"
+      ],
+      "supporting_evidence": [
+        "docs/evidence/situated-negotiation-gate-e-positive-2026-08-25.json"
+      ],
+      "counterevidence": [],
+      "falsifier": "Any retained state digest differs or any paired action, offer, or leak field differs when recomputed from retained evidence.",
+      "provenance": {
+        "source_artifact": "agent-image-situated-negotiation-ground-v0.2",
+        "source_events": [
+          "situated-negotiation-formal-run-2026-08-25"
+        ]
+      },
+      "supersedes": "C-TA-001",
+      "status": "active"
+    },
+    {
+      "id": "B-SN-003",
+      "statement": "The trained arm exceeded concurrent base, a generic handbook, and an equally practiced coherent-shuffled control, so the observed gain is not explained by temporal drift, generic instruction, or practice volume alone in this synthetic world.",
+      "type": "observation",
+      "confidence": 0.95,
+      "scope": [
+        "controls included in the exact v0.2 experiment"
+      ],
+      "evidence_scope": [
+        "globally seeded interleaved five-arm post evaluation"
+      ],
+      "supporting_evidence": [
+        "docs/evidence/situated-negotiation-gate-e-positive-2026-08-25.json"
+      ],
+      "counterevidence": [],
+      "falsifier": "A controlled rerun shows the trained advantage disappears or is reproduced by a control with equivalent information.",
+      "provenance": {
+        "source_artifact": "agent-image-situated-negotiation-ground-v0.2",
+        "source_events": [
+          "situated-negotiation-formal-run-2026-08-25"
+        ]
+      },
+      "supersedes": "U-TA-001",
+      "status": "active"
+    },
+    {
+      "id": "C-SN-001",
+      "statement": "The permitted claim is mission-specific developed-state retention under the pinned same-harness contract; real-world negotiation and cross-harness P3 claims remain forbidden.",
+      "type": "constraint",
+      "confidence": 1.0,
+      "scope": [
+        "Agent Image v0.1 release claims"
+      ],
+      "evidence_scope": [
+        "synthetic seller world and Hermes P1 restore"
+      ],
+      "supporting_evidence": [
+        "docs/evidence/situated-negotiation-gate-e-positive-2026-08-25.md"
+      ],
+      "counterevidence": [],
+      "falsifier": "Independent real-world or cross-harness P3 evidence is completed under a separately frozen protocol.",
+      "provenance": {
+        "source_artifact": "agent-image-situated-negotiation-ground-v0.2",
+        "source_events": [
+          "situated-negotiation-formal-run-2026-08-25"
+        ]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "F-SN-001",
+      "statement": "The first formal consolidation exceeded the Windows command-line transport limit before any provider call; a documented amendment compacted evidence without changing samples, seeds, arms, scores, or thresholds.",
+      "type": "failure",
+      "confidence": 1.0,
+      "scope": [
+        "AMENDMENT-001-WINDOWS-TRANSPORT"
+      ],
+      "evidence_scope": [
+        "formal runner transport only"
+      ],
+      "supporting_evidence": [
+        "experiments/situated_negotiation_ground/AMENDMENT-001-WINDOWS-TRANSPORT.md"
+      ],
+      "counterevidence": [],
+      "falsifier": "The retained usage ledger shows a provider call occurred for the failed original consolidation attempt.",
+      "provenance": {
+        "source_artifact": "agent-image-situated-negotiation-ground-v0.2",
+        "source_events": [
+          "situated-negotiation-formal-run-2026-08-25"
+        ]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "U-SN-001",
+      "statement": "Independent replication, other models and harnesses, broader worlds, delayed retention, and real-world transfer remain unknown.",
+      "type": "unknown",
+      "confidence": 0.5,
+      "scope": [
+        "generalization beyond the exact v0.2 run"
+      ],
+      "evidence_scope": [],
+      "supporting_evidence": [],
+      "counterevidence": [],
+      "falsifier": null,
+      "provenance": {
+        "source_artifact": "agent-image-situated-negotiation-ground-v0.2",
+        "source_events": [
+          "situated-negotiation-formal-run-2026-08-25"
+        ]
+      },
+      "supersedes": null,
+      "status": "active"
+    }
+  ],
+  "extraction_coverage": {
+    "observations": "captured",
+    "hypotheses": "not_promoted",
+    "constraints": "captured",
+    "failures": "captured",
+    "unknowns": "captured",
+    "raw_evidence": "digest_bound_private"
+  }
+}

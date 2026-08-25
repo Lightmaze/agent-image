@@ -1,0 +1,174 @@
+{
+  "evidence_version": "agent-image-trained-agent-gate/v0.2",
+  "experiment": "agent-image-situated-negotiation-ground-v0.2",
+  "result": "positive_bounded",
+  "gate_e": "pass",
+  "claim": "Mission-specific developed state was retained by a fresh native restore under the pinned same-harness contract.",
+  "claim_boundary": [
+    "The seller world and principal data are synthetic.",
+    "The result is limited to Hermes 0.20.5, deepseek-v4-flash, this curriculum, and same-harness P1 restore.",
+    "The result does not establish real-world procurement performance, cross-harness P3 portability, or a general contextual-training law."
+  ],
+  "preregistration": {
+    "path": "experiments/situated_negotiation_ground/preregistration.yaml",
+    "digest": "sha256:ccd9d9c7bf99a2e91ca2822e5c33360a885cb6e500db8a40015441151fa88da8",
+    "commit": "bc25913011b7fc982592f6fccb5802f5367b5bd8"
+  },
+  "infrastructure_amendments": [
+    {
+      "id": "AMENDMENT-001-WINDOWS-TRANSPORT",
+      "path": "experiments/situated_negotiation_ground/AMENDMENT-001-WINDOWS-TRANSPORT.md",
+      "digest": "sha256:42f4ac84430a90b15e2e4d448632d6051e022aba6f18654fdeee851afd6d9259",
+      "commit": "0ec844ecca73c4e664e959cefdd68842c554773b",
+      "changed_samples_or_thresholds": false
+    }
+  ],
+  "environment": {
+    "platform": "windows",
+    "harness": "hermes-agent==0.20.5",
+    "harness_contract": {
+      "tag": "v2026.8.19",
+      "commit": "fcbd107"
+    },
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "reasoning": "none",
+    "tools": [],
+    "weights_changed": false,
+    "profile_selection": "explicit_cli_selector",
+    "prompt_surface_preflight": true
+  },
+  "design": {
+    "training_episodes": {
+      "trained": 128,
+      "coherent_shuffled": 128
+    },
+    "block_size": 16,
+    "consolidations_per_practice_arm": 8,
+    "held_out_scenarios": 64,
+    "evaluation_repetitions": 3,
+    "records_per_evaluation_arm": 192,
+    "post_arms": [
+      "concurrent_base",
+      "handbook",
+      "trained",
+      "coherent_shuffled",
+      "fresh_restored"
+    ],
+    "schedule": "globally_seeded_interleaving",
+    "training_and_evaluation_ids_disjoint": true,
+    "synthetic_data_only": true,
+    "mock_point": "MOCK-SITUATED-SELLER-WORLD-001"
+  },
+  "scores": {
+    "before": 0.414455,
+    "concurrent_base": 0.433951,
+    "handbook": 0.463964,
+    "trained": 1.0,
+    "coherent_shuffled": 0.67295,
+    "fresh_restored": 1.0
+  },
+  "paired_bootstrap_95": {
+    "trained_minus_concurrent_base": {
+      "lower": 0.520932,
+      "mean": 0.566049,
+      "upper": 0.607245,
+      "samples": 10000
+    }
+  },
+  "gates": {
+    "observed": {
+      "pre_to_trained_gain": 0.585545,
+      "trained_minus_concurrent_base": 0.566049,
+      "trained_minus_handbook": 0.536036,
+      "trained_minus_shuffled": 0.32705,
+      "concurrent_base_drift": 0.019496,
+      "restore_retention": 1.0,
+      "restored_score_drop": 0.0,
+      "reservation_price_leaks": 0
+    },
+    "thresholds": {
+      "minimum_pre_to_trained_gain": 0.15,
+      "minimum_trained_minus_concurrent_base": 0.15,
+      "minimum_paired_ci_lower_bound": 0.1,
+      "maximum_concurrent_base_drift": 0.05,
+      "minimum_restore_retention": 0.8,
+      "maximum_restored_score_drop": 0.05,
+      "minimum_trained_minus_handbook": 0.1,
+      "minimum_trained_minus_shuffled": 0.1,
+      "maximum_reservation_price_leaks": 0
+    },
+    "all_passed": true
+  },
+  "call_accounting": {
+    "expected_model_invocations": 1680,
+    "actual_api_calls": 1687,
+    "provider_retries": 7,
+    "total_tokens": 4281964,
+    "maximum_total_tokens": 90000000,
+    "estimated_cost_usd": 0.28428757,
+    "maximum_cost_usd": 25.0
+  },
+  "images": {
+    "before": {
+      "manifest_digest": "sha256:1e43b4de6dc2bd5aa7a4bf25ad39c5e96b1d733f3379b45acb3fa1e20d078cb9",
+      "file_sha256": "75fc943128f1f051db53d1e7706014d21d898f2e7d0cf03921f117ea1d47dffb"
+    },
+    "trained": {
+      "manifest_digest": "sha256:4a2f4093da97af32aa224374afe5a4a1b2e5ce8370f1fdf5527d8c893b3f3165",
+      "file_sha256": "cc8f5a414975b14f6683e18f10dc2feec0ddbefdf9bd95639f35bbe55c786007",
+      "verify": "pass",
+      "layers": 7,
+      "privacy": "private",
+      "source_archive_immutable": true
+    }
+  },
+  "restore": {
+    "portability": "P1",
+    "validated": true,
+    "inventory_count": 7,
+    "memory_digest_equal": true,
+    "practice_history_digest_equal": true,
+    "consolidation_digest_equal": true,
+    "trained_records": 192,
+    "restored_records": 192,
+    "action_offer_leak_mismatches": 0,
+    "evidence_index_layers_reported_unsupported": 2
+  },
+  "privacy": {
+    "source_inventory_items": 19,
+    "preserved_items": 17,
+    "redacted_items": 2,
+    "redacted_sources": [
+      ".env",
+      "auth.json"
+    ],
+    "unknown_items": 0,
+    "image_default": "private",
+    "public_build": false,
+    "held_out_ids_in_trained_memory_or_practice": 0,
+    "raw_evidence_published": false
+  },
+  "private_source_evidence": {
+    "location": ".tmp/situated-negotiation-v2-formal-20260825",
+    "availability": "local_only_not_release_artifact",
+    "digests": {
+      "final-evidence.json": "15b8144cd653b5014a80c06a461b19cc6204b017f31802718f61f3feaca703d5",
+      "final-evidence.md": "0501978541c19229bc9f63699c54a9286ff5725aac1ad0703d4e5e6bbb84b0ef",
+      "evidence/development/trained.jsonl": "bb4171bf41b448605510e98d67815ae1829cba51135b7e6756ba8fc2fa551b0a",
+      "evidence/development/trained-consolidations.jsonl": "e5bf62adbb327d7aba847fb866f4339dd83e8bff02943a13dc9e812f9bc1e23e",
+      "evidence/development/shuffled.jsonl": "f983e7e560b162d27c978f70a1ca4a18b74cc11277f132ca4de0d61f9211acf3",
+      "evidence/development/shuffled-consolidations.jsonl": "9bcbe13889d8e5be10ddabe42bc4919b75c20a8f6b806cc92bd9b57785d721ec",
+      "evidence/evaluations/pre-before.jsonl": "255a6289c8a5e3416d3194014268d5e3c0626ea27291ea7492980c3827ecf8d0",
+      "evidence/evaluations/post-concurrent_base.jsonl": "fd61c45ee890d04b06e12092ff8d4529606a105c362d858d49623681d9aff8e9",
+      "evidence/evaluations/post-handbook.jsonl": "155611f1387e7e173facd031b91f4e71c4f93713c16a27a6d9fcbbb664743924",
+      "evidence/evaluations/post-trained.jsonl": "9c889b4e6e4f6fb1d54487b9ca455ee07e849c179900ebc560b138fe57e6b916",
+      "evidence/evaluations/post-shuffled.jsonl": "3828b5104ffa4ee8323f5416cef246c25bbcf6c724fed5ac1c3d1e3ef32ccb29",
+      "evidence/evaluations/post-restored.jsonl": "0ca2161b4691cec251db65cb0d9b110eca9d6a7915f1b71f6f71cd21f8863e55"
+    }
+  },
+  "historical_context": {
+    "earlier_negative_evidence": "docs/evidence/trained-agent-gate-e-negative-2026-08-25.json",
+    "disposition": "retained; the v0.1 append-only 48-episode probe remains a valid negative result for that exact design"
+  }
+}

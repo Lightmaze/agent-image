@@ -6,8 +6,10 @@ portability claims, and digest-bound evidence.
 
 The initial artifacts are private local evidence images, so their URIs use the
 `withheld://` scheme. This is deliberate: a registry record must not turn a
-private image into a public download. The trained-agent entry is retained with
-`behavioral: negative`, not promoted into a success claim.
+private image into a public download. The original trained-agent entry is
+retained with `behavioral: negative` as historical evidence. A separate v0.2
+entry records the bounded positive Gate E result with `behavioral: verified`;
+neither private image is published.
 
 Validate the registry from the repository root:
 

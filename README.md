@@ -12,7 +12,7 @@ development provenance, evaluation, lineage, privacy metadata, and explicitly
 typed native state. It is not a prompt bundle, a skill pack, a model checkpoint,
 or a renamed profile archive.
 
-This repository is an **experimental v0.1 beta candidate**. It contains the protocol,
+This repository is an **experimental v0.1 local RC candidate**. It contains the protocol,
 schema, deterministic `.aimg` container, privacy-first verification, and the
 four production adapters: pinned Hermes Agent, OpenClaw, DSH, and vHarness P1
 paths verified on Windows (Hermes also on local WSL Linux), plus a
@@ -94,7 +94,7 @@ The static privacy-aware Registry is locally verifiable:
 agent-image registry validate registry/v0.1/index.json --json
 ```
 
-Its first five records are deliberately `withheld://` because their evidence
+Its first six records are deliberately `withheld://` because their evidence
 artifacts are private. Registry metadata never makes private state publishable.
 
 ## Current boundary
@@ -105,10 +105,11 @@ artifacts are private. Registry metadata never makes private state publishable.
   Hermes-to-OpenClaw P2 with provenance and complete loss reports; public
   `agent_image.adapters` discovery with a clean-room fifth adapter; static
   Registry plus validator; Windows/Linux Hermes smoke automation and security
-  hardening evidence.
-- Not implemented: OCI transport and P3 behavioral portability. The first
-  trained-agent Gate E run
-  completed with an honest negative result; no behavioral claim is made.
+  hardening evidence; and a preregistered same-model Gate E result showing that
+  mission-specific practice state survived a fresh Hermes P1 restore.
+- Not implemented: OCI transport and P3 behavioral portability. Gate E permits
+  only the bounded same-harness synthetic-task claim; it does not establish
+  real-world negotiation performance or cross-harness behavioral equivalence.
 
 See the [capability matrix](docs/CAPABILITY_MATRIX.md), [project status](docs/PROJECT_STATUS.md),
 [Hermes P1 evidence](docs/evidence/hermes-p1-v0.20.5.md),
@@ -117,6 +118,7 @@ See the [capability matrix](docs/CAPABILITY_MATRIX.md), [project status](docs/PR
 [DSH P1 evidence](docs/evidence/dsh-p1-v0.1.0-rc.6.md),
 [vHarness P1 evidence](docs/evidence/vharness-p1-v0.1.0-alpha.1.md),
 [fifth-adapter evidence](docs/evidence/clean-room-fifth-adapter-2026-08-25.md),
+[trained-agent Gate E evidence](docs/evidence/situated-negotiation-gate-e-positive-2026-08-25.md),
 [security matrix](docs/evidence/security-hardening-matrix-2026-08-25.md),
 [known limitations](docs/LIMITATIONS.md), [final review](docs/releases/FINAL_REVIEW.md),
 [context inheritance](docs/CONTEXT_INHERITANCE.md), [the v0.1 spec](spec/v0.1/SPEC.md),

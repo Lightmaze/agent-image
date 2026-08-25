@@ -1,6 +1,6 @@
 {
   "registry_version": "agent-image-registry/v0.1",
-  "updated_at": "2026-08-25T00:00:00Z",
+  "updated_at": "2026-08-25T21:17:14Z",
   "entries": [
     {
       "id": "hermes-synthetic-p1",
@@ -119,6 +119,33 @@
         "path": "docs/evidence/trained-agent-gate-e-negative-2026-08-25.json",
         "digest": "sha256:2c0bd9a2a7869f456383d192b4eff233ffc54bf90c35e9a6c3f03320acf8e1d0",
         "scope": "Persistent files restored; behavioral improvement and retention were not demonstrated"
+      }
+    },
+    {
+      "id": "negotiator-128-gate-e-positive",
+      "name": "Situated Negotiation Ground 128-episode Gate E image",
+      "artifact_uri": "withheld://local-private/negotiator-128-gate-e-positive",
+      "artifact_digest": "sha256:4a2f4093da97af32aa224374afe5a4a1b2e5ce8370f1fdf5527d8c893b3f3165",
+      "source_harness": {"id": "hermes", "version": "0.20.5"},
+      "license": "NOASSERTION",
+      "privacy": {"classification": "private", "distribution": "withheld"},
+      "lineage": {
+        "parent_digests": [
+          "sha256:1e43b4de6dc2bd5aa7a4bf25ad39c5e96b1d733f3379b45acb3fa1e20d078cb9"
+        ]
+      },
+      "portability": {
+        "level": "P1",
+        "archive": "verified",
+        "native_restore": "verified",
+        "semantic_migration": "unverified",
+        "behavioral": "verified"
+      },
+      "evidence": {
+        "status": "verified",
+        "path": "docs/evidence/situated-negotiation-gate-e-positive-2026-08-25.json",
+        "digest": "sha256:6c3776e8ce8182f0f23ec974e521a664437b629d1d197005d6814c861ed2f487",
+        "scope": "Mission-specific synthetic behavior retained by fresh Hermes P1 restore; not cross-harness P3"
       }
     }
   ]
