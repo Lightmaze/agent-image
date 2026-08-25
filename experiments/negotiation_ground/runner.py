@@ -387,9 +387,11 @@ class HermesRunner:
         target = self.profile_path(name)
         if target.exists():
             raise FileExistsError(f"profile already exists: {target}")
-        arguments = ["profile", "create", name, "--no-alias", "--no-skills"]
+        arguments = ["profile", "create", name, "--no-alias"]
         if clone_from:
             arguments.extend(["--clone-all", "--clone-from", clone_from])
+        else:
+            arguments.append("--no-skills")
         self.command(arguments)
         if not target.is_dir():
             raise RuntimeError(f"Hermes did not create profile {name}")

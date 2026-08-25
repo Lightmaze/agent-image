@@ -95,3 +95,25 @@ def test_aggregate_and_gate_thresholds_are_preregistered() -> None:
     assert verdict["after_gain"] == 0.2
     assert verdict["restore_retention"] == 0.8
     assert verdict["gate_e"] == "pass"
+
+
+def test_hermes_clone_does_not_mix_clone_and_no_skills_flags(tmp_path: Path) -> None:
+    from experiments.negotiation_ground.runner import CallBudget, HermesRunner
+
+    class RecordingRunner(HermesRunner):
+        def command(self, arguments: list[str], *, profile: str | None = None, timeout: int = 300):
+            self.recorded = arguments
+            self.profile_path(arguments[2]).mkdir(parents=True)
+
+    runner = RecordingRunner(
+        tmp_path / "hermes.exe",
+        tmp_path / "home",
+        tmp_path / "work",
+        "provider",
+        "model",
+        CallBudget(1, 1.0),
+    )
+    runner.create_profile("clone", clone_from="base")
+    assert "--clone-all" in runner.recorded
+    assert "--clone-from" in runner.recorded
+    assert "--no-skills" not in runner.recorded
