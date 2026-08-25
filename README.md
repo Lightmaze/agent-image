@@ -14,9 +14,9 @@ or a renamed profile archive.
 
 This repository is an **experimental v0.1 alpha**. It contains the protocol,
 schema, deterministic `.aimg` container, privacy-first verification, and the
-first production adapter: a pinned Hermes Agent P1 path verified against
-Hermes `0.20.5` / `v2026.8.19` / `fcbd107` on Windows. OpenClaw, DSH, and
-vHarness remain planned adapters; no P2 or P3 claim is made.
+two production adapters: pinned Hermes Agent and OpenClaw P1 paths verified on
+Windows, plus a Hermes-to-OpenClaw P2 semantic migration. DSH and vHarness
+remain planned adapters. No P3 claim is made.
 
 Create the reproducible development environment and verify the installed CLI:
 
@@ -58,19 +58,41 @@ are created as new artifacts with `redact --policy public`; source images are no
 modified. Unknown data is private by default, secret detection fails closed, and
 unsupported state must appear in an operation report.
 
+The first cross-harness path is dry-run first:
+
+```powershell
+agent-image migrate researcher.aimg `
+  --to openclaw:researcher-migrated `
+  --openclaw-binary C:\path\to\openclaw.cmd `
+  --openclaw-node-binary C:\path\to\node.exe `
+  --report migration-plan.json
+
+agent-image migrate researcher.aimg `
+  --to openclaw:researcher-migrated `
+  --yes `
+  --openclaw-binary C:\path\to\openclaw.cmd `
+  --openclaw-node-binary C:\path\to\node.exe `
+  --report migration.json
+```
+
+Only compatible identity, selected memory, and skills move. Native Hermes
+database/session state remains in the source image with explicit loss status,
+and target provenance points back to the source image digest.
+
 ## Current boundary
 
-- Implemented now: Spec/schema; build, inspect, verify, redact, and metadata
-  diff; deterministic packing; archive safety; secret checks; pinned Hermes P1
-  build/restore with source and target validation.
-- Present but intentionally blocked: `migrate`, pending OpenClaw and the first
-  real cross-harness loss report.
-- Not started: production OpenClaw/DSH/vHarness adapters, registry, OCI
+- Implemented now: Spec/schema; build, inspect, verify, redact, diff, restore,
+  and dry-run-first migrate; deterministic packing; archive safety; secret
+  checks; pinned Hermes and OpenClaw P1; Hermes-to-OpenClaw P2 with provenance
+  and complete loss reports.
+- Not started: production DSH/vHarness adapters, registry, OCI
   transport, and P3 behavioral portability. The first trained-agent Gate E run
   completed with an honest negative result; no behavioral claim is made.
 
 See the [capability matrix](docs/CAPABILITY_MATRIX.md), [project status](docs/PROJECT_STATUS.md),
 [Hermes P1 evidence](docs/evidence/hermes-p1-v0.20.5.md),
+[OpenClaw P1 evidence](docs/evidence/openclaw-p1-v2026.7.1-2.md),
+[Hermes-to-OpenClaw P2 evidence](docs/evidence/hermes-to-openclaw-p2-2026-08-25.md),
 [context inheritance](docs/CONTEXT_INHERITANCE.md), [the v0.1 spec](spec/v0.1/SPEC.md),
 [ADR-0001](docs/adr/0001-protocol-root-and-bootstrap.md), and the archived
 [context pack](docs/source/context-pack/README_CODEX_HANDOFF.md).

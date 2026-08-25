@@ -1,0 +1,125 @@
+{
+  "capsule_version": "2.0",
+  "capsule_id": "agent-image-openclaw-p1-p2-2026-08-25",
+  "source_artifact": "agent-image-openclaw-p1-p2-windows-evidence",
+  "context": "agent-image-v0.1-formal",
+  "beliefs": [
+    {
+      "id": "B-OC-001",
+      "statement": "The pinned OpenClaw 2026.7.1-2 package requires Node >=24.15.0 in the Node 24 line, so Node 24.13.0 cannot be the runtime for this contract.",
+      "type": "observation",
+      "confidence": 1.0,
+      "scope": ["openclaw@2026.7.1-2 package contract"],
+      "evidence_scope": ["package-lock metadata and real CLI smoke"],
+      "supporting_evidence": [
+        "docs/adapters/openclaw/PINNED_CONTRACT.md",
+        "docs/evidence/openclaw-p1-v2026.7.1-2.json"
+      ],
+      "counterevidence": [],
+      "falsifier": "The immutable 2026.7.1-2 package manifest is shown to admit Node 24.13.0.",
+      "provenance": {
+        "source_artifact": "agent-image-openclaw-p1-p2-windows-evidence",
+        "source_events": ["openclaw-contract-pin-2026-08-25"]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "B-OC-002",
+      "statement": "On the exact pinned Windows run, OpenClaw recreated a new agent registration and retained every admitted native and logical layer while leaving Git metadata explicitly unsupported.",
+      "type": "observation",
+      "confidence": 1.0,
+      "scope": ["openclaw:source to openclaw:restored4 exact run"],
+      "evidence_scope": ["15 source outcomes and 12 layer outcomes"],
+      "supporting_evidence": ["docs/evidence/openclaw-p1-v2026.7.1-2.json"],
+      "counterevidence": [],
+      "falsifier": "Recomputing the retained evidence reveals an unreported source item or a changed admitted payload.",
+      "provenance": {
+        "source_artifact": "agent-image-openclaw-p1-p2-windows-evidence",
+        "source_events": ["openclaw-p1-roundtrip-2026-08-25"]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "B-P2-001",
+      "statement": "The exact Hermes-to-OpenClaw run migrated four declared semantic items while keeping .env redacted and state.db, sessions, and unmapped state explicit as unsupported.",
+      "type": "observation",
+      "confidence": 1.0,
+      "scope": ["hermes:source to openclaw:migrated exact run"],
+      "evidence_scope": ["10 dry-run and execution outcomes"],
+      "supporting_evidence": ["docs/evidence/hermes-to-openclaw-p2-2026-08-25.json"],
+      "counterevidence": [],
+      "falsifier": "The target contains a forbidden source item, lacks a declared mapped item, or cannot be traced to the recorded source image digest.",
+      "provenance": {
+        "source_artifact": "agent-image-openclaw-p1-p2-windows-evidence",
+        "source_events": ["hermes-openclaw-p2-2026-08-25"]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "F-OC-001",
+      "statement": "Relying on the npm Windows cmd shim without an explicit Node executable caused rollback deletion to fail, and swallowing that error left host registration after workspace removal.",
+      "type": "failure",
+      "confidence": 1.0,
+      "scope": ["initial isolated OpenClaw restore failure"],
+      "evidence_scope": ["isolated OpenClaw state and official agents list/delete observations"],
+      "supporting_evidence": ["docs/evidence/openclaw-p1-v2026.7.1-2.md"],
+      "counterevidence": [],
+      "falsifier": "A reproduction shows the official delete succeeded in the initial environment and no registration residual existed.",
+      "provenance": {
+        "source_artifact": "agent-image-openclaw-p1-p2-windows-evidence",
+        "source_events": ["openclaw-rollback-failure-2026-08-25"]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "C-OC-001",
+      "statement": "OpenClaw capability claims remain bound to the pinned version, tested platforms, complete inventory reports, and real CLI evidence; fixture tests do not raise portability levels.",
+      "type": "constraint",
+      "confidence": 1.0,
+      "scope": ["Agent Image v0.1 OpenClaw claims"],
+      "evidence_scope": ["capability matrix and pinned evidence"],
+      "supporting_evidence": [
+        "docs/CAPABILITY_MATRIX.md",
+        "docs/evidence/openclaw-p1-v2026.7.1-2.md"
+      ],
+      "counterevidence": [],
+      "falsifier": "A later pinned, real integration report expands the supported contract or platform set.",
+      "provenance": {
+        "source_artifact": "agent-image-openclaw-p1-p2-windows-evidence",
+        "source_events": ["openclaw-evidence-freeze-2026-08-25"]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "U-OC-001",
+      "statement": "Real failure-injection rollback behavior on Windows and Linux, and compatibility with later OpenClaw versions, remain unverified.",
+      "type": "unknown",
+      "confidence": 0.5,
+      "scope": ["future OpenClaw hardening and compatibility"],
+      "evidence_scope": [],
+      "supporting_evidence": [],
+      "counterevidence": [],
+      "falsifier": null,
+      "provenance": {
+        "source_artifact": "agent-image-openclaw-p1-p2-windows-evidence",
+        "source_events": ["openclaw-evidence-freeze-2026-08-25"]
+      },
+      "supersedes": null,
+      "status": "active"
+    }
+  ],
+  "extraction_coverage": {
+    "observations": "captured",
+    "hypotheses": "none asserted",
+    "constraints": "captured",
+    "failures": "captured",
+    "unknowns": "captured",
+    "raw_evidence": "referenced"
+  },
+  "authority": "knowledge-only; deprecated EVC compatibility record; no implementation authority"
+}

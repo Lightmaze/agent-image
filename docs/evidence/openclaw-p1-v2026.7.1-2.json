@@ -1,0 +1,77 @@
+{
+  "evidence_version": "agent-image-capability-evidence/v0.1",
+  "date": "2026-08-25",
+  "verdict": "PASS",
+  "claim": "OpenClaw P1 native restore on the pinned Windows contract",
+  "contract": {
+    "version": "2026.7.1-2",
+    "tag": "v2026.7.1-2",
+    "commit_reported_by_cli": "0790d9f",
+    "node": "24.15.0",
+    "npm": "11.12.1",
+    "node_archive_sha256": "cc5149eabd53779ce1e7bdc5401643622d0c7e6800ade18928a767e940bb0e62",
+    "npm_integrity": "sha512-ycF3yPcbjN6bUPeaUx6Mh6vze1hQWoD3CT/wWcmD7a8xaHHHRUaAlaq+lFxMHf1ssEgODVAwjlzYqp2twkYZ7g==",
+    "node_plan_drift": "NEEDS_DOC_FIX: openclaw requires Node >=24.15.0 in the Node 24 line; the plan named 24.13.0"
+  },
+  "source": {
+    "locator": "openclaw:source",
+    "inventory_count": 15,
+    "digest_in_image": "sha256:592112b0c4a2cf0b8be0aa045bdf6ab31dcc08683db84228601586e99f78f5c1",
+    "digest_after_restore": "sha256:592112b0c4a2cf0b8be0aa045bdf6ab31dcc08683db84228601586e99f78f5c1",
+    "immutable": true
+  },
+  "image": {
+    "manifest_digest": "sha256:ffc71d1b5d007f518979b2ad0e9aaabb282295cbb11353c5a91b97c1edeb3b5a",
+    "archive_sha256": "6dca01349783b33b20afd3b84ba4a70cfeb305df05f7f137148b3d9f4b2ca288",
+    "verified": true,
+    "layers": 12,
+    "layers_by_kind": {
+      "experience": 1,
+      "identity": 2,
+      "memory": 3,
+      "native": 1,
+      "skills": 1,
+      "workspace": 4
+    },
+    "privacy": "private"
+  },
+  "restore": {
+    "target": "openclaw:restored4",
+    "recognized_by_official_cli": true,
+    "validated": true,
+    "portability": "P1",
+    "source_inventory_count": 15,
+    "source_inventory_loss_summary": {
+      "preserved": 13,
+      "transformed": 1,
+      "redacted": 0,
+      "unsupported": 1,
+      "dropped_by_user": 0
+    },
+    "layer_inventory_count": 12,
+    "layer_loss_summary": {
+      "preserved": 12,
+      "transformed": 0,
+      "redacted": 0,
+      "unsupported": 0,
+      "dropped_by_user": 0
+    },
+    "registration": "transformed through official agents add",
+    "unsupported_source_item": "workspace/.git/"
+  },
+  "privacy_scan": {
+    "target_files_scanned_excluding_git": 13,
+    "findings": 0
+  },
+  "rollback_status": {
+    "unit_failure_injection": "PASS",
+    "incomplete_cleanup_is_machine_error": "E_ROLLBACK_FAILED",
+    "real_cross_platform_failure_injection": "PENDING_EPOCH_4"
+  },
+  "claim_limits": [
+    "No P3 behavioral portability claim",
+    "No later-version compatibility claim",
+    "No whole-home portability claim",
+    "Real failure-injection rollback hardening remains pending"
+  ]
+}

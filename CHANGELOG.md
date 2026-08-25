@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Added the production OpenClaw adapter pinned to `2026.7.1-2`, including
+  detection, complete inventory, privacy-safe export, typed native restore,
+  target recognition, explicit Node execution on Windows, and fail-loud
+  rollback verification.
+- Verified a real OpenClaw P1 round-trip on Windows with 15 source items and 12
+  image layers fully reconciled.
+- Implemented dry-run-first Hermes-to-OpenClaw migration and verified the first
+  P2 path: identity, two selected memories, and one skill migrated; `.env` was
+  redacted; `state.db`, sessions, and unmapped state remained explicit loss.
+- Added typed public adapter SDK records, `adapters list --json`, and generic
+  `--report` output for CLI operations.
+- Recorded the Node plan drift: pinned OpenClaw requires Node `24.15.0` or
+  later in the Node 24 line, so `24.13.0` is not a valid contract runtime.
 - Preregistered and ran the 168-call same-model Hermes negotiation Training
   Ground against a real provider.
 - Recorded an honest negative Gate E result: after-practice and fresh-restore

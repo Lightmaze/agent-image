@@ -6,6 +6,7 @@ __pycache__/
 .venv/
 .venv-hermes/
 .tmp/
+.tools/
 .coverage
 htmlcov/
 build/

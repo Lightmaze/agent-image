@@ -1,0 +1,82 @@
+{
+  "evidence_version": "agent-image-capability-evidence/v0.1",
+  "date": "2026-08-25",
+  "verdict": "PASS",
+  "claim": "Hermes 0.20.5 to OpenClaw 2026.7.1-2 P2 semantic migration for declared mappings",
+  "source": {
+    "locator": "hermes:source",
+    "harness_version": "0.20.5",
+    "profile_digest_in_image": "sha256:b17d6e1c1ba311ac95e3c87a348084cc55c1d7fb6d3835bdaae166b1f0e95d04",
+    "profile_digest_after_migration": "sha256:b17d6e1c1ba311ac95e3c87a348084cc55c1d7fb6d3835bdaae166b1f0e95d04",
+    "profile_immutable": true,
+    "image_manifest_digest": "sha256:5e8aa7ad81a408ba51e4d9d861661801178bb98a8e76b5e13d4674bf91741fa4",
+    "image_archive_sha256_before": "53a71c3f612d1dc5eb63fdc94b42a827a8ee0dab6954c59a94f40236ed5c13a8",
+    "image_archive_sha256_after": "53a71c3f612d1dc5eb63fdc94b42a827a8ee0dab6954c59a94f40236ed5c13a8",
+    "image_immutable": true,
+    "state_db_in_typed_native_layer": "source/state.db"
+  },
+  "dry_run": {
+    "executed_before_target_creation": true,
+    "target_created": false,
+    "inventory_count": 10,
+    "loss_summary": {
+      "preserved": 0,
+      "transformed": 4,
+      "redacted": 1,
+      "unsupported": 5,
+      "dropped_by_user": 0
+    }
+  },
+  "migration": {
+    "target": "openclaw:migrated",
+    "target_harness_version": "2026.7.1-2",
+    "confirmed_with_yes": true,
+    "recognized_by_official_cli": true,
+    "validated": true,
+    "portability": "P2",
+    "inventory_count": 10,
+    "loss_summary": {
+      "preserved": 0,
+      "transformed": 4,
+      "redacted": 1,
+      "unsupported": 5,
+      "dropped_by_user": 0
+    },
+    "transformed": [
+      "SOUL.md -> workspace/SOUL.md",
+      "memories/MEMORY.md -> workspace/MEMORY.md",
+      "memories/USER.md -> workspace/USER.md",
+      "skills/evidence-first/SKILL.md -> workspace/skills/evidence-first/SKILL.md"
+    ],
+    "redacted": [
+      ".env"
+    ],
+    "unsupported": [
+      ".no-bundled-skills",
+      "profile.yaml",
+      "sessions/practice.jsonl",
+      "state.db",
+      "workspace/roundtrip.md"
+    ],
+    "state_db_report": "remains preserved in the source image native layer and is not imported",
+    "provenance_path": ".agent-image/provenance.json",
+    "provenance_source_image_digest": "sha256:5e8aa7ad81a408ba51e4d9d861661801178bb98a8e76b5e13d4674bf91741fa4"
+  },
+  "selected_byte_equal_items": {
+    "SOUL.md": "8dfe8eb07697bbfc64e07bb38cb3acc89d45020f2284290c4a32ccb60ddeeaf2",
+    "MEMORY.md": "fd10c4aa69c937558caab9e97f763eddef635574bdc1181be7e4032c78f293df",
+    "USER.md": "b150caeead3e1939a47d05c27dffc21e18d563b4a4a8391f77e14f6e824716fa",
+    "SKILL.md": "6795637b726ab0352ad265721816143b4dd11f79fa9d1cc8864aa53bcc35481b"
+  },
+  "target_privacy": {
+    "env_present": false,
+    "state_db_present": false,
+    "sessions_present": false,
+    "secret_scan_findings": 0
+  },
+  "claim_limits": [
+    "Only the declared semantic mappings are portable",
+    "Hermes native database and sessions are not imported",
+    "No P3 behavioral equivalence claim"
+  ]
+}

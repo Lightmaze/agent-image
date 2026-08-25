@@ -8,30 +8,33 @@ one harness as the semantic owner.
 
 ## Current stage
 
-`Epoch 1 honest negative / Epoch 2 ready` (independent alpha and Hermes P1
-gated; trained-agent Gate E executed without a behavioral claim).
+`Epoch 2 gated / Epoch 3 ready` (Hermes and OpenClaw P1 plus the first P2 path
+verified; trained-agent Gate E remains negative).
 
-The current epoch proves a native round-trip for a real named Hermes profile
-against a pinned official contract. It does not prove cross-harness migration,
-developed-skill retention, or behavioral portability.
+The current evidence proves pinned native round-trips for Hermes and OpenClaw
+and the declared Hermes-to-OpenClaw semantic migration. It does not prove
+developed-skill retention or behavioral portability.
 
 ## Gates
 
 | Gate | Status | Evidence / blocker |
 |---|---|---|
 | Protocol | Alpha draft pass | `spec/v0.1/`, schema parse, Apache-2.0; external review pending |
-| Core toolchain | Formal epoch pass | 38 tests; locked environment; wheel/sdist and installed CLI smoke; production build/inspect/verify/redact/diff plus adapter-dispatched restore |
+| Core toolchain | Formal epoch pass | 46 tests; locked environment; wheel/sdist and installed CLI smoke; typed adapter SDK; production build/inspect/verify/redact/diff/restore/migrate and reports |
 | Hermes | P1 pass, pinned | Hermes 0.20.5 / v2026.8.19 / fcbd107; Windows named-profile round-trip |
-| OpenClaw | Not started | CLI/runtime unavailable in current environment |
+| OpenClaw | P1 and P2-consumer pass, pinned | 2026.7.1-2 / 0790d9f / Node 24.15.0; real Windows agent/workspace round-trip and Hermes migration |
 | DSH | Reconnaissance only | CLI visible; current public contract must be pinned before implementation |
 | vHarness | Reconnaissance complete | Mapping exists; live Guest integration is absent |
-| Security/privacy | Current pass | 38 tests, second-pass Hermes scanning, opt-in native experience/workspace, encoding and mock scans; experiment credential scan found zero exact matches; external audit pending |
+| Security/privacy | Current pass with remaining hardening | 46 tests; both adapters fail closed on secrets; target scans clean; source immutability and loss accounting pass; real cross-platform rollback injection and Epoch 4 matrix pending |
 | Trained-agent demonstration | Honest negative | 168 real calls; before 0.790960, after 0.743703, restored 0.710293; Gate E remains red |
 | Registry | Not started | Depends on real adapters and evidence labels |
 
 Release verdict: **LOCAL v0.1.0-alpha.1 CANDIDATE; HOLD v0.1.0.**
 
-Current epistemic state: `EXTRACT:trained-agent-negative-evidence`.
+Current epistemic state: `EXTRACT:openclaw-p1-p2-evidence`.
+
+The legacy EVC surface is maintained only as a knowledge capsule because the
+local skill has been demoted. It has no implementation or lifecycle authority.
 
 Only the independently selected content kernel was requalified from the
 bootstrap. Fixture-bound service/CLI code remains non-authoritative. Hermes P1
@@ -47,9 +50,9 @@ was built behind the adapter boundary and formalized from real gate evidence.
 
 ## Next release gate
 
-Implement OpenClaw P1 and the required Hermes-to-OpenClaw P2 loss-report path
-without making a behavioral claim. Gate E must be rerun successfully before a
-final `v0.1.0` tag is allowed.
+Implement DSH and vHarness against pinned real contracts, then prove a fifth
+adapter can register through the public entry point without changing Core.
+Gate E must be rerun successfully before a final `v0.1.0` tag is allowed.
 
 ## Source provenance
 

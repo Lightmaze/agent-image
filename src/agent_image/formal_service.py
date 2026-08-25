@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any
 
 from agent_image.adapter_contract import ProductionAdapter
+from agent_image.canonical import sha256_bytes
 from agent_image.image_archive import load_image, publish_image
 
 
@@ -51,3 +52,27 @@ def build_image(
 def restore_image(adapter: ProductionAdapter, *, image: Path, target: str) -> dict[str, Any]:
     document = load_image(image)
     return adapter.native_restore(document, target)
+
+
+def plan_migration(adapter: Any, *, image: Path, target: str) -> dict[str, Any]:
+    document = load_image(image)
+    return adapter.migration_plan(document, target)
+
+
+def migrate_image(adapter: Any, *, image: Path, target: str) -> dict[str, Any]:
+    before = sha256_bytes(image.read_bytes())
+    document = load_image(image)
+    report = adapter.semantic_migrate(document, target)
+    after = sha256_bytes(image.read_bytes())
+    if before != after:
+        from agent_image.errors import AgentImageError
+
+        raise AgentImageError(
+            "E_SOURCE_UNSUPPORTED",
+            "Source Agent Image changed during semantic migration.",
+            details={"before": before, "after": after},
+        )
+    report["source_archive_digest_before"] = before
+    report["source_archive_digest_after"] = after
+    report["source_immutable"] = True
+    return report
