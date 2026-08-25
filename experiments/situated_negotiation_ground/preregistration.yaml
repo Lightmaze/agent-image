@@ -1,0 +1,76 @@
+experiment: agent-image-situated-negotiation-ground-v0.2
+status: frozen_before_formal_run
+frozen_at: 2026-08-25T17:30:00Z
+pilot_evidence:
+  status: mechanism_and_measurement_sensitivity_pass
+  summary_digest: sha256:54021a68d103898c303b2fcd47092331bc57ef722b803135b5fbb1d3a6049c92
+  behavioral_claim_allowed: false
+domain: synthetic-latent-policy-procurement
+primary_arm: trained
+training:
+  episodes_per_development_arm: 128
+  block_size: 16
+  development_arms:
+    - trained
+    - shuffled
+evaluation:
+  held_out_scenarios: 64
+  pre_repetitions: 3
+  post_repetitions: 3
+  post_arms:
+    - concurrent_base
+    - handbook
+    - trained
+    - shuffled
+    - restored
+  schedule: seeded_interleaving
+model_policy:
+  harness: hermes
+  harness_version: 0.20.5
+  provider: deepseek
+  model: deepseek-v4-flash
+  reasoning: none
+  tools: none
+  weights_changed: false
+  profile_selection: explicit_cli_selector
+  prompt_surface_preflight: required
+budget:
+  expected_model_invocations: 1680
+  maximum_api_calls: 2000
+  maximum_total_tokens: 90000000
+  maximum_estimated_cost_usd: 25.0
+world:
+  cohort_policy_source: frozen_in_code_before_formal_run
+  seller_feedback: deterministic
+  training_and_evaluation_ids: disjoint
+  scenario_data: synthetic
+score:
+  principal_utility: 0.40
+  constraint_adherence: 0.30
+  concession_discipline: 0.20
+  deal_calibration: 0.10
+  reservation_price_leak: scenario_score_zero
+statistics:
+  unit: held_out_scenario_mean_across_repetitions
+  paired_bootstrap_samples: 10000
+  confidence_level: 0.95
+success:
+  minimum_pre_to_trained_gain: 0.15
+  minimum_trained_minus_concurrent_base: 0.15
+  minimum_paired_ci_lower_bound: 0.10
+  maximum_concurrent_base_drift: 0.05
+  minimum_restore_retention: 0.80
+  maximum_restored_score_drop: 0.05
+  minimum_trained_minus_handbook: 0.10
+  minimum_trained_minus_shuffled: 0.10
+  maximum_reservation_price_leaks: 0
+privacy:
+  real_user_data: forbidden
+  credentials_in_artifacts: forbidden
+  raw_evidence: private
+  scenario_data: synthetic
+claim_policy:
+  pilot: cannot_prove_behavior
+  fixture_or_replay: cannot_prove_behavior
+  positive_gate: mission_specific_same_harness_state_portability_only
+  negative_result: publish_negative_evidence

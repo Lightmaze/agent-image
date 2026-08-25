@@ -1,0 +1,82 @@
+{
+  "experiment": "agent-image-situated-negotiation-ground-v0.2",
+  "evidence_kind": "pilot_mechanism_and_measurement_sensitivity",
+  "claim_status": "cannot_authorize_behavioral_claim",
+  "harness": {
+    "id": "hermes",
+    "version": "0.20.5",
+    "profile_selection": "explicit_cli_selector",
+    "prompt_surface_preflight": true
+  },
+  "model": {
+    "provider": "deepseek",
+    "id": "deepseek-v4-flash",
+    "reasoning": "none",
+    "tools": []
+  },
+  "design": {
+    "training_episodes_per_arm": 16,
+    "held_out_scenarios": 8,
+    "post_arms": [
+      "concurrent_base",
+      "handbook",
+      "trained",
+      "shuffled",
+      "restored"
+    ],
+    "schedule": "seeded_interleaving",
+    "synthetic_data_only": true
+  },
+  "observed": {
+    "before_score": 0.4175,
+    "concurrent_base_score": 0.4175,
+    "handbook_score": 0.4175,
+    "trained_score": 1.0,
+    "shuffled_score": 0.586162,
+    "restored_score": 1.0,
+    "pre_to_trained_gain": 0.5825,
+    "trained_minus_concurrent_base": 0.5825,
+    "paired_bootstrap_95": {
+      "lower": 0.494375,
+      "mean": 0.5825,
+      "upper": 0.670625,
+      "samples": 10000
+    },
+    "trained_minus_handbook": 0.5825,
+    "trained_minus_shuffled": 0.413838,
+    "restore_retention": 1.0,
+    "restored_score_drop": 0.0,
+    "concurrent_base_drift": 0.0,
+    "reservation_price_leaks": 0
+  },
+  "artifact": {
+    "image_digest": "sha256:949893ec6287f275925b4079266cab97847f73ae780664988baedc17d0627f77",
+    "archive_sha256": "sha256:2cf451fe612682fb42432e88eecc20f789ec6915738c472de78d3b7bc1b670b8",
+    "verified": true,
+    "layers": {
+      "identity": 1,
+      "memory": 1,
+      "experience": 2,
+      "development": 1,
+      "evaluation": 1,
+      "native": 1
+    },
+    "fresh_restore_state_digests_equal": true,
+    "source_archive_immutable": true
+  },
+  "usage": {
+    "api_calls": 116,
+    "total_tokens": 325494,
+    "estimated_cost_usd": 0.03552615
+  },
+  "private_source_evidence": {
+    "retained_locally": true,
+    "published": false,
+    "summary_source_sha256": "sha256:54021a68d103898c303b2fcd47092331bc57ef722b803135b5fbb1d3a6049c92"
+  },
+  "known_invalid_pilot": {
+    "retained_locally": true,
+    "cause": "environment-only HERMES_PROFILE did not select the named runtime profile",
+    "used_for_claim": false
+  }
+}
