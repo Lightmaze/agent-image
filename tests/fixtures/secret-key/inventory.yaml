@@ -1,0 +1,16 @@
+# MOCK_POINT {"id":"MOCK-TEST-SECRET-JSON-001","type":"test_fixture","target":"Permanent negative security conformance fixture","replace_by":"never; accepted test-only regression evidence","owner":"security-tests","status":"accepted_test_only","production_allowed":false,"reason":"A synthetic JSON key proves structured secret detection."}
+api_version: agent-image-inventory/v0.1
+adapter: {id: dev.agentimage.fixture, version: 0.1.0}
+source_harness: {id: fixture, version: "1"}
+image:
+  name: secret-key
+  version: 0.1.0
+  created_at: "2026-08-24T00:00:00Z"
+items:
+  - id: config
+    source: config.json
+    path: layers/native/config.json
+    kind: native
+    media_type: application/json
+    privacy: private
+    portability: adapter-specific

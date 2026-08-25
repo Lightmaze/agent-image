@@ -1,0 +1,274 @@
+{
+  "context": "agent-image-v0.1-formal",
+  "epoch_goal": "Prove Hermes P1 against Hermes Agent v0.20.5 with source immutability, privacy safety, target recognition, and complete loss accounting.",
+  "goal": "Deliver a harness-neutral Agent Image v0.1 protocol and toolchain with real Hermes, OpenClaw, DSH, and vHarness adapters; at least three P1 native restores; one Hermes-to-OpenClaw P2 migration; privacy-safe inspect, verify, diff, and redact; a restored trained-agent demonstration; and a third-party-extensible registry.",
+  "horizon_coverage": {
+    "HC-001": {
+      "disposition": "planned",
+      "rationale": "Core inspection and operation reports expose privacy and loss metadata without payload disclosure."
+    },
+    "HC-002": {
+      "disposition": "planned",
+      "rationale": "Each adapter can emit typed opaque native layers."
+    },
+    "HC-003": {
+      "disposition": "planned",
+      "rationale": "Inventory reconciliation is an adapter and integration gate."
+    },
+    "HC-004": {
+      "disposition": "planned",
+      "rationale": "P0-P3 claims are stored and published only with matching gate evidence."
+    },
+    "HC-005": {
+      "disposition": "planned",
+      "rationale": "Logical development, experience, evaluation, lineage, and native state remain distinct from starting profiles."
+    },
+    "HC-006": {
+      "disposition": "planned",
+      "rationale": "Experience layers accept raw or referenced evidence without summary substitution."
+    },
+    "HC-007": {
+      "disposition": "planned",
+      "rationale": "A dedicated trained-agent module owns the same-model fresh-restore gate."
+    },
+    "HC-008": {
+      "disposition": "deferred",
+      "rationale": "Habitat categories remain distinct and outside Core adapter semantics."
+    },
+    "HC-009": {
+      "disposition": "planned",
+      "rationale": "Skill artifacts and development/experience state remain separate layers and proof obligations."
+    },
+    "HO-001": {
+      "disposition": "deferred",
+      "rationale": "Transport is isolated so OCI can be added later."
+    },
+    "HO-002": {
+      "disposition": "planned",
+      "rationale": "Adapters depend on the SDK; Core never imports a harness."
+    },
+    "HO-003": {
+      "disposition": "unresolved",
+      "rationale": "License selection remains a release decision."
+    },
+    "HO-004": {
+      "disposition": "deferred",
+      "rationale": "Context Body and consolidation can later use experience/native extensions."
+    },
+    "HO-005": {
+      "disposition": "deferred",
+      "rationale": "vHabitat and Team Image remain future artifacts without changing v0.1 scope."
+    },
+    "HO-006": {
+      "disposition": "probing",
+      "rationale": "Current layer redaction provides evidence for later skill-preserving privacy stripping."
+    },
+    "HO-007": {
+      "disposition": "probing",
+      "rationale": "Behavioral proof may test the hypothesis without encoding it in the schema."
+    }
+  },
+  "horizon_id": "open-agent-image-v0.1",
+  "implementation_inputs": [],
+  "implementation_noninterference": {
+    "demo_implementation_used_as_architecture_input": false,
+    "review_note": "The plan was derived from the anchored horizon and normative documents. The bootstrap was consulted only for drift and later requalification audit."
+  },
+  "integration_gates": [
+    "gate-hermes-real-roundtrip",
+    "gate-v0.1-integration"
+  ],
+  "interfaces": [
+    "Core owns containers, digests, manifests, privacy, and report validation; adapters never pack .aimg files.",
+    "Adapters expose read-only detection/inventory, export plans, native restore preflight/execution, semantic import preflight/execution, and capabilities.",
+    "Every operation report reconciles every input item to an acceptance-defined outcome."
+  ],
+  "knowledge_inputs": [
+    "agent-image-core-bootstrap-2026-08-24"
+  ],
+  "modules": {
+    "adapter-runtime": {
+      "acceptance_gates": [
+        "gate-c0-adapter-contract"
+      ],
+      "depends_on": [
+        "protocol-core",
+        "content-kernel"
+      ],
+      "purpose": "Own adapter discovery, inventories, capabilities, preflight, transactions, and operation reports.",
+      "status": "planned"
+    },
+    "content-kernel": {
+      "acceptance_gates": [
+        "gate-b-core",
+        "gate-d-security"
+      ],
+      "depends_on": [
+        "protocol-core"
+      ],
+      "purpose": "Own deterministic safe containers, validation, digests, and secret classification.",
+      "status": "planned"
+    },
+    "dsh-p1": {
+      "acceptance_gates": [
+        "gate-dsh-real"
+      ],
+      "depends_on": [
+        "adapter-runtime"
+      ],
+      "purpose": "Own DSH ordered native composition and validation.",
+      "status": "planned"
+    },
+    "formal-cli": {
+      "acceptance_gates": [
+        "gate-cli-contract"
+      ],
+      "depends_on": [
+        "content-kernel",
+        "adapter-runtime"
+      ],
+      "purpose": "Expose build, inspect, verify, redact, diff, restore, and migrate through formal services.",
+      "status": "planned"
+    },
+    "hermes-openclaw-p2": {
+      "acceptance_gates": [
+        "gate-hermes-openclaw-p2"
+      ],
+      "depends_on": [
+        "hermes-p1",
+        "openclaw-p1"
+      ],
+      "purpose": "Own the first semantic cross-harness migration and loss report.",
+      "status": "planned"
+    },
+    "hermes-p1": {
+      "acceptance_gates": [
+        "gate-h1-h3-real"
+      ],
+      "depends_on": [
+        "adapter-runtime"
+      ],
+      "purpose": "Own pinned Hermes detection, export mapping, native restore, and target validation.",
+      "status": "planned"
+    },
+    "openclaw-p1": {
+      "acceptance_gates": [
+        "gate-o1-o3-real"
+      ],
+      "depends_on": [
+        "adapter-runtime"
+      ],
+      "purpose": "Own OpenClaw native restore and semantic surfaces.",
+      "status": "planned"
+    },
+    "protocol-core": {
+      "acceptance_gates": [
+        "gate-a-protocol"
+      ],
+      "depends_on": [],
+      "purpose": "Own the harness-neutral manifest, layers, privacy, provenance, loss, and claim semantics.",
+      "status": "planned"
+    },
+    "registry-release": {
+      "acceptance_gates": [
+        "gate-registry",
+        "gate-v0.1-integration"
+      ],
+      "depends_on": [
+        "formal-cli",
+        "hermes-openclaw-p2",
+        "dsh-p1",
+        "vharness-p1",
+        "trained-agent-proof"
+      ],
+      "purpose": "Own registry schema, evidence labels, release notes, and publication gates.",
+      "status": "planned"
+    },
+    "trained-agent-proof": {
+      "acceptance_gates": [
+        "gate-e-trained-agent"
+      ],
+      "depends_on": [
+        "hermes-p1",
+        "formal-cli"
+      ],
+      "purpose": "Own before/practice/after/fresh-restore behavioral evidence with an unchanged model.",
+      "status": "planned"
+    },
+    "vharness-p1": {
+      "acceptance_gates": [
+        "gate-vharness-real"
+      ],
+      "depends_on": [
+        "adapter-runtime"
+      ],
+      "purpose": "Own vHarness mapping and native restore without governing Core.",
+      "status": "planned"
+    }
+  },
+  "plan_id": "agent-image-v0.1-formal-plan",
+  "plan_version": "3.0",
+  "requalifications": [
+    "agent-image-content-kernel-candidate"
+  ],
+  "requirement_coverage": {
+    "R-ADAPTER-CONTRACT": [
+      "adapter-runtime"
+    ],
+    "R-CORE": [
+      "content-kernel",
+      "formal-cli"
+    ],
+    "R-DSH-P1": [
+      "dsh-p1"
+    ],
+    "R-HERMES-OPENCLAW-P2": [
+      "hermes-openclaw-p2"
+    ],
+    "R-HERMES-P1": [
+      "hermes-p1"
+    ],
+    "R-OPENCLAW-P1": [
+      "openclaw-p1"
+    ],
+    "R-PRIVACY-LOSS": [
+      "content-kernel",
+      "adapter-runtime",
+      "hermes-p1",
+      "openclaw-p1",
+      "dsh-p1",
+      "vharness-p1"
+    ],
+    "R-PROTOCOL": [
+      "protocol-core"
+    ],
+    "R-REGISTRY-RELEASE": [
+      "registry-release"
+    ],
+    "R-TRAINED-AGENT-PROOF": [
+      "trained-agent-proof"
+    ],
+    "R-VHARNESS-P1": [
+      "vharness-p1"
+    ]
+  },
+  "requirements": [
+    "R-PROTOCOL",
+    "R-CORE",
+    "R-ADAPTER-CONTRACT",
+    "R-HERMES-P1",
+    "R-OPENCLAW-P1",
+    "R-DSH-P1",
+    "R-VHARNESS-P1",
+    "R-HERMES-OPENCLAW-P2",
+    "R-PRIVACY-LOSS",
+    "R-TRAINED-AGENT-PROOF",
+    "R-REGISTRY-RELEASE"
+  ],
+  "root_candidate": "agent-image-v0.1-formal-root",
+  "scope_authority": {
+    "automatic_scope_reduction": false,
+    "review_note": "The Hermes epoch advances the complete horizon and rejects no later adapter, Habitat, team, transport, or behavioral direction."
+  },
+  "status": "approved"
+}

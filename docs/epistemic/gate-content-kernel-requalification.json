@@ -1,0 +1,10 @@
+{
+  "report_id": "gate-content-kernel-requalification-2026-08-24",
+  "scope": "requalification",
+  "plan_id": "agent-image-v0.1-formal-plan",
+  "artifact": "agent-image-content-kernel-candidate",
+  "module_results": {"content-kernel": "pass"},
+  "integration_results": {"gate-hermes-real-roundtrip": "pass"},
+  "blocking_debt_ids": [],
+  "result": "pass"
+}

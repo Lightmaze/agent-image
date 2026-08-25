@@ -1,0 +1,145 @@
+{
+  "context": "agent-image-v0.1-formal",
+  "epoch_goal": "Turn the formal Hermes P1 implementation into an independently versioned, privacy-auditable, reproducibly installable alpha artifact without promoting any unverified adapter or behavioral claim.",
+  "goal": "Deliver a harness-neutral Agent Image v0.1 protocol and toolchain with real Hermes, OpenClaw, DSH, and vHarness adapters; at least three P1 native restores; one Hermes-to-OpenClaw P2 migration; privacy-safe inspect, verify, diff, and redact; a restored trained-agent demonstration; and a third-party-extensible registry.",
+  "horizon_coverage": {
+    "HC-001": {
+      "disposition": "realized",
+      "rationale": "The alpha preserves the existing privacy-safe inspect and redaction gates."
+    },
+    "HC-002": {
+      "disposition": "realized",
+      "rationale": "The pinned Hermes native layer remains typed and explicitly adapter-specific."
+    },
+    "HC-003": {
+      "disposition": "realized",
+      "rationale": "Hermes build and restore reports remain fully reconciled in the reproducible package."
+    },
+    "HC-004": {
+      "disposition": "realized",
+      "rationale": "The alpha capability matrix limits claims to the evidence-backed Hermes P1 level."
+    },
+    "HC-005": {
+      "disposition": "planned",
+      "rationale": "The alpha preserves development layers while the trained-agent proof remains the next epoch."
+    },
+    "HC-006": {
+      "disposition": "planned",
+      "rationale": "Raw and referenced experience support remains planned for the trained-agent epoch."
+    },
+    "HC-007": {
+      "disposition": "probing",
+      "rationale": "The same-model fresh-restore gate is explicitly unverified and scheduled next."
+    },
+    "HC-008": {
+      "disposition": "deferred",
+      "rationale": "Habitat categories remain outside the alpha runtime and unchanged in the horizon."
+    },
+    "HC-009": {
+      "disposition": "planned",
+      "rationale": "The protocol distinction remains intact and will be exercised by the trained-agent proof."
+    },
+    "HO-001": {
+      "disposition": "deferred",
+      "rationale": "OCI remains a later transport option."
+    },
+    "HO-002": {
+      "disposition": "planned",
+      "rationale": "The public adapter SDK and entry-point discovery remain later v0.1 modules."
+    },
+    "HO-003": {
+      "disposition": "realized",
+      "rationale": "The user-approved implementation plan selects Apache-2.0 for the independent protocol repository."
+    },
+    "HO-004": {
+      "disposition": "deferred",
+      "rationale": "Context Body and consolidation remain future compatible directions."
+    },
+    "HO-005": {
+      "disposition": "deferred",
+      "rationale": "vHabitat and Team Image remain outside v0.1 without being rejected."
+    },
+    "HO-006": {
+      "disposition": "deferred",
+      "rationale": "Skill-preserving privacy stripping remains beyond alpha layer redaction."
+    },
+    "HO-007": {
+      "disposition": "probing",
+      "rationale": "The alpha makes no skill-attractor claim; the next behavioral experiment may test it."
+    }
+  },
+  "horizon_id": "open-agent-image-v0.1",
+  "implementation_inputs": [
+    "agent-image-hermes-p1"
+  ],
+  "implementation_noninterference": {
+    "demo_implementation_used_as_architecture_input": false,
+    "review_note": "The repository and packaging boundary derives from the approved horizon and release plan; only already formal Hermes P1 code is an implementation input."
+  },
+  "integration_gates": [
+    "gate-alpha-clean-install"
+  ],
+  "interfaces": [
+    "Standard wheel and sdist remain transport artifacts for the same formal CLI.",
+    "Capability documentation reports evidence status and never upgrades a planned adapter.",
+    "The standalone repository does not inherit Habitat or vHarness implementation history."
+  ],
+  "knowledge_inputs": [
+    "agent-image-core-bootstrap-2026-08-24"
+  ],
+  "modules": {
+    "alpha-evidence": {
+      "acceptance_gates": [
+        "gate-alpha-evidence"
+      ],
+      "depends_on": [
+        "reproducible-package"
+      ],
+      "purpose": "Own checksums, capability boundaries, release verdict, and existing Hermes P1 evidence linkage.",
+      "status": "completed"
+    },
+    "repository-boundary": {
+      "acceptance_gates": [
+        "gate-alpha-repository"
+      ],
+      "depends_on": [],
+      "purpose": "Own the standalone Git history, Apache-2.0 license, and local privacy-safe identity.",
+      "status": "completed"
+    },
+    "reproducible-package": {
+      "acceptance_gates": [
+        "gate-alpha-package"
+      ],
+      "depends_on": [
+        "repository-boundary"
+      ],
+      "purpose": "Own the lockfile, build artifacts, installed-package smoke, and cross-platform CI contract.",
+      "status": "completed"
+    }
+  },
+  "plan_id": "agent-image-alpha1-reproducibility-plan",
+  "plan_version": "3.0",
+  "requalifications": [],
+  "requirement_coverage": {
+    "R-ALPHA-EVIDENCE": [
+      "alpha-evidence"
+    ],
+    "R-REPO-BOUNDARY": [
+      "repository-boundary"
+    ],
+    "R-REPRODUCIBLE-PACKAGE": [
+      "reproducible-package"
+    ]
+  },
+  "requirements": [
+    "R-REPO-BOUNDARY",
+    "R-REPRODUCIBLE-PACKAGE",
+    "R-ALPHA-EVIDENCE"
+  ],
+  "root_candidate": "agent-image-alpha1-reproducible",
+  "scope_authority": {
+    "automatic_scope_reduction": false,
+    "review_note": "This alpha packages one proven adapter without rejecting any remaining adapter, behavioral, Habitat, team, or transport direction."
+  },
+  "status": "approved"
+}

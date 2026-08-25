@@ -1,0 +1,44 @@
+{
+  "evidence_version": "agent-image-adapter-evidence/v0.1",
+  "date": "2026-08-24",
+  "environment": {
+    "os": "Windows",
+    "python": "3.12.13",
+    "hermes_version": "0.20.5",
+    "hermes_tag": "v2026.8.19",
+    "hermes_commit": "fcbd1076a93841fa88855acce810e342a5b78101",
+    "hermes_install": "editable checkout from the pinned official tag"
+  },
+  "operation": {
+    "source": "hermes:source",
+    "target": "hermes:restored-v2",
+    "source_profile_digest_before": "sha256:0490f00a922f29dd1aef972cfce9bcf726e426e7afe2fa37d5d6493cbc20db95",
+    "source_profile_digest_after": "sha256:0490f00a922f29dd1aef972cfce9bcf726e426e7afe2fa37d5d6493cbc20db95",
+    "image_digest": "sha256:3ac4d7efcb66704caa22f4cd211bbbb6587b213165f723d4a5c8778f26591168",
+    "source_inventory": 9,
+    "source_outcomes": {"preserved": 8, "redacted": 1},
+    "restored_layers": 7,
+    "restore_outcomes": {"preserved": 7},
+    "target_recognized_by_hermes": true,
+    "target_skill_count": 1,
+    "target_env_configured": false,
+    "safe_source_files_equal_target": true
+  },
+  "restored_file_sha256": {
+    ".no-bundled-skills": "01997b58636730531c4737c56a5c65d2e8aa8b073bb8a6958e16ea6b41100301",
+    "SOUL.md": "8dfe8eb07697bbfc64e07bb38cb3acc89d45020f2284290c4a32ccb60ddeeaf2",
+    "memories/MEMORY.md": "fd10c4aa69c937558caab9e97f763eddef635574bdc1181be7e4032c78f293df",
+    "memories/USER.md": "b150caeead3e1939a47d05c27dffc21e18d563b4a4a8391f77e14f6e824716fa",
+    "profile.yaml": "5be80744fddc58853f05e7740634e66f52cbe2b4e18a5d872604edbd4d842044",
+    "sessions/practice.jsonl": "aea825044162abd7a08f27f4b1e8a5087ab94e3f759c2a92d26f38882a29a17a",
+    "skills/evidence-first/SKILL.md": "6795637b726ab0352ad265721816143b4dd11f79fa9d1cc8864aa53bcc35481b",
+    "workspace/roundtrip.md": "796519bb6c2577567dd3265d223ee0b2a2ffa950c5f976e33a8e53f16d60b7c3"
+  },
+  "claims": {
+    "P0_archive": "verified",
+    "P1_native_restore": "verified for the pinned Hermes contract on the tested Windows environment",
+    "P2_semantic_migration": "not implemented",
+    "P3_behavioral_portability": "unverified"
+  },
+  "tests": {"passed": 28, "failed": 0}
+}

@@ -1,0 +1,206 @@
+{
+  "beliefs": [
+    {
+      "confidence": 0.95,
+      "counterevidence": [],
+      "evidence_scope": [
+        "Windows workspace",
+        "Python 3.12",
+        "synthetic fixture adapter",
+        "22-test bootstrap suite"
+      ],
+      "falsifier": "A repeated build from identical bytes produces a different archive, or a tested malformed archive passes verification.",
+      "id": "B-001",
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": [
+          "bootstrap-validation-2026-08-24"
+        ]
+      },
+      "scope": [
+        "Windows workspace",
+        "Python 3.12",
+        "synthetic fixture adapter",
+        "22-test bootstrap suite"
+      ],
+      "statement": "An explicit harness-neutral inventory can be packed into byte-deterministic .aimg archives and reopened for path, checksum, layer digest, privacy, and operation-report verification in the tested Windows/Python fixture environment.",
+      "status": "active",
+      "supersedes": null,
+      "supporting_evidence": [
+        "docs/BOOTSTRAP_ACCEPTANCE.md",
+        "tests/test_core.py",
+        "tests/test_security.py"
+      ],
+      "type": "observation"
+    },
+    {
+      "confidence": 0.9,
+      "counterevidence": [],
+      "evidence_scope": [
+        "current bootstrap source tree",
+        "Core import firewall scan"
+      ],
+      "falsifier": "A production adapter requires a harness-specific field in the Core manifest or a production harness import in Core.",
+      "id": "B-002",
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": [
+          "bootstrap-import-firewall-2026-08-24"
+        ]
+      },
+      "scope": [
+        "current bootstrap source tree",
+        "Core import firewall scan"
+      ],
+      "statement": "The bootstrap Core can keep production harness vocabulary and mappings outside Core modules while exercising the container through an explicitly test-only fixture adapter.",
+      "status": "active",
+      "supersedes": null,
+      "supporting_evidence": [
+        "docs/BOOTSTRAP_ACCEPTANCE.md",
+        "src/agent_image/adapters/fixture.py",
+        "docs/engineering/MOCK_INVENTORY.generated.md"
+      ],
+      "type": "observation"
+    },
+    {
+      "confidence": 0.9,
+      "counterevidence": [],
+      "evidence_scope": [
+        "v0.1 filename deny rules",
+        "tested JSON/YAML secret keys",
+        "synthetic fixture layers"
+      ],
+      "falsifier": "A covered secret case enters a verified image or private fixture bytes appear in inspect/diff/public output.",
+      "id": "B-003",
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": [
+          "bootstrap-privacy-validation-2026-08-24"
+        ]
+      },
+      "scope": [
+        "v0.1 filename deny rules",
+        "tested JSON/YAML secret keys",
+        "synthetic fixture layers"
+      ],
+      "statement": "The bootstrap privacy path rejects the declared secret filename and structured JSON/YAML key cases and creates a separately verified public image without private fixture layers.",
+      "status": "active",
+      "supersedes": null,
+      "supporting_evidence": [
+        "tests/test_security.py",
+        "tests/test_core.py",
+        "spec/v0.1/privacy.md"
+      ],
+      "type": "observation"
+    },
+    {
+      "confidence": 1.0,
+      "counterevidence": [],
+      "evidence_scope": [
+        "all claims derived from the bootstrap fixture"
+      ],
+      "falsifier": null,
+      "id": "C-001",
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": [
+          "bootstrap-scope-boundary-2026-08-24"
+        ]
+      },
+      "scope": [
+        "all claims derived from the bootstrap fixture"
+      ],
+      "statement": "Fixture evidence cannot establish production adapter support, P1/P2/P3 portability, universal DLP, provenance authenticity, or trained-agent behavior retention.",
+      "status": "active",
+      "supersedes": null,
+      "supporting_evidence": [
+        "README.md",
+        "docs/PROJECT_STATUS.md",
+        "docs/BOOTSTRAP_ACCEPTANCE.md",
+        "SECURITY.md"
+      ],
+      "type": "constraint"
+    },
+    {
+      "confidence": 1.0,
+      "counterevidence": [],
+      "evidence_scope": [
+        "bootstrap acceptance evidence"
+      ],
+      "falsifier": null,
+      "id": "F-001",
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": [
+          "context-inheritance-audit-2026-08-24"
+        ]
+      },
+      "scope": [
+        "bootstrap acceptance evidence"
+      ],
+      "statement": "The bootstrap evidence contains no production harness round trip, no positive developed-state/raw-experience fixture, and no same-model fresh-restore behavioral evaluation.",
+      "status": "active",
+      "supersedes": null,
+      "supporting_evidence": [
+        "docs/PROJECT_STATUS.md",
+        "docs/BOOTSTRAP_ACCEPTANCE.md",
+        "tests/fixtures/minimal/inventory.yaml"
+      ],
+      "type": "failure"
+    },
+    {
+      "confidence": 0.5,
+      "counterevidence": [],
+      "evidence_scope": [],
+      "falsifier": null,
+      "id": "U-001",
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": [
+          "context-inheritance-audit-2026-08-24"
+        ]
+      },
+      "scope": [
+        "production adapter ecosystem"
+      ],
+      "statement": "It is unknown whether the current logical model and adapter boundary are sufficient for real Hermes, OpenClaw, DSH, vHarness, and a fifth harness without Core schema changes.",
+      "status": "active",
+      "supersedes": null,
+      "supporting_evidence": [],
+      "type": "unknown"
+    },
+    {
+      "confidence": 0.5,
+      "counterevidence": [],
+      "evidence_scope": [],
+      "falsifier": null,
+      "id": "U-002",
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": [
+          "context-inheritance-audit-2026-08-24"
+        ]
+      },
+      "scope": [
+        "trained-agent behavior retention"
+      ],
+      "statement": "It is unknown which persistent/contextual state is necessary for learned behavior to survive same-model fresh restore.",
+      "status": "active",
+      "supersedes": null,
+      "supporting_evidence": [],
+      "type": "unknown"
+    }
+  ],
+  "capsule_id": "agent-image-core-bootstrap-2026-08-24",
+  "capsule_version": "2.0",
+  "context": "agent-image-v0.1",
+  "extraction_coverage": {
+    "constraints": "captured",
+    "failures": "captured",
+    "hypotheses": "none-observed",
+    "observations": "captured",
+    "raw_evidence": "captured",
+    "unknowns": "captured"
+  },
+  "source_artifact": "agent-image-core-bootstrap"
+}

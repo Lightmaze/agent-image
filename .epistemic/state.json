@@ -1,0 +1,1261 @@
+{
+  "architecture_plans": {
+    "agent-image-alpha1-reproducibility-plan": {
+      "context": "agent-image-v0.1-formal",
+      "epoch_goal": "Turn the formal Hermes P1 implementation into an independently versioned, privacy-auditable, reproducibly installable alpha artifact without promoting any unverified adapter or behavioral claim.",
+      "goal": "Deliver a harness-neutral Agent Image v0.1 protocol and toolchain with real Hermes, OpenClaw, DSH, and vHarness adapters; at least three P1 native restores; one Hermes-to-OpenClaw P2 migration; privacy-safe inspect, verify, diff, and redact; a restored trained-agent demonstration; and a third-party-extensible registry.",
+      "horizon_coverage": {
+        "HC-001": {
+          "disposition": "realized",
+          "rationale": "The alpha preserves the existing privacy-safe inspect and redaction gates."
+        },
+        "HC-002": {
+          "disposition": "realized",
+          "rationale": "The pinned Hermes native layer remains typed and explicitly adapter-specific."
+        },
+        "HC-003": {
+          "disposition": "realized",
+          "rationale": "Hermes build and restore reports remain fully reconciled in the reproducible package."
+        },
+        "HC-004": {
+          "disposition": "realized",
+          "rationale": "The alpha capability matrix limits claims to the evidence-backed Hermes P1 level."
+        },
+        "HC-005": {
+          "disposition": "planned",
+          "rationale": "The alpha preserves development layers while the trained-agent proof remains the next epoch."
+        },
+        "HC-006": {
+          "disposition": "planned",
+          "rationale": "Raw and referenced experience support remains planned for the trained-agent epoch."
+        },
+        "HC-007": {
+          "disposition": "probing",
+          "rationale": "The same-model fresh-restore gate is explicitly unverified and scheduled next."
+        },
+        "HC-008": {
+          "disposition": "deferred",
+          "rationale": "Habitat categories remain outside the alpha runtime and unchanged in the horizon."
+        },
+        "HC-009": {
+          "disposition": "planned",
+          "rationale": "The protocol distinction remains intact and will be exercised by the trained-agent proof."
+        },
+        "HO-001": {
+          "disposition": "deferred",
+          "rationale": "OCI remains a later transport option."
+        },
+        "HO-002": {
+          "disposition": "planned",
+          "rationale": "The public adapter SDK and entry-point discovery remain later v0.1 modules."
+        },
+        "HO-003": {
+          "disposition": "realized",
+          "rationale": "The user-approved implementation plan selects Apache-2.0 for the independent protocol repository."
+        },
+        "HO-004": {
+          "disposition": "deferred",
+          "rationale": "Context Body and consolidation remain future compatible directions."
+        },
+        "HO-005": {
+          "disposition": "deferred",
+          "rationale": "vHabitat and Team Image remain outside v0.1 without being rejected."
+        },
+        "HO-006": {
+          "disposition": "deferred",
+          "rationale": "Skill-preserving privacy stripping remains beyond alpha layer redaction."
+        },
+        "HO-007": {
+          "disposition": "probing",
+          "rationale": "The alpha makes no skill-attractor claim; the next behavioral experiment may test it."
+        }
+      },
+      "horizon_id": "open-agent-image-v0.1",
+      "implementation_inputs": [
+        "agent-image-hermes-p1"
+      ],
+      "implementation_noninterference": {
+        "demo_implementation_used_as_architecture_input": false,
+        "review_note": "The repository and packaging boundary derives from the approved horizon and release plan; only already formal Hermes P1 code is an implementation input."
+      },
+      "integration_gates": [
+        "gate-alpha-clean-install"
+      ],
+      "interfaces": [
+        "Standard wheel and sdist remain transport artifacts for the same formal CLI.",
+        "Capability documentation reports evidence status and never upgrades a planned adapter.",
+        "The standalone repository does not inherit Habitat or vHarness implementation history."
+      ],
+      "knowledge_inputs": [
+        "agent-image-core-bootstrap-2026-08-24"
+      ],
+      "modules": {
+        "alpha-evidence": {
+          "acceptance_gates": [
+            "gate-alpha-evidence"
+          ],
+          "depends_on": [
+            "reproducible-package"
+          ],
+          "purpose": "Own checksums, capability boundaries, release verdict, and existing Hermes P1 evidence linkage.",
+          "status": "completed"
+        },
+        "repository-boundary": {
+          "acceptance_gates": [
+            "gate-alpha-repository"
+          ],
+          "depends_on": [],
+          "purpose": "Own the standalone Git history, Apache-2.0 license, and local privacy-safe identity.",
+          "status": "completed"
+        },
+        "reproducible-package": {
+          "acceptance_gates": [
+            "gate-alpha-package"
+          ],
+          "depends_on": [
+            "repository-boundary"
+          ],
+          "purpose": "Own the lockfile, build artifacts, installed-package smoke, and cross-platform CI contract.",
+          "status": "completed"
+        }
+      },
+      "plan_id": "agent-image-alpha1-reproducibility-plan",
+      "plan_version": "3.0",
+      "requalifications": [],
+      "requirement_coverage": {
+        "R-ALPHA-EVIDENCE": [
+          "alpha-evidence"
+        ],
+        "R-REPO-BOUNDARY": [
+          "repository-boundary"
+        ],
+        "R-REPRODUCIBLE-PACKAGE": [
+          "reproducible-package"
+        ]
+      },
+      "requirements": [
+        "R-REPO-BOUNDARY",
+        "R-REPRODUCIBLE-PACKAGE",
+        "R-ALPHA-EVIDENCE"
+      ],
+      "root_candidate": "agent-image-alpha1-reproducible",
+      "scope_authority": {
+        "automatic_scope_reduction": false,
+        "review_note": "This alpha packages one proven adapter without rejecting any remaining adapter, behavioral, Habitat, team, or transport direction."
+      },
+      "status": "approved"
+    },
+    "agent-image-hermes-p1-epoch-plan": {
+      "context": "agent-image-v0.1-formal",
+      "epoch_goal": "Prove Hermes P1 against Hermes Agent v0.20.5 with source immutability, privacy safety, target recognition, and complete loss accounting.",
+      "goal": "Deliver a harness-neutral Agent Image v0.1 protocol and toolchain with real Hermes, OpenClaw, DSH, and vHarness adapters; at least three P1 native restores; one Hermes-to-OpenClaw P2 migration; privacy-safe inspect, verify, diff, and redact; a restored trained-agent demonstration; and a third-party-extensible registry.",
+      "horizon_coverage": {
+        "HC-001": {
+          "disposition": "realized",
+          "rationale": "Inspect and reports expose privacy/loss metadata without printing private payloads."
+        },
+        "HC-002": {
+          "disposition": "realized",
+          "rationale": "Hermes native state is preserved as a pinned typed opaque layer."
+        },
+        "HC-003": {
+          "disposition": "realized",
+          "rationale": "Hermes build and restore reports reconcile all items at their operation boundaries."
+        },
+        "HC-004": {
+          "disposition": "realized",
+          "rationale": "The evidence supports only pinned Hermes P1 and explicitly denies P2/P3."
+        },
+        "HC-005": {
+          "disposition": "probing",
+          "rationale": "The image preserves multiple persistent state surfaces, but trained-agent semantics remain unproven."
+        },
+        "HC-006": {
+          "disposition": "probing",
+          "rationale": "Raw session evidence can be preserved by explicit opt-in without summary substitution."
+        },
+        "HC-007": {
+          "disposition": "planned",
+          "rationale": "Behavioral fresh-restore proof remains a later required gate."
+        },
+        "HC-008": {
+          "disposition": "deferred",
+          "rationale": "Habitat categories remain distinct and unchanged by this adapter epoch."
+        },
+        "HC-009": {
+          "disposition": "probing",
+          "rationale": "Skill files and experience/native state are separate, while acquired-skill retention remains unproven."
+        },
+        "HO-001": {
+          "disposition": "deferred",
+          "rationale": "OCI remains a later transport option."
+        },
+        "HO-002": {
+          "disposition": "realized",
+          "rationale": "Hermes behavior is isolated behind the production adapter contract."
+        },
+        "HO-003": {
+          "disposition": "unresolved",
+          "rationale": "License selection remains a release decision."
+        },
+        "HO-004": {
+          "disposition": "deferred",
+          "rationale": "Context Body and consolidation remain open future mappings."
+        },
+        "HO-005": {
+          "disposition": "deferred",
+          "rationale": "vHabitat and Team Image remain open future artifacts."
+        },
+        "HO-006": {
+          "disposition": "probing",
+          "rationale": "Layer and native filtering provide scoped privacy-stripping evidence."
+        },
+        "HO-007": {
+          "disposition": "probing",
+          "rationale": "No contextual attractor claim is encoded or inferred."
+        }
+      },
+      "horizon_id": "open-agent-image-v0.1",
+      "implementation_inputs": [
+        "agent-image-content-kernel-candidate"
+      ],
+      "implementation_noninterference": {
+        "demo_implementation_used_as_architecture_input": false,
+        "review_note": "The Hermes modules were derived from normative H1-H3/C0/D gates and the pinned official contract; only the separately gated content kernel was reused."
+      },
+      "integration_gates": [
+        "gate-hermes-real-roundtrip"
+      ],
+      "interfaces": [
+        "Core owns .aimg containers and validation; Hermes owns only source/target translation.",
+        "Experience and workspace opt-in applies to both logical and native state.",
+        "Every portability claim cites the pinned harness and gate evidence."
+      ],
+      "knowledge_inputs": [
+        "agent-image-core-bootstrap-2026-08-24"
+      ],
+      "modules": {
+        "adapter-runtime": {
+          "acceptance_gates": [
+            "gate-hermes-contract-tests"
+          ],
+          "depends_on": [
+            "content-kernel"
+          ],
+          "purpose": "Own production adapter plans, capabilities, transactions, and reports.",
+          "status": "completed"
+        },
+        "content-kernel": {
+          "acceptance_gates": [
+            "gate-content-kernel-requalification-2026-08-24"
+          ],
+          "depends_on": [],
+          "purpose": "Provide requalified safe archives, manifests, digests, and secret classification.",
+          "status": "completed"
+        },
+        "formal-cli": {
+          "acceptance_gates": [
+            "gate-formal-cli"
+          ],
+          "depends_on": [
+            "content-kernel",
+            "adapter-runtime",
+            "hermes-p1"
+          ],
+          "purpose": "Expose production build and restore without fixture capability claims.",
+          "status": "completed"
+        },
+        "hermes-p1": {
+          "acceptance_gates": [
+            "gate-hermes-real-roundtrip"
+          ],
+          "depends_on": [
+            "adapter-runtime"
+          ],
+          "purpose": "Own pinned official Hermes export/import and target invariants.",
+          "status": "completed"
+        }
+      },
+      "plan_id": "agent-image-hermes-p1-epoch-plan",
+      "plan_version": "3.0",
+      "requalifications": [],
+      "requirement_coverage": {
+        "R-CORE": [
+          "content-kernel",
+          "formal-cli"
+        ],
+        "R-HERMES-P1": [
+          "adapter-runtime",
+          "hermes-p1",
+          "formal-cli"
+        ],
+        "R-PRIVACY-LOSS": [
+          "content-kernel",
+          "adapter-runtime",
+          "hermes-p1"
+        ]
+      },
+      "requirements": [
+        "R-CORE",
+        "R-HERMES-P1",
+        "R-PRIVACY-LOSS"
+      ],
+      "root_candidate": "agent-image-hermes-p1",
+      "scope_authority": {
+        "automatic_scope_reduction": false,
+        "review_note": "Formalizing this epoch does not formalize or reject the remaining v0.1 modules and long-horizon options."
+      },
+      "status": "approved"
+    },
+    "agent-image-v0.1-formal-plan": {
+      "context": "agent-image-v0.1-formal",
+      "epoch_goal": "Prove Hermes P1 against Hermes Agent v0.20.5 with source immutability, privacy safety, target recognition, and complete loss accounting.",
+      "goal": "Deliver a harness-neutral Agent Image v0.1 protocol and toolchain with real Hermes, OpenClaw, DSH, and vHarness adapters; at least three P1 native restores; one Hermes-to-OpenClaw P2 migration; privacy-safe inspect, verify, diff, and redact; a restored trained-agent demonstration; and a third-party-extensible registry.",
+      "horizon_coverage": {
+        "HC-001": {
+          "disposition": "planned",
+          "rationale": "Core inspection and operation reports expose privacy and loss metadata without payload disclosure."
+        },
+        "HC-002": {
+          "disposition": "planned",
+          "rationale": "Each adapter can emit typed opaque native layers."
+        },
+        "HC-003": {
+          "disposition": "planned",
+          "rationale": "Inventory reconciliation is an adapter and integration gate."
+        },
+        "HC-004": {
+          "disposition": "planned",
+          "rationale": "P0-P3 claims are stored and published only with matching gate evidence."
+        },
+        "HC-005": {
+          "disposition": "planned",
+          "rationale": "Logical development, experience, evaluation, lineage, and native state remain distinct from starting profiles."
+        },
+        "HC-006": {
+          "disposition": "planned",
+          "rationale": "Experience layers accept raw or referenced evidence without summary substitution."
+        },
+        "HC-007": {
+          "disposition": "planned",
+          "rationale": "A dedicated trained-agent module owns the same-model fresh-restore gate."
+        },
+        "HC-008": {
+          "disposition": "deferred",
+          "rationale": "Habitat categories remain distinct and outside Core adapter semantics."
+        },
+        "HC-009": {
+          "disposition": "planned",
+          "rationale": "Skill artifacts and development/experience state remain separate layers and proof obligations."
+        },
+        "HO-001": {
+          "disposition": "deferred",
+          "rationale": "Transport is isolated so OCI can be added later."
+        },
+        "HO-002": {
+          "disposition": "planned",
+          "rationale": "Adapters depend on the SDK; Core never imports a harness."
+        },
+        "HO-003": {
+          "disposition": "unresolved",
+          "rationale": "License selection remains a release decision."
+        },
+        "HO-004": {
+          "disposition": "deferred",
+          "rationale": "Context Body and consolidation can later use experience/native extensions."
+        },
+        "HO-005": {
+          "disposition": "deferred",
+          "rationale": "vHabitat and Team Image remain future artifacts without changing v0.1 scope."
+        },
+        "HO-006": {
+          "disposition": "probing",
+          "rationale": "Current layer redaction provides evidence for later skill-preserving privacy stripping."
+        },
+        "HO-007": {
+          "disposition": "probing",
+          "rationale": "Behavioral proof may test the hypothesis without encoding it in the schema."
+        }
+      },
+      "horizon_id": "open-agent-image-v0.1",
+      "implementation_inputs": [],
+      "implementation_noninterference": {
+        "demo_implementation_used_as_architecture_input": false,
+        "review_note": "The plan was derived from the anchored horizon and normative documents. The bootstrap was consulted only for drift and later requalification audit."
+      },
+      "integration_gates": [
+        "gate-hermes-real-roundtrip",
+        "gate-v0.1-integration"
+      ],
+      "interfaces": [
+        "Core owns containers, digests, manifests, privacy, and report validation; adapters never pack .aimg files.",
+        "Adapters expose read-only detection/inventory, export plans, native restore preflight/execution, semantic import preflight/execution, and capabilities.",
+        "Every operation report reconciles every input item to an acceptance-defined outcome."
+      ],
+      "knowledge_inputs": [
+        "agent-image-core-bootstrap-2026-08-24"
+      ],
+      "modules": {
+        "adapter-runtime": {
+          "acceptance_gates": [
+            "gate-c0-adapter-contract"
+          ],
+          "depends_on": [
+            "protocol-core",
+            "content-kernel"
+          ],
+          "purpose": "Own adapter discovery, inventories, capabilities, preflight, transactions, and operation reports.",
+          "status": "planned"
+        },
+        "content-kernel": {
+          "acceptance_gates": [
+            "gate-b-core",
+            "gate-d-security"
+          ],
+          "depends_on": [
+            "protocol-core"
+          ],
+          "purpose": "Own deterministic safe containers, validation, digests, and secret classification.",
+          "status": "planned"
+        },
+        "dsh-p1": {
+          "acceptance_gates": [
+            "gate-dsh-real"
+          ],
+          "depends_on": [
+            "adapter-runtime"
+          ],
+          "purpose": "Own DSH ordered native composition and validation.",
+          "status": "planned"
+        },
+        "formal-cli": {
+          "acceptance_gates": [
+            "gate-cli-contract"
+          ],
+          "depends_on": [
+            "content-kernel",
+            "adapter-runtime"
+          ],
+          "purpose": "Expose build, inspect, verify, redact, diff, restore, and migrate through formal services.",
+          "status": "planned"
+        },
+        "hermes-openclaw-p2": {
+          "acceptance_gates": [
+            "gate-hermes-openclaw-p2"
+          ],
+          "depends_on": [
+            "hermes-p1",
+            "openclaw-p1"
+          ],
+          "purpose": "Own the first semantic cross-harness migration and loss report.",
+          "status": "planned"
+        },
+        "hermes-p1": {
+          "acceptance_gates": [
+            "gate-h1-h3-real"
+          ],
+          "depends_on": [
+            "adapter-runtime"
+          ],
+          "purpose": "Own pinned Hermes detection, export mapping, native restore, and target validation.",
+          "status": "planned"
+        },
+        "openclaw-p1": {
+          "acceptance_gates": [
+            "gate-o1-o3-real"
+          ],
+          "depends_on": [
+            "adapter-runtime"
+          ],
+          "purpose": "Own OpenClaw native restore and semantic surfaces.",
+          "status": "planned"
+        },
+        "protocol-core": {
+          "acceptance_gates": [
+            "gate-a-protocol"
+          ],
+          "depends_on": [],
+          "purpose": "Own the harness-neutral manifest, layers, privacy, provenance, loss, and claim semantics.",
+          "status": "planned"
+        },
+        "registry-release": {
+          "acceptance_gates": [
+            "gate-registry",
+            "gate-v0.1-integration"
+          ],
+          "depends_on": [
+            "formal-cli",
+            "hermes-openclaw-p2",
+            "dsh-p1",
+            "vharness-p1",
+            "trained-agent-proof"
+          ],
+          "purpose": "Own registry schema, evidence labels, release notes, and publication gates.",
+          "status": "planned"
+        },
+        "trained-agent-proof": {
+          "acceptance_gates": [
+            "gate-e-trained-agent"
+          ],
+          "depends_on": [
+            "hermes-p1",
+            "formal-cli"
+          ],
+          "purpose": "Own before/practice/after/fresh-restore behavioral evidence with an unchanged model.",
+          "status": "planned"
+        },
+        "vharness-p1": {
+          "acceptance_gates": [
+            "gate-vharness-real"
+          ],
+          "depends_on": [
+            "adapter-runtime"
+          ],
+          "purpose": "Own vHarness mapping and native restore without governing Core.",
+          "status": "planned"
+        }
+      },
+      "plan_id": "agent-image-v0.1-formal-plan",
+      "plan_version": "3.0",
+      "requalifications": [
+        "agent-image-content-kernel-candidate"
+      ],
+      "requirement_coverage": {
+        "R-ADAPTER-CONTRACT": [
+          "adapter-runtime"
+        ],
+        "R-CORE": [
+          "content-kernel",
+          "formal-cli"
+        ],
+        "R-DSH-P1": [
+          "dsh-p1"
+        ],
+        "R-HERMES-OPENCLAW-P2": [
+          "hermes-openclaw-p2"
+        ],
+        "R-HERMES-P1": [
+          "hermes-p1"
+        ],
+        "R-OPENCLAW-P1": [
+          "openclaw-p1"
+        ],
+        "R-PRIVACY-LOSS": [
+          "content-kernel",
+          "adapter-runtime",
+          "hermes-p1",
+          "openclaw-p1",
+          "dsh-p1",
+          "vharness-p1"
+        ],
+        "R-PROTOCOL": [
+          "protocol-core"
+        ],
+        "R-REGISTRY-RELEASE": [
+          "registry-release"
+        ],
+        "R-TRAINED-AGENT-PROOF": [
+          "trained-agent-proof"
+        ],
+        "R-VHARNESS-P1": [
+          "vharness-p1"
+        ]
+      },
+      "requirements": [
+        "R-PROTOCOL",
+        "R-CORE",
+        "R-ADAPTER-CONTRACT",
+        "R-HERMES-P1",
+        "R-OPENCLAW-P1",
+        "R-DSH-P1",
+        "R-VHARNESS-P1",
+        "R-HERMES-OPENCLAW-P2",
+        "R-PRIVACY-LOSS",
+        "R-TRAINED-AGENT-PROOF",
+        "R-REGISTRY-RELEASE"
+      ],
+      "root_candidate": "agent-image-v0.1-formal-root",
+      "scope_authority": {
+        "automatic_scope_reduction": false,
+        "review_note": "The Hermes epoch advances the complete horizon and rejects no later adapter, Habitat, team, transport, or behavioral direction."
+      },
+      "status": "approved"
+    }
+  },
+  "artifacts": {
+    "agent-image-alpha1-reproducible": {
+      "architecture_plans": [
+        "agent-image-alpha1-reproducibility-plan"
+      ],
+      "capsules": [],
+      "depends_on": [],
+      "epistemic_parents": [],
+      "formalization": {
+        "agent-image-v0.1-formal": {
+          "at": "2026-08-25T03:27:03+00:00",
+          "gate_report_id": "gate-alpha1-reproducibility-2026-08-24",
+          "plan_id": "agent-image-alpha1-reproducibility-plan"
+        }
+      },
+      "gate_reports": [
+        "gate-alpha1-reproducibility-2026-08-24"
+      ],
+      "implementation_authority": {
+        "agent-image-v0.1-formal": true
+      },
+      "implementation_parents": [
+        "agent-image-hermes-p1"
+      ],
+      "kind": "release-artifact",
+      "live": true,
+      "requalifications": {},
+      "roles": {
+        "agent-image-v0.1-formal": "formal"
+      }
+    },
+    "agent-image-content-kernel-candidate": {
+      "architecture_plans": [],
+      "capsules": [],
+      "depends_on": [],
+      "epistemic_parents": [],
+      "formalization": {},
+      "gate_reports": [
+        "gate-content-kernel-requalification-2026-08-24"
+      ],
+      "implementation_authority": {
+        "agent-image-v0.1-formal": true
+      },
+      "implementation_parents": [],
+      "kind": "requalification-candidate",
+      "live": false,
+      "requalifications": {
+        "agent-image-v0.1-formal": {
+          "at": "2026-08-25T01:38:03+00:00",
+          "gate_report_id": "gate-content-kernel-requalification-2026-08-24",
+          "plan_id": "agent-image-v0.1-formal-plan"
+        }
+      },
+      "roles": {
+        "agent-image-v0.1-formal": "requalified"
+      }
+    },
+    "agent-image-core-bootstrap": {
+      "architecture_plans": [],
+      "capsules": [
+        "agent-image-core-bootstrap-2026-08-24"
+      ],
+      "depends_on": [],
+      "epistemic_parents": [],
+      "formalization": {},
+      "gate_reports": [],
+      "implementation_authority": {
+        "agent-image-v0.1": false
+      },
+      "implementation_parents": [],
+      "kind": "validated-core-probe",
+      "live": false,
+      "requalifications": {},
+      "roles": {
+        "agent-image-v0.1": "validated_demo"
+      }
+    },
+    "agent-image-hermes-p1": {
+      "architecture_plans": [
+        "agent-image-hermes-p1-epoch-plan"
+      ],
+      "capsules": [],
+      "depends_on": [],
+      "epistemic_parents": [
+        "agent-image-v0.1-formal-root"
+      ],
+      "formalization": {
+        "agent-image-v0.1-formal": {
+          "at": "2026-08-25T01:40:12+00:00",
+          "gate_report_id": "gate-hermes-p1-2026-08-24",
+          "plan_id": "agent-image-hermes-p1-epoch-plan"
+        }
+      },
+      "gate_reports": [
+        "gate-hermes-p1-2026-08-24"
+      ],
+      "implementation_authority": {
+        "agent-image-v0.1-formal": true
+      },
+      "implementation_parents": [
+        "agent-image-content-kernel-candidate"
+      ],
+      "kind": "production-adapter-module",
+      "live": true,
+      "requalifications": {},
+      "roles": {
+        "agent-image-v0.1-formal": "formal"
+      }
+    },
+    "agent-image-v0.1-formal-root": {
+      "architecture_plans": [
+        "agent-image-v0.1-formal-plan"
+      ],
+      "capsules": [
+        "agent-image-v0.1-formal-root-2026-08-24"
+      ],
+      "depends_on": [],
+      "epistemic_parents": [
+        "agent-image-core-bootstrap",
+        "vharness-local-alpha"
+      ],
+      "formalization": {},
+      "gate_reports": [],
+      "implementation_authority": {
+        "agent-image-v0.1-formal": false
+      },
+      "implementation_parents": [],
+      "kind": "clean-formal-root",
+      "live": false,
+      "requalifications": {},
+      "roles": {
+        "agent-image-v0.1-formal": "unresolved"
+      }
+    },
+    "vharness-local-alpha": {
+      "architecture_plans": [],
+      "capsules": [],
+      "depends_on": [],
+      "epistemic_parents": [],
+      "formalization": {},
+      "gate_reports": [],
+      "implementation_authority": {
+        "agent-image-v0.1": false
+      },
+      "implementation_parents": [],
+      "kind": "external-reference-tree",
+      "live": false,
+      "requalifications": {},
+      "roles": {
+        "agent-image-v0.1": "demoted_legacy"
+      }
+    }
+  },
+  "capsules": {
+    "agent-image-core-bootstrap-2026-08-24": {
+      "belief_file": "beliefs\\agent-image-core-bootstrap-2026-08-24.json",
+      "context": "agent-image-v0.1",
+      "raw_evidence": [
+        "docs\\BOOTSTRAP_ACCEPTANCE.md",
+        "tests\\test_core.py",
+        "tests\\test_security.py",
+        "docs\\CONTEXT_INHERITANCE.md"
+      ],
+      "sealed_at": "2026-08-25T00:10:10+00:00",
+      "source_artifact": "agent-image-core-bootstrap",
+      "status": "sealed"
+    },
+    "agent-image-v0.1-formal-root-2026-08-24": {
+      "belief_file": "beliefs\\agent-image-v0.1-formal-root-2026-08-24.json",
+      "context": "agent-image-v0.1-formal",
+      "raw_evidence": [
+        "docs\\AUDIT_PACKET.md",
+        "docs\\CONTEXT_INHERITANCE.md",
+        "docs\\epistemic\\design-horizon.json",
+        "docs\\epistemic\\architecture-plan-v0.1.json"
+      ],
+      "sealed_at": "2026-08-25T01:40:11+00:00",
+      "source_artifact": "agent-image-v0.1-formal-root",
+      "status": "sealed"
+    }
+  },
+  "contexts": {
+    "agent-image-v0.1": {
+      "constraints": [
+        "Fixture evidence cannot establish production adapter support."
+      ],
+      "goal": "Deliver the complete Open Agent Image Protocol v0.1 horizon without inheriting a harness-specific core.",
+      "requirements": [
+        "Harness-neutral core with explicit native layers, privacy, loss reports, and P0-P3 claims."
+      ],
+      "status": "active"
+    },
+    "agent-image-v0.1-formal": {
+      "constraints": [
+        "Normative priority is latest user instruction, acceptance, engineering, PRD, then historical context.",
+        "Fixture and mock evidence cannot establish production adapter or behavioral portability support.",
+        "Protocol timestamp urgency never authorizes false capability claims.",
+        "Explorable World, Training Ground, Context Body, vHabitat, and Team Image remain distinct or open directions and are not v0.1 implementation blockers."
+      ],
+      "goal": "Deliver a publication-ready, harness-neutral Agent Image v0.1 and prove developed-agent portability without reducing the declared Habitat, vHarness, Context Body, and future team horizons.",
+      "requirements": [
+        "Core must remain harness-neutral and support typed native state, provenance, privacy, explicit loss, and P0-P3 evidence claims.",
+        "Developed-agent semantics must preserve or reference raw experience, development provenance, lineage, and fresh-restore behavioral evidence.",
+        "The release must include real Hermes, OpenClaw, DSH, and vHarness adapters, at least three P1 restores, one Hermes-to-OpenClaw P2 path, a trained-agent proof, and a minimal registry."
+      ],
+      "status": "active"
+    }
+  },
+  "debts": [],
+  "design_horizons": {
+    "open-agent-image-v0.1": {
+      "active_probes": [
+        {
+          "advances": [
+            "HC-002",
+            "HC-003",
+            "HC-005",
+            "HC-006",
+            "HC-009",
+            "HO-002",
+            "HO-004"
+          ],
+          "id": "P-002",
+          "question": "Can a formal Core and fifth-adapter contract represent development provenance plus raw, referenced, and derived experience without harness leakage or summary-for-source substitution?"
+        },
+        {
+          "advances": [
+            "HC-001",
+            "HC-002",
+            "HC-003",
+            "HC-004",
+            "HC-005",
+            "HC-009"
+          ],
+          "id": "P-003",
+          "question": "Can Hermes perform a real P1 developed-state round trip against a pinned official contract with source immutability, privacy safety, and complete loss accounting?"
+        },
+        {
+          "advances": [
+            "HC-004",
+            "HC-006",
+            "HC-007",
+            "HC-009",
+            "HO-004",
+            "HO-006",
+            "HO-007"
+          ],
+          "id": "P-004",
+          "question": "Which persistent/contextual state is necessary for learned behavior to survive same-model fresh restore under the same evaluation?"
+        }
+      ],
+      "context": "agent-image-v0.1-formal",
+      "epoch_goal": "Prepare a publication-ready protocol timestamp and formal Core architecture, then prove Hermes P1 against a pinned official contract, while retaining the bootstrap only as validated evidence and preserving explicit unknowns about behavior portability.",
+      "experience_commitments": [
+        {
+          "id": "HC-001",
+          "source": {
+            "authority": "user",
+            "reference": "01_REQUIREMENTS_PRD.md G4 and 03_ACCEPTANCE_CRITERIA.md Gate D"
+          },
+          "statement": "Users can see what an image contains and its privacy/loss status without exposing private payload content."
+        },
+        {
+          "id": "HC-002",
+          "source": {
+            "authority": "user",
+            "reference": "01_REQUIREMENTS_PRD.md NG6 and Logical Layer L10"
+          },
+          "statement": "Harness-native state is preserved honestly as typed native content when it cannot be normalized."
+        },
+        {
+          "id": "HC-003",
+          "source": {
+            "authority": "user",
+            "reference": "01_REQUIREMENTS_PRD.md S4"
+          },
+          "statement": "Every export, migration, and restore accounts for all source items without silent loss."
+        },
+        {
+          "id": "HC-004",
+          "source": {
+            "authority": "user",
+            "reference": "03_ACCEPTANCE_CRITERIA.md Gates C, E and false-completion rules"
+          },
+          "statement": "Portability claims are backed by P0-P3 evidence and never inferred from fixture or demo success."
+        },
+        {
+          "id": "HC-005",
+          "source": {
+            "authority": "user",
+            "reference": "00_CONTEXT_FOR_CODEX.md sections 15, 20 and 40"
+          },
+          "statement": "Agent Image must preserve the semantics of what a developed agent has become rather than collapse into a starting profile, prompt bundle, skill pack, or whole-directory archive."
+        },
+        {
+          "id": "HC-006",
+          "source": {
+            "authority": "user",
+            "reference": "00_CONTEXT_FOR_CODEX.md sections 5 and 27"
+          },
+          "statement": "Raw experience, causal and temporal structure, replay material, and provenance remain preservable or referenceable; summaries are derived views and do not authorize source deletion."
+        },
+        {
+          "id": "HC-007",
+          "source": {
+            "authority": "user",
+            "reference": "00_CONTEXT_FOR_CODEX.md sections 22, 29 and 36"
+          },
+          "statement": "A trained-agent portability claim requires an unchanged model, recorded practice, freeze, fresh restore, the same evaluation, and retained learned behavior."
+        },
+        {
+          "id": "HC-008",
+          "source": {
+            "authority": "user",
+            "reference": "00_CONTEXT_FOR_CODEX.md sections 10, 11 and 26"
+          },
+          "statement": "Explorable World and Training Ground remain distinct Habitat categories; Agent Image preserves developed state without redefining either category as a v0.1 runtime feature."
+        },
+        {
+          "id": "HC-009",
+          "source": {
+            "authority": "user",
+            "reference": "00_CONTEXT_FOR_CODEX.md section 34"
+          },
+          "statement": "Skill artifacts and acquired skill state remain distinct so the protocol cannot mistake a skills directory for a trained agent."
+        }
+      ],
+      "horizon_goal": "Deliver a harness-neutral Agent Image v0.1 protocol and toolchain with real Hermes, OpenClaw, DSH, and vHarness adapters; at least three P1 native restores; one Hermes-to-OpenClaw P2 migration; privacy-safe inspect, verify, diff, and redact; a restored trained-agent demonstration; and a third-party-extensible registry.",
+      "horizon_id": "open-agent-image-v0.1",
+      "horizon_version": "1.0",
+      "open_design_options": [
+        {
+          "id": "HO-001",
+          "source": {
+            "authority": "user",
+            "reference": "02_ENGINEERING_DESIGN.md sections 3 and 6"
+          },
+          "statement": "OCI may be added as a later transport without changing the logical image model."
+        },
+        {
+          "id": "HO-002",
+          "source": {
+            "authority": "user",
+            "reference": "02_ENGINEERING_DESIGN.md sections 2 and 10"
+          },
+          "statement": "Production adapters may be separate packages while conforming to the same core contract."
+        },
+        {
+          "id": "HO-003",
+          "source": {
+            "authority": "agent-proposal",
+            "reference": "ADR-0001 unresolved release decision"
+          },
+          "statement": "The final open-source license remains to be selected before release."
+        },
+        {
+          "id": "HO-004",
+          "source": {
+            "authority": "user",
+            "reference": "00_CONTEXT_FOR_CODEX.md sections 6, 7 and 27"
+          },
+          "statement": "Context Body, Pulse Image, Reprise, replay, and consolidation may later map into or interoperate with Agent Image without becoming v0.1 schema promises."
+        },
+        {
+          "id": "HO-005",
+          "source": {
+            "authority": "user",
+            "reference": "00_CONTEXT_FOR_CODEX.md sections 24, 25 and 39"
+          },
+          "statement": "vHabitat and Trainable Agent Team or Team Image remain long-horizon extensions and are not v0.1 blockers."
+        },
+        {
+          "id": "HO-006",
+          "source": {
+            "authority": "user",
+            "reference": "00_CONTEXT_FOR_CODEX.md section 23"
+          },
+          "statement": "Skill-preserving, privacy-stripping export remains a future research and product option beyond v0.1 layer-level redaction."
+        },
+        {
+          "id": "HO-007",
+          "source": {
+            "authority": "user",
+            "reference": "00_CONTEXT_FOR_CODEX.md section 35"
+          },
+          "statement": "Contextual Skill Attractor remains a benchmark-shaping research hypothesis and must not be encoded as established protocol fact."
+        }
+      ],
+      "scope_decisions": [],
+      "status": "anchored"
+    }
+  },
+  "events": [
+    {
+      "at": "2026-08-24T23:35:51+00:00",
+      "event_id": "evt-000001",
+      "project_id": "open-agent-image",
+      "type": "PROJECT_INITIALIZED"
+    },
+    {
+      "at": "2026-08-24T23:35:51+00:00",
+      "context": "agent-image-v0.1",
+      "event_id": "evt-000002",
+      "type": "CONTEXT_ADDED"
+    },
+    {
+      "artifact": "vharness-local-alpha",
+      "at": "2026-08-24T23:35:51+00:00",
+      "authority": true,
+      "context": "agent-image-v0.1",
+      "event_id": "evt-000003",
+      "role": "formal_candidate",
+      "type": "ARTIFACT_ADDED"
+    },
+    {
+      "artifact": "vharness-local-alpha",
+      "at": "2026-08-24T23:35:51+00:00",
+      "context": "agent-image-v0.1",
+      "created_debts": [],
+      "event_id": "evt-000004",
+      "reason": "vHarness remains evidence and a future adapter target, but its alpha types, OCI transport, replay Guest, and authority model are not Agent Image Core premises.",
+      "revoked_artifacts": [
+        "vharness-local-alpha"
+      ],
+      "scope_mutation": false,
+      "type": "ARTIFACT_DEMOTED"
+    },
+    {
+      "at": "2026-08-24T23:36:13+00:00",
+      "context": "agent-image-v0.1",
+      "event_id": "evt-000005",
+      "horizon_id": "open-agent-image-v0.1",
+      "type": "DESIGN_HORIZON_ANCHORED"
+    },
+    {
+      "artifact": "agent-image-core-bootstrap",
+      "at": "2026-08-25T00:10:10+00:00",
+      "authority": false,
+      "context": "agent-image-v0.1",
+      "event_id": "evt-000006",
+      "role": "validated_demo",
+      "type": "ARTIFACT_ADDED"
+    },
+    {
+      "at": "2026-08-25T00:10:10+00:00",
+      "capsule_id": "agent-image-core-bootstrap-2026-08-24",
+      "context": "agent-image-v0.1",
+      "event_id": "evt-000007",
+      "source_artifact": "agent-image-core-bootstrap",
+      "type": "CAPSULE_SEALED"
+    },
+    {
+      "at": "2026-08-25T00:10:10+00:00",
+      "context": "agent-image-v0.1",
+      "event_id": "evt-000008",
+      "horizon_id": "open-agent-image-v0.1",
+      "type": "DESIGN_HORIZON_ANCHORED"
+    },
+    {
+      "at": "2026-08-25T00:11:42+00:00",
+      "context": "agent-image-v0.1-formal",
+      "event_id": "evt-000009",
+      "type": "CONTEXT_ADDED"
+    },
+    {
+      "artifact": "agent-image-v0.1-formal-root",
+      "at": "2026-08-25T00:11:42+00:00",
+      "authority": false,
+      "context": "agent-image-v0.1-formal",
+      "event_id": "evt-000010",
+      "role": "unresolved",
+      "type": "ARTIFACT_ADDED"
+    },
+    {
+      "at": "2026-08-25T00:11:43+00:00",
+      "child": "agent-image-v0.1-formal-root",
+      "event_id": "evt-000011",
+      "link_type": "epistemic",
+      "parent": "agent-image-core-bootstrap",
+      "type": "LINEAGE_LINKED"
+    },
+    {
+      "at": "2026-08-25T00:11:43+00:00",
+      "child": "agent-image-v0.1-formal-root",
+      "event_id": "evt-000012",
+      "link_type": "epistemic",
+      "parent": "vharness-local-alpha",
+      "type": "LINEAGE_LINKED"
+    },
+    {
+      "at": "2026-08-25T00:11:43+00:00",
+      "context": "agent-image-v0.1-formal",
+      "event_id": "evt-000013",
+      "horizon_id": "open-agent-image-v0.1",
+      "type": "DESIGN_HORIZON_ANCHORED"
+    },
+    {
+      "artifact": "agent-image-content-kernel-candidate",
+      "at": "2026-08-25T01:17:39+00:00",
+      "authority": false,
+      "context": "agent-image-v0.1-formal",
+      "event_id": "evt-000014",
+      "role": "unresolved",
+      "type": "ARTIFACT_ADDED"
+    },
+    {
+      "artifact": "agent-image-v0.1-formal-root",
+      "at": "2026-08-25T01:18:20+00:00",
+      "event_id": "evt-000015",
+      "plan_id": "agent-image-v0.1-formal-plan",
+      "type": "ARCHITECTURE_PLAN_REGISTERED"
+    },
+    {
+      "artifact": "agent-image-content-kernel-candidate",
+      "at": "2026-08-25T01:38:02+00:00",
+      "event_id": "evt-000016",
+      "report_id": "gate-content-kernel-requalification-2026-08-24",
+      "type": "GATE_REPORT_REGISTERED"
+    },
+    {
+      "artifact": "agent-image-content-kernel-candidate",
+      "at": "2026-08-25T01:38:03+00:00",
+      "context": "agent-image-v0.1-formal",
+      "event_id": "evt-000017",
+      "gate_report_id": "gate-content-kernel-requalification-2026-08-24",
+      "plan_id": "agent-image-v0.1-formal-plan",
+      "type": "ARTIFACT_REQUALIFIED"
+    },
+    {
+      "artifact": "agent-image-hermes-p1",
+      "at": "2026-08-25T01:38:03+00:00",
+      "authority": false,
+      "context": "agent-image-v0.1-formal",
+      "event_id": "evt-000018",
+      "role": "formal_candidate",
+      "type": "ARTIFACT_ADDED"
+    },
+    {
+      "at": "2026-08-25T01:38:04+00:00",
+      "child": "agent-image-hermes-p1",
+      "event_id": "evt-000019",
+      "link_type": "implementation",
+      "parent": "agent-image-content-kernel-candidate",
+      "type": "LINEAGE_LINKED"
+    },
+    {
+      "at": "2026-08-25T01:38:04+00:00",
+      "child": "agent-image-hermes-p1",
+      "event_id": "evt-000020",
+      "link_type": "epistemic",
+      "parent": "agent-image-v0.1-formal-root",
+      "type": "LINEAGE_LINKED"
+    },
+    {
+      "artifact": "agent-image-hermes-p1",
+      "at": "2026-08-25T01:39:22+00:00",
+      "event_id": "evt-000021",
+      "plan_id": "agent-image-hermes-p1-epoch-plan",
+      "type": "ARCHITECTURE_PLAN_REGISTERED"
+    },
+    {
+      "artifact": "agent-image-hermes-p1",
+      "at": "2026-08-25T01:39:23+00:00",
+      "event_id": "evt-000022",
+      "report_id": "gate-hermes-p1-2026-08-24",
+      "type": "GATE_REPORT_REGISTERED"
+    },
+    {
+      "at": "2026-08-25T01:40:11+00:00",
+      "capsule_id": "agent-image-v0.1-formal-root-2026-08-24",
+      "context": "agent-image-v0.1-formal",
+      "event_id": "evt-000023",
+      "source_artifact": "agent-image-v0.1-formal-root",
+      "type": "CAPSULE_SEALED"
+    },
+    {
+      "artifact": "agent-image-hermes-p1",
+      "at": "2026-08-25T01:40:12+00:00",
+      "context": "agent-image-v0.1-formal",
+      "event_id": "evt-000024",
+      "gate_report_id": "gate-hermes-p1-2026-08-24",
+      "plan_id": "agent-image-hermes-p1-epoch-plan",
+      "type": "ARTIFACT_FORMALIZED"
+    },
+    {
+      "artifact": "agent-image-alpha1-reproducible",
+      "at": "2026-08-25T03:27:02+00:00",
+      "authority": false,
+      "context": "agent-image-v0.1-formal",
+      "event_id": "evt-000025",
+      "role": "formal_candidate",
+      "type": "ARTIFACT_ADDED"
+    },
+    {
+      "at": "2026-08-25T03:27:02+00:00",
+      "child": "agent-image-alpha1-reproducible",
+      "event_id": "evt-000026",
+      "link_type": "implementation",
+      "parent": "agent-image-hermes-p1",
+      "type": "LINEAGE_LINKED"
+    },
+    {
+      "artifact": "agent-image-alpha1-reproducible",
+      "at": "2026-08-25T03:27:03+00:00",
+      "event_id": "evt-000027",
+      "plan_id": "agent-image-alpha1-reproducibility-plan",
+      "type": "ARCHITECTURE_PLAN_REGISTERED"
+    },
+    {
+      "artifact": "agent-image-alpha1-reproducible",
+      "at": "2026-08-25T03:27:03+00:00",
+      "event_id": "evt-000028",
+      "report_id": "gate-alpha1-reproducibility-2026-08-24",
+      "type": "GATE_REPORT_REGISTERED"
+    },
+    {
+      "artifact": "agent-image-alpha1-reproducible",
+      "at": "2026-08-25T03:27:03+00:00",
+      "context": "agent-image-v0.1-formal",
+      "event_id": "evt-000029",
+      "gate_report_id": "gate-alpha1-reproducibility-2026-08-24",
+      "plan_id": "agent-image-alpha1-reproducibility-plan",
+      "type": "ARTIFACT_FORMALIZED"
+    }
+  ],
+  "gate_reports": {
+    "gate-alpha1-reproducibility-2026-08-24": {
+      "artifact": "agent-image-alpha1-reproducible",
+      "blocking_debt_ids": [],
+      "integration_results": {
+        "gate-alpha-clean-install": "pass"
+      },
+      "module_results": {
+        "alpha-evidence": "pass",
+        "repository-boundary": "pass",
+        "reproducible-package": "pass"
+      },
+      "plan_id": "agent-image-alpha1-reproducibility-plan",
+      "report_id": "gate-alpha1-reproducibility-2026-08-24",
+      "result": "pass",
+      "scope": "formalization"
+    },
+    "gate-content-kernel-requalification-2026-08-24": {
+      "artifact": "agent-image-content-kernel-candidate",
+      "blocking_debt_ids": [],
+      "integration_results": {
+        "gate-hermes-real-roundtrip": "pass"
+      },
+      "module_results": {
+        "content-kernel": "pass"
+      },
+      "plan_id": "agent-image-v0.1-formal-plan",
+      "report_id": "gate-content-kernel-requalification-2026-08-24",
+      "result": "pass",
+      "scope": "requalification"
+    },
+    "gate-hermes-p1-2026-08-24": {
+      "artifact": "agent-image-hermes-p1",
+      "blocking_debt_ids": [],
+      "integration_results": {
+        "gate-hermes-real-roundtrip": "pass"
+      },
+      "module_results": {
+        "adapter-runtime": "pass",
+        "content-kernel": "pass",
+        "formal-cli": "pass",
+        "hermes-p1": "pass"
+      },
+      "plan_id": "agent-image-hermes-p1-epoch-plan",
+      "report_id": "gate-hermes-p1-2026-08-24",
+      "result": "pass",
+      "scope": "formalization"
+    }
+  },
+  "project_id": "open-agent-image",
+  "schema_version": "1.0.0"
+}

@@ -1,0 +1,17 @@
+{
+  "artifact": "agent-image-hermes-p1",
+  "blocking_debt_ids": [],
+  "integration_results": {
+    "gate-hermes-real-roundtrip": "pass"
+  },
+  "module_results": {
+    "adapter-runtime": "pass",
+    "content-kernel": "pass",
+    "formal-cli": "pass",
+    "hermes-p1": "pass"
+  },
+  "plan_id": "agent-image-hermes-p1-epoch-plan",
+  "report_id": "gate-hermes-p1-2026-08-24",
+  "result": "pass",
+  "scope": "formalization"
+}

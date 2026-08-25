@@ -1,0 +1,72 @@
+{
+  "capsule_version": "2.0",
+  "capsule_id": "agent-image-v0.1-formal-root-2026-08-24",
+  "source_artifact": "agent-image-v0.1-formal-root",
+  "context": "agent-image-v0.1-formal",
+  "beliefs": [
+    {
+      "id": "FR-B-001",
+      "statement": "The inherited context is consistent with the normative PRD, engineering design, and acceptance criteria and acts as interpretive context rather than a fourth specification.",
+      "type": "observation",
+      "confidence": 0.98,
+      "scope": ["Agent Image v0.1 supplied document set", "2026-08-24 consistency audit"],
+      "evidence_scope": ["Agent Image v0.1 supplied document set", "2026-08-24 consistency audit"],
+      "supporting_evidence": ["docs/AUDIT_PACKET.md", "docs/CONTEXT_INHERITANCE.md"],
+      "counterevidence": [],
+      "falsifier": "A normative requirement is found that cannot coexist with an inherited semantic commitment under the declared authority order.",
+      "provenance": {"source_artifact": "agent-image-v0.1-formal-root", "source_events": ["evt-000010", "evt-000013"]},
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "FR-C-001",
+      "statement": "Protocol timestamp urgency cannot relax evidence, privacy, provenance, explicit-loss, or harness-neutrality gates.",
+      "type": "constraint",
+      "confidence": 1.0,
+      "scope": ["all Agent Image v0.1 implementation and publication claims"],
+      "evidence_scope": ["all Agent Image v0.1 implementation and publication claims"],
+      "supporting_evidence": ["docs/CONTEXT_INHERITANCE.md", "docs/epistemic/design-horizon.json"],
+      "counterevidence": [],
+      "falsifier": null,
+      "provenance": {"source_artifact": "agent-image-v0.1-formal-root", "source_events": ["evt-000010", "evt-000013"]},
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "FR-C-002",
+      "statement": "The bootstrap and vHarness trees provide scoped knowledge but do not govern the formal Core architecture without explicit requalification.",
+      "type": "constraint",
+      "confidence": 1.0,
+      "scope": ["agent-image-v0.1-formal implementation lineage"],
+      "evidence_scope": ["agent-image-v0.1-formal implementation lineage"],
+      "supporting_evidence": ["docs/epistemic/hermes-epoch-inheritance-review.md", "docs/epistemic/architecture-plan-v0.1.json"],
+      "counterevidence": [],
+      "falsifier": null,
+      "provenance": {"source_artifact": "agent-image-v0.1-formal-root", "source_events": ["evt-000010", "evt-000011", "evt-000012"]},
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "FR-U-001",
+      "statement": "It remains unknown which persistent or contextual state is causally necessary for learned behavior to survive same-model fresh restore.",
+      "type": "unknown",
+      "confidence": 0.5,
+      "scope": ["trained-agent behavioral portability"],
+      "evidence_scope": [],
+      "supporting_evidence": [],
+      "counterevidence": [],
+      "falsifier": null,
+      "provenance": {"source_artifact": "agent-image-v0.1-formal-root", "source_events": ["evt-000013"]},
+      "supersedes": null,
+      "status": "active"
+    }
+  ],
+  "extraction_coverage": {
+    "observations": "captured",
+    "hypotheses": "none-observed",
+    "constraints": "captured",
+    "failures": "none-observed",
+    "unknowns": "captured",
+    "raw_evidence": "captured"
+  }
+}

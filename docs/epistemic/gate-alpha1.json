@@ -1,0 +1,16 @@
+{
+  "report_id": "gate-alpha1-reproducibility-2026-08-24",
+  "scope": "formalization",
+  "plan_id": "agent-image-alpha1-reproducibility-plan",
+  "artifact": "agent-image-alpha1-reproducible",
+  "module_results": {
+    "repository-boundary": "pass",
+    "reproducible-package": "pass",
+    "alpha-evidence": "pass"
+  },
+  "integration_results": {
+    "gate-alpha-clean-install": "pass"
+  },
+  "blocking_debt_ids": [],
+  "result": "pass"
+}

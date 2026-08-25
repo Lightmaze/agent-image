@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-image.org/spec/v0.1/manifest.schema.json",
+  "title": "Agent Image Manifest v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["spec", "image", "layers", "privacy", "provenance"],
+  "properties": {
+    "spec": { "const": "agent-image/v0.1" },
+    "image": { "$ref": "#/$defs/image" },
+    "runtime": { "$ref": "#/$defs/runtime" },
+    "layers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/layer" }
+    },
+    "development": { "$ref": "#/$defs/development" },
+    "evaluations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evaluation" }
+    },
+    "lineage": { "$ref": "#/$defs/lineage" },
+    "privacy": { "$ref": "#/$defs/privacy" },
+    "provenance": { "$ref": "#/$defs/provenance" },
+    "extensions": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)+$" },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "imageRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "uri": { "$ref": "#/$defs/nonEmptyString" },
+        "digest": { "$ref": "#/$defs/digest" }
+      },
+      "anyOf": [
+        { "required": ["uri"] },
+        { "required": ["digest"] }
+      ]
+    },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "created_at", "digest"],
+      "properties": {
+        "name": { "$ref": "#/$defs/nonEmptyString" },
+        "version": { "$ref": "#/$defs/nonEmptyString" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "digest": { "$ref": "#/$defs/digest" },
+        "description": { "type": "string" }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "harness": { "$ref": "#/$defs/versionedId" },
+        "adapter": { "$ref": "#/$defs/versionedId" },
+        "model": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "provider": { "$ref": "#/$defs/nonEmptyString" },
+            "family": { "$ref": "#/$defs/nonEmptyString" },
+            "id": { "$ref": "#/$defs/nonEmptyString" },
+            "digest": { "$ref": "#/$defs/digest" }
+          }
+        }
+      }
+    },
+    "versionedId": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "$ref": "#/$defs/nonEmptyString" },
+        "version": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": { "$ref": "#/$defs/nonEmptyString" },
+        "origin": { "$ref": "#/$defs/nonEmptyString" },
+        "reason": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "kind", "media_type", "path", "digest", "size", "privacy", "portability"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/nonEmptyString" },
+        "kind": {
+          "enum": [
+            "identity", "skills", "memory", "experience", "workspace",
+            "development", "evaluation", "native", "other"
+          ]
+        },
+        "media_type": { "$ref": "#/$defs/nonEmptyString" },
+        "path": {
+          "type": "string",
+          "pattern": "^layers/(identity|skills|memory|experience|workspace|development|evaluation|native|other)/[^\\\\]+$"
+        },
+        "digest": { "$ref": "#/$defs/digest" },
+        "size": { "type": "integer", "minimum": 0 },
+        "privacy": { "enum": ["public", "private", "secret", "unknown"] },
+        "portability": { "enum": ["portable", "adapter-specific", "opaque"] },
+        "source": { "$ref": "#/$defs/source" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["session", "evaluation", "log", "other"] },
+        "path": { "$ref": "#/$defs/nonEmptyString" },
+        "uri": { "$ref": "#/$defs/nonEmptyString" },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "development": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method"],
+      "properties": {
+        "method": {
+          "enum": ["habitat", "self_play", "human_coaching", "rl", "sft", "mixed", "unknown"]
+        },
+        "started_at": { "type": "string", "format": "date-time" },
+        "ended_at": { "type": "string", "format": "date-time" },
+        "duration_seconds": { "type": "integer", "minimum": 0 },
+        "episodes": { "type": "integer", "minimum": 0 },
+        "habitat": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": { "$ref": "#/$defs/nonEmptyString" },
+            "version": { "$ref": "#/$defs/nonEmptyString" },
+            "uri": { "$ref": "#/$defs/nonEmptyString" }
+          }
+        },
+        "notes": { "type": "string" },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evidence" }
+        }
+      }
+    },
+    "score": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["score"],
+      "properties": { "score": { "type": "number" } }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status"],
+      "properties": {
+        "id": { "$ref": "#/$defs/nonEmptyString" },
+        "status": { "enum": ["self_reported", "reproduced", "third_party"] },
+        "before": { "$ref": "#/$defs/score" },
+        "after": { "$ref": "#/$defs/score" },
+        "evidence": { "$ref": "#/$defs/evidence" }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base": { "$ref": "#/$defs/imageRef" },
+        "parent": { "$ref": "#/$defs/imageRef" },
+        "fork_reason": { "type": "string" }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["default", "public_build", "unresolved_items"],
+      "properties": {
+        "default": { "enum": ["private"] },
+        "public_build": { "type": "boolean" },
+        "unresolved_items": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_harness", "source_adapter", "export_tool_version"],
+      "properties": {
+        "source_harness": { "$ref": "#/$defs/nonEmptyString" },
+        "source_adapter": { "$ref": "#/$defs/nonEmptyString" },
+        "export_tool_version": { "$ref": "#/$defs/nonEmptyString" },
+        "source_uri": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    }
+  }
+}

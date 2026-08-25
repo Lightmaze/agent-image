@@ -1,0 +1,181 @@
+{
+  "active_probes": [
+    {
+      "advances": [
+        "HC-002",
+        "HC-003",
+        "HC-005",
+        "HC-006",
+        "HC-009",
+        "HO-002",
+        "HO-004"
+      ],
+      "id": "P-002",
+      "question": "Can a formal Core and fifth-adapter contract represent development provenance plus raw, referenced, and derived experience without harness leakage or summary-for-source substitution?"
+    },
+    {
+      "advances": [
+        "HC-001",
+        "HC-002",
+        "HC-003",
+        "HC-004",
+        "HC-005",
+        "HC-009"
+      ],
+      "id": "P-003",
+      "question": "Can Hermes perform a real P1 developed-state round trip against a pinned official contract with source immutability, privacy safety, and complete loss accounting?"
+    },
+    {
+      "advances": [
+        "HC-004",
+        "HC-006",
+        "HC-007",
+        "HC-009",
+        "HO-004",
+        "HO-006",
+        "HO-007"
+      ],
+      "id": "P-004",
+      "question": "Which persistent/contextual state is necessary for learned behavior to survive same-model fresh restore under the same evaluation?"
+    }
+  ],
+  "context": "agent-image-v0.1-formal",
+  "epoch_goal": "Prepare a publication-ready protocol timestamp and formal Core architecture, then prove Hermes P1 against a pinned official contract, while retaining the bootstrap only as validated evidence and preserving explicit unknowns about behavior portability.",
+  "experience_commitments": [
+    {
+      "id": "HC-001",
+      "source": {
+        "authority": "user",
+        "reference": "01_REQUIREMENTS_PRD.md G4 and 03_ACCEPTANCE_CRITERIA.md Gate D"
+      },
+      "statement": "Users can see what an image contains and its privacy/loss status without exposing private payload content."
+    },
+    {
+      "id": "HC-002",
+      "source": {
+        "authority": "user",
+        "reference": "01_REQUIREMENTS_PRD.md NG6 and Logical Layer L10"
+      },
+      "statement": "Harness-native state is preserved honestly as typed native content when it cannot be normalized."
+    },
+    {
+      "id": "HC-003",
+      "source": {
+        "authority": "user",
+        "reference": "01_REQUIREMENTS_PRD.md S4"
+      },
+      "statement": "Every export, migration, and restore accounts for all source items without silent loss."
+    },
+    {
+      "id": "HC-004",
+      "source": {
+        "authority": "user",
+        "reference": "03_ACCEPTANCE_CRITERIA.md Gates C, E and false-completion rules"
+      },
+      "statement": "Portability claims are backed by P0-P3 evidence and never inferred from fixture or demo success."
+    },
+    {
+      "id": "HC-005",
+      "source": {
+        "authority": "user",
+        "reference": "00_CONTEXT_FOR_CODEX.md sections 15, 20 and 40"
+      },
+      "statement": "Agent Image must preserve the semantics of what a developed agent has become rather than collapse into a starting profile, prompt bundle, skill pack, or whole-directory archive."
+    },
+    {
+      "id": "HC-006",
+      "source": {
+        "authority": "user",
+        "reference": "00_CONTEXT_FOR_CODEX.md sections 5 and 27"
+      },
+      "statement": "Raw experience, causal and temporal structure, replay material, and provenance remain preservable or referenceable; summaries are derived views and do not authorize source deletion."
+    },
+    {
+      "id": "HC-007",
+      "source": {
+        "authority": "user",
+        "reference": "00_CONTEXT_FOR_CODEX.md sections 22, 29 and 36"
+      },
+      "statement": "A trained-agent portability claim requires an unchanged model, recorded practice, freeze, fresh restore, the same evaluation, and retained learned behavior."
+    },
+    {
+      "id": "HC-008",
+      "source": {
+        "authority": "user",
+        "reference": "00_CONTEXT_FOR_CODEX.md sections 10, 11 and 26"
+      },
+      "statement": "Explorable World and Training Ground remain distinct Habitat categories; Agent Image preserves developed state without redefining either category as a v0.1 runtime feature."
+    },
+    {
+      "id": "HC-009",
+      "source": {
+        "authority": "user",
+        "reference": "00_CONTEXT_FOR_CODEX.md section 34"
+      },
+      "statement": "Skill artifacts and acquired skill state remain distinct so the protocol cannot mistake a skills directory for a trained agent."
+    }
+  ],
+  "horizon_goal": "Deliver a harness-neutral Agent Image v0.1 protocol and toolchain with real Hermes, OpenClaw, DSH, and vHarness adapters; at least three P1 native restores; one Hermes-to-OpenClaw P2 migration; privacy-safe inspect, verify, diff, and redact; a restored trained-agent demonstration; and a third-party-extensible registry.",
+  "horizon_id": "open-agent-image-v0.1",
+  "horizon_version": "1.0",
+  "open_design_options": [
+    {
+      "id": "HO-001",
+      "source": {
+        "authority": "user",
+        "reference": "02_ENGINEERING_DESIGN.md sections 3 and 6"
+      },
+      "statement": "OCI may be added as a later transport without changing the logical image model."
+    },
+    {
+      "id": "HO-002",
+      "source": {
+        "authority": "user",
+        "reference": "02_ENGINEERING_DESIGN.md sections 2 and 10"
+      },
+      "statement": "Production adapters may be separate packages while conforming to the same core contract."
+    },
+    {
+      "id": "HO-003",
+      "source": {
+        "authority": "agent-proposal",
+        "reference": "ADR-0001 unresolved release decision"
+      },
+      "statement": "The final open-source license remains to be selected before release."
+    },
+    {
+      "id": "HO-004",
+      "source": {
+        "authority": "user",
+        "reference": "00_CONTEXT_FOR_CODEX.md sections 6, 7 and 27"
+      },
+      "statement": "Context Body, Pulse Image, Reprise, replay, and consolidation may later map into or interoperate with Agent Image without becoming v0.1 schema promises."
+    },
+    {
+      "id": "HO-005",
+      "source": {
+        "authority": "user",
+        "reference": "00_CONTEXT_FOR_CODEX.md sections 24, 25 and 39"
+      },
+      "statement": "vHabitat and Trainable Agent Team or Team Image remain long-horizon extensions and are not v0.1 blockers."
+    },
+    {
+      "id": "HO-006",
+      "source": {
+        "authority": "user",
+        "reference": "00_CONTEXT_FOR_CODEX.md section 23"
+      },
+      "statement": "Skill-preserving, privacy-stripping export remains a future research and product option beyond v0.1 layer-level redaction."
+    },
+    {
+      "id": "HO-007",
+      "source": {
+        "authority": "user",
+        "reference": "00_CONTEXT_FOR_CODEX.md section 35"
+      },
+      "statement": "Contextual Skill Attractor remains a benchmark-shaping research hypothesis and must not be encoded as established protocol fact."
+    }
+  ],
+  "scope_decisions": [],
+  "status": "anchored"
+}

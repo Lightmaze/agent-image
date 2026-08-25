@@ -1,0 +1,14 @@
+{
+  "artifact": "agent-image-content-kernel-candidate",
+  "blocking_debt_ids": [],
+  "integration_results": {
+    "gate-hermes-real-roundtrip": "pass"
+  },
+  "module_results": {
+    "content-kernel": "pass"
+  },
+  "plan_id": "agent-image-v0.1-formal-plan",
+  "report_id": "gate-content-kernel-requalification-2026-08-24",
+  "result": "pass",
+  "scope": "requalification"
+}

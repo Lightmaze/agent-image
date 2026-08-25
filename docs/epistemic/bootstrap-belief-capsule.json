@@ -1,0 +1,135 @@
+{
+  "capsule_version": "2.0",
+  "capsule_id": "agent-image-core-bootstrap-2026-08-24",
+  "source_artifact": "agent-image-core-bootstrap",
+  "context": "agent-image-v0.1",
+  "beliefs": [
+    {
+      "id": "B-001",
+      "statement": "An explicit harness-neutral inventory can be packed into byte-deterministic .aimg archives and reopened for path, checksum, layer digest, privacy, and operation-report verification in the tested Windows/Python fixture environment.",
+      "type": "observation",
+      "confidence": 0.95,
+      "scope": ["Windows workspace", "Python 3.12", "synthetic fixture adapter", "22-test bootstrap suite"],
+      "evidence_scope": ["Windows workspace", "Python 3.12", "synthetic fixture adapter", "22-test bootstrap suite"],
+      "supporting_evidence": ["docs/BOOTSTRAP_ACCEPTANCE.md", "tests/test_core.py", "tests/test_security.py"],
+      "counterevidence": [],
+      "falsifier": "A repeated build from identical bytes produces a different archive, or a tested malformed archive passes verification.",
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": ["bootstrap-validation-2026-08-24"]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "B-002",
+      "statement": "The bootstrap Core can keep production harness vocabulary and mappings outside Core modules while exercising the container through an explicitly test-only fixture adapter.",
+      "type": "observation",
+      "confidence": 0.9,
+      "scope": ["current bootstrap source tree", "Core import firewall scan"],
+      "evidence_scope": ["current bootstrap source tree", "Core import firewall scan"],
+      "supporting_evidence": ["docs/BOOTSTRAP_ACCEPTANCE.md", "src/agent_image/adapters/fixture.py", "docs/engineering/MOCK_INVENTORY.generated.md"],
+      "counterevidence": [],
+      "falsifier": "A production adapter requires a harness-specific field in the Core manifest or a production harness import in Core.",
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": ["bootstrap-import-firewall-2026-08-24"]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "B-003",
+      "statement": "The bootstrap privacy path rejects the declared secret filename and structured JSON/YAML key cases and creates a separately verified public image without private fixture layers.",
+      "type": "observation",
+      "confidence": 0.9,
+      "scope": ["v0.1 filename deny rules", "tested JSON/YAML secret keys", "synthetic fixture layers"],
+      "evidence_scope": ["v0.1 filename deny rules", "tested JSON/YAML secret keys", "synthetic fixture layers"],
+      "supporting_evidence": ["tests/test_security.py", "tests/test_core.py", "spec/v0.1/privacy.md"],
+      "counterevidence": [],
+      "falsifier": "A covered secret case enters a verified image or private fixture bytes appear in inspect/diff/public output.",
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": ["bootstrap-privacy-validation-2026-08-24"]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "C-001",
+      "statement": "Fixture evidence cannot establish production adapter support, P1/P2/P3 portability, universal DLP, provenance authenticity, or trained-agent behavior retention.",
+      "type": "constraint",
+      "confidence": 1.0,
+      "scope": ["all claims derived from the bootstrap fixture"],
+      "evidence_scope": ["all claims derived from the bootstrap fixture"],
+      "supporting_evidence": ["README.md", "docs/PROJECT_STATUS.md", "docs/BOOTSTRAP_ACCEPTANCE.md", "SECURITY.md"],
+      "counterevidence": [],
+      "falsifier": null,
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": ["bootstrap-scope-boundary-2026-08-24"]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "F-001",
+      "statement": "The bootstrap evidence contains no production harness round trip, no positive developed-state/raw-experience fixture, and no same-model fresh-restore behavioral evaluation.",
+      "type": "failure",
+      "confidence": 1.0,
+      "scope": ["bootstrap acceptance evidence"],
+      "evidence_scope": ["bootstrap acceptance evidence"],
+      "supporting_evidence": ["docs/PROJECT_STATUS.md", "docs/BOOTSTRAP_ACCEPTANCE.md", "tests/fixtures/minimal/inventory.yaml"],
+      "counterevidence": [],
+      "falsifier": null,
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": ["context-inheritance-audit-2026-08-24"]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "U-001",
+      "statement": "It is unknown whether the current logical model and adapter boundary are sufficient for real Hermes, OpenClaw, DSH, vHarness, and a fifth harness without Core schema changes.",
+      "type": "unknown",
+      "confidence": 0.5,
+      "scope": ["production adapter ecosystem"],
+      "evidence_scope": [],
+      "supporting_evidence": [],
+      "counterevidence": [],
+      "falsifier": null,
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": ["context-inheritance-audit-2026-08-24"]
+      },
+      "supersedes": null,
+      "status": "active"
+    },
+    {
+      "id": "U-002",
+      "statement": "It is unknown which persistent/contextual state is necessary for learned behavior to survive same-model fresh restore.",
+      "type": "unknown",
+      "confidence": 0.5,
+      "scope": ["trained-agent behavior retention"],
+      "evidence_scope": [],
+      "supporting_evidence": [],
+      "counterevidence": [],
+      "falsifier": null,
+      "provenance": {
+        "source_artifact": "agent-image-core-bootstrap",
+        "source_events": ["context-inheritance-audit-2026-08-24"]
+      },
+      "supersedes": null,
+      "status": "active"
+    }
+  ],
+  "extraction_coverage": {
+    "observations": "captured",
+    "hypotheses": "none-observed",
+    "constraints": "captured",
+    "failures": "captured",
+    "unknowns": "captured",
+    "raw_evidence": "captured"
+  }
+}
