@@ -1,0 +1,24 @@
+{
+  "kind": "knowledge-capsule",
+  "recorded_at": "2026-08-25",
+  "scope": "Epoch 3 adapter neutrality evidence",
+  "authority": "none",
+  "observations": [
+    "DSH composition remains typed native state; ordered bundles and official dump-config can round-trip without a universal plugin graph.",
+    "vHarness Host Truth and authority cannot be restored by copying journals; a fresh Host domain plus live Guest validation preserves the intended authority boundary.",
+    "A vHarness P1 claim must be scoped to the Guest runtime actually tested. The current proof covers a non-mock persistent process-Guest, not a model-backed or strongly sandboxed Guest.",
+    "A fifth adapter can register through agent_image.adapters and build a valid image using only the installed public SDK; Core schema changes are unnecessary.",
+    "Capability evidence and adapter declarations remain separate: adapters list reports installed contracts with runtime_verified false."
+  ],
+  "release_implications": [
+    "Epoch 3 satisfies four built-in C0 contracts, four Windows P1 paths, and the clean-room extension test.",
+    "Schema freeze may proceed only after the evidence/docs/test audit.",
+    "The negative trained-agent Gate E remains independent and still blocks final v0.1.0."
+  ],
+  "does_not_define": [
+    "architecture",
+    "lifecycle",
+    "release authority",
+    "capability claims beyond linked evidence"
+  ]
+}

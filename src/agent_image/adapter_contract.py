@@ -80,6 +80,7 @@ class AdapterExport:
 class ProductionAdapter(Protocol):
     id: str
     version: str
+    locator_prefix: str
 
     def capabilities(self) -> dict[str, Any]: ...
 

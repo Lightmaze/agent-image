@@ -1,0 +1,4 @@
+{
+  "apiVersion": "clean-room-state/v1",
+  "note": "This synthetic state proves entry-point discovery without changing Agent Image Core."
+}

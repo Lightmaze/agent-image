@@ -8,9 +8,11 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from agent_image import __version__
+from agent_image.adapter_registry import discover_adapters, validate_adapter
 from agent_image.adapters.dsh import DshAdapter, SubprocessDshCLI
 from agent_image.adapters.hermes import HermesAdapter, SubprocessHermesCLI
 from agent_image.adapters.openclaw import OpenClawAdapter, SubprocessOpenClawCLI
+from agent_image.adapters.vharness import SubprocessVHarnessRuntime, VHarnessAdapter
 from agent_image.errors import AgentImageError
 from agent_image.formal_service import (
     build_image,
@@ -47,6 +49,9 @@ def _parser() -> argparse.ArgumentParser:
     build.add_argument("--openclaw-binary", default=os.environ.get("AGENT_IMAGE_OPENCLAW_BIN", "openclaw"))
     build.add_argument("--openclaw-node-binary", default=os.environ.get("AGENT_IMAGE_OPENCLAW_NODE_BIN"))
     build.add_argument("--openclaw-workspace-root", type=Path)
+    build.add_argument("--vharness-source-root", type=Path, default=os.environ.get("AGENT_IMAGE_VHARNESS_ROOT"))
+    build.add_argument("--vharness-node-binary", default=os.environ.get("AGENT_IMAGE_VHARNESS_NODE_BIN"))
+    build.add_argument("--vharness-home", type=Path)
     _common(build)
     inspect = commands.add_parser("inspect", help="Inspect verified image metadata without printing payloads.")
     inspect.add_argument("image", type=Path)
@@ -74,6 +79,9 @@ def _parser() -> argparse.ArgumentParser:
     restore.add_argument("--openclaw-binary", default=os.environ.get("AGENT_IMAGE_OPENCLAW_BIN", "openclaw"))
     restore.add_argument("--openclaw-node-binary", default=os.environ.get("AGENT_IMAGE_OPENCLAW_NODE_BIN"))
     restore.add_argument("--openclaw-workspace-root", type=Path)
+    restore.add_argument("--vharness-source-root", type=Path, default=os.environ.get("AGENT_IMAGE_VHARNESS_ROOT"))
+    restore.add_argument("--vharness-node-binary", default=os.environ.get("AGENT_IMAGE_VHARNESS_NODE_BIN"))
+    restore.add_argument("--vharness-home", type=Path)
     _common(restore)
     migrate = commands.add_parser("migrate", help="Plan semantic migration.")
     migrate.add_argument("image", type=Path)
@@ -122,6 +130,36 @@ def _openclaw(binary: str, node_binary: str | None, workspace_root: Path | None)
     )
 
 
+def _vharness(source_root: Path | None, node_binary: str | None, vharness_home: Path | None) -> VHarnessAdapter:
+    if source_root is None or node_binary is None:
+        raise AgentImageError(
+            "E_ADAPTER_NOT_FOUND",
+            "vHarness operations require --vharness-source-root and --vharness-node-binary.",
+        )
+    return VHarnessAdapter(
+        SubprocessVHarnessRuntime(
+            source_root=Path(source_root),
+            node_binary=node_binary,
+            vharness_home=vharness_home,
+        )
+    )
+
+
+def _external_adapter(prefix: str) -> Any:
+    built_in = {"hermes", "openclaw", "dsh", "vharness"}
+    discovered = discover_adapters()
+    collision = sorted(built_in & set(discovered))
+    if collision:
+        raise AgentImageError(
+            "E_ADAPTER_NOT_FOUND",
+            f"Third-party adapter collides with a built-in locator: {', '.join(collision)}.",
+        )
+    try:
+        return discovered[prefix]
+    except KeyError as error:
+        raise AgentImageError("E_ADAPTER_NOT_FOUND", f"Production adapter is not installed: {prefix}") from error
+
+
 def _emit(value: Any, args: argparse.Namespace) -> None:
     report = getattr(args, "report", None)
     if report is not None:
@@ -142,8 +180,10 @@ def _run(args: argparse.Namespace) -> Any:
             adapter = _dsh(args.dsh_binary, args.dsh_node_binary, args.dsh_home)
         elif adapter_id == "openclaw":
             adapter = _openclaw(args.openclaw_binary, args.openclaw_node_binary, args.openclaw_workspace_root)
+        elif adapter_id == "vharness":
+            adapter = _vharness(args.vharness_source_root, args.vharness_node_binary, args.vharness_home)
         else:
-            raise AgentImageError("E_ADAPTER_NOT_FOUND", f"Production adapter is not implemented: {adapter_id}")
+            adapter = _external_adapter(adapter_id)
         if not args.yes:
             return plan_build(adapter, source=source, policy=args.policy)
         return build_image(
@@ -176,8 +216,10 @@ def _run(args: argparse.Namespace) -> Any:
             adapter = _dsh(args.dsh_binary, args.dsh_node_binary, args.dsh_home)
         elif adapter_id == "openclaw":
             adapter = _openclaw(args.openclaw_binary, args.openclaw_node_binary, args.openclaw_workspace_root)
+        elif adapter_id == "vharness":
+            adapter = _vharness(args.vharness_source_root, args.vharness_node_binary, args.vharness_home)
         else:
-            raise AgentImageError("E_ADAPTER_NOT_FOUND", f"Production adapter is not implemented: {adapter_id}")
+            adapter = _external_adapter(adapter_id)
         return restore_image(adapter, image=args.image, target=target)
     if args.command == "migrate":
         adapter_id, target = _split(args.target)
@@ -188,17 +230,40 @@ def _run(args: argparse.Namespace) -> Any:
             return plan_migration(adapter, image=args.image, target=target)
         return migrate_image(adapter, image=args.image, target=target)
     if args.command == "adapters" and args.adapter_command == "list":
-        adapters = [HermesAdapter(), OpenClawAdapter(), DshAdapter()]
+        adapters = [HermesAdapter(), OpenClawAdapter(), DshAdapter(), VHarnessAdapter()]
+        built_in_prefixes = {adapter.locator_prefix for adapter in adapters}
+        discovered = discover_adapters()
+        collision = sorted(built_in_prefixes & set(discovered))
+        if collision:
+            raise AgentImageError(
+                "E_ADAPTER_NOT_FOUND",
+                f"Third-party adapter collides with a built-in locator: {', '.join(collision)}.",
+            )
+        declarations = [
+            {
+                "id": validate_adapter(adapter, origin="built-in").id,
+                "locator_prefix": adapter.locator_prefix,
+                "version": adapter.version,
+                "capabilities": adapter.capabilities(),
+                "registration": "built-in",
+                "runtime_verified": False,
+            }
+            for adapter in adapters
+        ]
+        declarations.extend(
+            {
+                "id": adapter.id,
+                "locator_prefix": prefix,
+                "version": adapter.version,
+                "capabilities": adapter.capabilities(),
+                "registration": "entry-point",
+                "runtime_verified": False,
+            }
+            for prefix, adapter in sorted(discovered.items())
+        )
         return {
-            "adapters": [
-                {
-                    "id": adapter.id,
-                    "version": adapter.version,
-                    "capabilities": adapter.capabilities(),
-                    "runtime_verified": False,
-                }
-                for adapter in adapters
-            ]
+            "entry_point_group": "agent_image.adapters",
+            "adapters": declarations,
         }
     raise AgentImageError("E_SPEC_INVALID", f"Unknown command: {args.command}")
 

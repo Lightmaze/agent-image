@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Added the vHarness adapter pinned to local `0.1.0-alpha.1`, Node `24.15.0`,
+  pnpm `11.7.0`, source-tree digest, runtime-build digest, and lockfile digest.
+- Verified vHarness P1 through a fresh vhd authority domain and a live non-mock
+  persistent process-Guest; Host authority is regenerated, source provenance
+  is journaled, and four Agent-state items survive a typed round-trip.
+- Added public `agent_image.adapters` entry-point discovery with collision and
+  contract validation.
+- Built and installed a separate clean-room fifth-adapter wheel in a fresh
+  offline venv; it registered and produced a verified P0 image without changing
+  Core.
+
 - Added the production DSH adapter pinned to `@deepseek-ai/dsh@0.1.0-rc.6`.
   It preserves ordered bundles, dependency metadata, profile patches, unknown
   safe profile files, and official `--dump-config` output in typed native

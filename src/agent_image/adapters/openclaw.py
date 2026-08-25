@@ -456,6 +456,7 @@ def _loss_summary(outcomes: list[dict[str, Any]]) -> dict[str, int]:
 class OpenClawAdapter:
     id = "org.agentimage.openclaw"
     version = "0.1.0"
+    locator_prefix = "openclaw"
 
     def __init__(self, cli: OpenClawCLI | None = None) -> None:
         self.cli = cli or SubprocessOpenClawCLI()

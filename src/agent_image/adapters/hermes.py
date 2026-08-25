@@ -292,6 +292,7 @@ def _layer_id(kind: str, path: str) -> str:
 class HermesAdapter:
     id = "org.agentimage.hermes"
     version = "0.1.0"
+    locator_prefix = "hermes"
 
     def __init__(self, cli: HermesCLI | None = None) -> None:
         self.cli = cli or SubprocessHermesCLI()

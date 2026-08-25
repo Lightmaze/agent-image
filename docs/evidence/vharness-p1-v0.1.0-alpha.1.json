@@ -1,0 +1,61 @@
+{
+  "evidence_version": "agent-image-capability-evidence/v0.1",
+  "recorded_at": "2026-08-25",
+  "capability": "vHarness P1 native restore",
+  "result": "PASS",
+  "platform": "Windows",
+  "contract": {
+    "vharness": "0.1.0-alpha.1",
+    "node": "24.15.0",
+    "pnpm": "11.7.0",
+    "source_tree_digest": "sha256:e7e6c26b174d13bb31db81b9dda05ffb39b0b5a7067ed326a7e375ae04bae47e",
+    "runtime_build_digest": "sha256:6741b97cf66f37dea90f338f39d8f56e121925fb07beb169f7210778a3475f80",
+    "lockfile_digest": "sha256:f3049ceffc44a831db0d93b1af6a777158c61a6b454ce4a18f70035d6ef6a9a0",
+    "runtime_family": "agent-image.reference-persistent"
+  },
+  "image": {
+    "content_digest": "sha256:a0a22d1d3ba3ef63a612247a4a40a5238a1ccaca17d8c3db326c7d5da1ab280a",
+    "archive_digest_before_restore": "sha256:de8c57ded09e1c5817a99a0390e15507f65f880534c7aac966d0d25bcff699ab",
+    "archive_digest_after_restore": "sha256:de8c57ded09e1c5817a99a0390e15507f65f880534c7aac966d0d25bcff699ab",
+    "source_image_immutable": true
+  },
+  "source": {
+    "locator": "vharness:source",
+    "instance_digest_declared": "sha256:25a40f381ec837273b4738f4c6d6f055ecf108d560149dbe65704cc371560da8",
+    "instance_digest_after_restore": "sha256:25a40f381ec837273b4738f4c6d6f055ecf108d560149dbe65704cc371560da8",
+    "unchanged": true,
+    "authority_exported": false
+  },
+  "restore": {
+    "target": "vharness:restored2",
+    "fresh_kernel": "kernel-47aa9f49-009a-4a83-b31c-fdca424f41b9",
+    "journal_head": {
+      "seq": 41,
+      "hash": "sha256:9283e9a25d9ddb058b3a131e6ef0fd1247b9bb16cdd541e5136f9a0988ef42af"
+    },
+    "host_current_regime": "wake",
+    "guest_current_regime": "wake",
+    "state_items_digest_source": "sha256:7f24160f891d2463facb4c1dcdb8e121e0b673741599786af3142460e0ddc61d",
+    "state_items_digest_target": "sha256:7f24160f891d2463facb4c1dcdb8e121e0b673741599786af3142460e0ddc61d",
+    "state_items_equal": true,
+    "fresh_authority": true,
+    "authority_grant_count": 4,
+    "loss_report_count": 2,
+    "source_image_provenance_recorded_by_host": true,
+    "security_boundary": false
+  },
+  "inventory": {
+    "source_items": 8,
+    "preserved": 6,
+    "transformed": 1,
+    "redacted": 1,
+    "unsupported": 0,
+    "native_layers": 1
+  },
+  "claim_boundary": [
+    "The process Guest is non-mock and persistent but is not model-backed.",
+    "The reference Guest retains ambient OS access; strong isolation is not claimed.",
+    "Host journal, Host token, kernel snapshot, and authority grants are not image payloads.",
+    "No DSH integration, P2 migration, or P3 behavioral portability is claimed."
+  ]
+}

@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-image-clean-room-adapter"
+version = "0.1.0"
+description = "Clean-room fifth adapter example for the Open Agent Image Protocol"
+requires-python = ">=3.11"
+dependencies = ["open-agent-image>=0.1.0a1"]
+
+[project.entry-points."agent_image.adapters"]
+cleanroom = "clean_room_adapter:create_adapter"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]

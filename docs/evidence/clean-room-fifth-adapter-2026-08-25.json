@@ -1,0 +1,32 @@
+{
+  "evidence_version": "agent-image-extension-evidence/v0.1",
+  "recorded_at": "2026-08-25",
+  "result": "PASS",
+  "entry_point_group": "agent_image.adapters",
+  "entry_point": {
+    "name": "cleanroom",
+    "value": "clean_room_adapter:create_adapter",
+    "distribution": "agent-image-clean-room-adapter",
+    "version": "0.1.0"
+  },
+  "installation": {
+    "fresh_venv": true,
+    "offline": true,
+    "main_version": "0.1.0a1",
+    "main_wheel_digest": "sha256:4a1c5eb44cf38ad0f9dc93c6ff814d4b9c8e01b7300042c33c576700e423b308",
+    "adapter_wheel_digest": "sha256:b34f0cfb060e75ed6ec9d2fe56a8a084bb3068654040077d5080201b24cd3bb7"
+  },
+  "adapter": {
+    "id": "org.agentimage.example.cleanroom",
+    "locator_prefix": "cleanroom",
+    "portability": "P0",
+    "registration": "entry-point"
+  },
+  "proof": {
+    "listed_by_installed_cli": true,
+    "built_without_core_schema_change": true,
+    "image_digest": "sha256:2935a0cf87633a77fa044b4f9e04ea1e5b82a78a05ebfe9a1bd59c50a7f5c766",
+    "image_archive_digest": "sha256:c2443a7ff18b0b725eceee5e0b7eb189ca035dea63e592766ef1adbf7b4cd501",
+    "verify_passed": true
+  }
+}

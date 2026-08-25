@@ -9,6 +9,7 @@ $projectRoot = Split-Path -Parent $PSScriptRoot
 $smokeRoot = Join-Path $projectRoot ".tmp\installed-package-smoke"
 $venv = Join-Path $smokeRoot ".venv"
 $dist = Join-Path $projectRoot "dist"
+$uvCache = Join-Path $projectRoot ".tmp\uv-cache"
 $resolvedProjectRoot = [System.IO.Path]::GetFullPath($projectRoot).TrimEnd('\') + '\'
 $resolvedSmokeRoot = [System.IO.Path]::GetFullPath($smokeRoot)
 
@@ -29,11 +30,11 @@ if (-not $wheel) {
     throw "No open-agent-image wheel found under dist/. Run 'uv build' first."
 }
 
-uv venv --python 3.12 $venv
+uv venv --offline --cache-dir $uvCache --python 3.12 $venv
 $python = Join-Path $venv "Scripts\python.exe"
 $agentImage = Join-Path $venv "Scripts\agent-image.exe"
 
-uv pip install --python $python $wheel.FullName
+uv pip install --offline --cache-dir $uvCache --python $python $wheel.FullName
 & $agentImage --help | Out-Null
 & $python -m agent_image --help | Out-Null
 & $python -c "import agent_image; print(agent_image.__version__)"

@@ -326,6 +326,7 @@ def _write_profile(root: Path, entries: Mapping[str, bytes]) -> None:
 class DshAdapter:
     id = "org.agentimage.dsh"
     version = "0.1.0"
+    locator_prefix = "dsh"
 
     def __init__(self, cli: DshCLI | None = None) -> None:
         self.cli = cli or SubprocessDshCLI()

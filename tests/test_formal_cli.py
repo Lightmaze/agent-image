@@ -22,6 +22,7 @@ def test_adapters_list_exposes_built_in_contracts_without_claiming_runtime_verif
         "org.agentimage.dsh",
         "org.agentimage.hermes",
         "org.agentimage.openclaw",
+        "org.agentimage.vharness",
     }
     assert all(item["runtime_verified"] is False for item in output["adapters"])
 

@@ -5,7 +5,7 @@
 
 ## Summary
 
-- Total mock points: 7
+- Total mock points: 8
 - Issues: 0
 - Production blockers: 0
 
@@ -13,8 +13,8 @@
 
 | Dimension | Value | Count |
 |---|---|---:|
-| Type | `test_fixture` | 7 |
-| Status | `accepted_test_only` | 7 |
+| Type | `test_fixture` | 8 |
+| Status | `accepted_test_only` | 8 |
 
 ## Mock Points
 
@@ -27,6 +27,7 @@
 | MOCK-TEST-SECRET-YAML-001 | test_fixture | accepted_test_only | False | tests/fixtures/secret-yaml/inventory.yaml:1 | never; accepted test-only regression evidence | Permanent negative security conformance fixture |
 | MOCK-DSH-CLI-TEST-001 | test_fixture | accepted_test_only | False | tests/test_dsh_adapter.py:15 | before_dsh_p1_capability_claim | SubprocessDshCLI against @deepseek-ai/dsh@0.1.0-rc.6 |
 | MOCK-OPENCLAW-CLI-TEST-001 | test_fixture | accepted_test_only | False | tests/test_openclaw_adapter.py:21 | before_openclaw_p1_or_p2_capability_claim | SubprocessOpenClawCLI against openclaw@2026.7.1-2 |
+| MOCK-VHARNESS-RUNTIME-TEST-001 | test_fixture | accepted_test_only | False | tests/test_vharness_adapter.py:16 | before_vharness_p1_capability_claim | SubprocessVHarnessRuntime against local vHarness 0.1.0-alpha.1 |
 
 ## Issues
 
