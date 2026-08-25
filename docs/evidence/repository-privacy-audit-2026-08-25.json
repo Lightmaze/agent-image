@@ -1,0 +1,43 @@
+{
+  "evidence_version": "agent-image-repository-privacy-audit/v0.1",
+  "date": "2026-08-25",
+  "audited_commit": "60c022dee6a1c7d9b92aff1d2319bc4bbf694ef9",
+  "verdict": "PASS_LOCAL_CANDIDATE",
+  "repository_boundary": {
+    "independent_git_root": true,
+    "nested_git_roots": 0,
+    "gitmodules_present": false,
+    "remotes": 0,
+    "branches": ["main"],
+    "tags": ["v0.1.0-alpha.1"]
+  },
+  "history": {
+    "reachable_commits": 9,
+    "fsck": "PASS",
+    "reachable_high_signal_secret_or_personal_path_matches": 0,
+    "author_committer_emails": ["agent-image@users.noreply.github.com"],
+    "tagger_emails": ["agent-image@users.noreply.github.com"]
+  },
+  "candidate_tree": {
+    "tracked_files": 156,
+    "high_signal_secret_or_personal_path_matches": 0,
+    "email_shaped_content_files": 0,
+    "secret_shaped_filenames": 1,
+    "reviewed_secret_shaped_filename": {
+      "path": "tests/fixtures/secret-file/.env",
+      "content": "EXAMPLE_ONLY_DO_NOT_USE=true",
+      "purpose": "harmless adversarial fixture proving that .env is rejected"
+    }
+  },
+  "publication": {
+    "authorized": false,
+    "remote_created": false,
+    "pushed": false,
+    "new_tag_created": false
+  },
+  "claim_limits": [
+    "This audit covers the local candidate and all locally reachable Git history.",
+    "It does not authorize publication or override the negative trained-agent Gate E.",
+    "The audit report itself is added in a follow-up local evidence commit and is rechecked before handoff."
+  ]
+}
