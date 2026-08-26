@@ -1,0 +1,67 @@
+{
+  "audited_base_commit": "e38f4612ea6e5c2b0da9ccbb6ef979d10ee420ec",
+  "bundle": {
+    "artifact_verified": true,
+    "checksum_manifest_digest": "sha256:b42944844ee2d1fee48d7667e9d5aaa404fe44b69209670e56ea4eaa605f68f6",
+    "credential_shaped_filenames": 0,
+    "hero_privacy": "public",
+    "release": "v0.1.0-rc.1"
+  },
+  "candidate_tree": {
+    "aimg_files_tracked": 0,
+    "email_shaped_paths": 2,
+    "email_shaped_paths_review": "prior repository audit reports containing only the project GitHub noreply identity",
+    "high_signal_local_private_path_matches": 0,
+    "high_signal_private_key_matches": 0,
+    "high_signal_provider_token_matches": 0,
+    "expected_tracked_files_after_audit_commit": 190,
+    "tracked_files_at_base_commit": 187
+  },
+  "date": "2026-08-26",
+  "evidence_version": "agent-image-repository-privacy-audit/v0.2",
+  "history": {
+    "author_committer_identity": "synthetic_or_github_noreply_only",
+    "fsck": "PASS",
+    "reachable_commits": 25,
+    "reachable_high_signal_secret_or_personal_path_matches": 0,
+    "reflog_only_commits": 1,
+    "reflog_only_exposure": "local_recovery_residue_not_in_normal_push",
+    "reviewed_secret_assignment_paths": [
+      "tests/fixtures/secret-key/config.json",
+      "tests/test_hermes_adapter.py"
+    ],
+    "reviewed_secret_assignment_result": "deliberate negative fixture and scanner assertions; no provider credential",
+    "tagger_identity": "synthetic_or_github_noreply_only"
+  },
+  "publication": {
+    "already_public": false,
+    "authorized": false,
+    "force_push_required": "not_applicable_no_destination",
+    "normal_push_scope": "main branch with 26 reachable commits after the audit follow-up commit is added",
+    "remote_created": false,
+    "requested_next": "explicit authorization for public repository destination, push, rc.1 tag, release, and asset upload"
+  },
+  "repository_boundary": {
+    "annotated_tags": 1,
+    "branches": [
+      "main"
+    ],
+    "gitmodules_present": false,
+    "independent_git_root": true,
+    "nested_git_roots_in_publishable_tree": 0,
+    "remotes": 0,
+    "worktrees": 1
+  },
+  "reviewed_secret_shaped_filename": {
+    "path": "tests/fixtures/secret-file/.env",
+    "purpose": "harmless adversarial fixture proving that .env is rejected",
+    "real_credential": false
+  },
+  "severity": {
+    "critical": 0,
+    "high": 0,
+    "low": 0,
+    "medium": 0
+  },
+  "verdict": "PASS_LOCAL_RC1_PUBLICATION_REQUEST_ALLOWED"
+}

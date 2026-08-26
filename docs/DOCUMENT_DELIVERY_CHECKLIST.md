@@ -180,6 +180,27 @@
 - 证据的角色：cross-platform release gate；不增加 operator 主路径步骤。
 - 与当前默认声明的差异：Linux provider task 未重复执行；行为结果由 Windows operator path 与独立 48-call comparison 支撑。
 
+### 2026-08-26 — repository and rc.1 bundle privacy audit
+
+- 状态：`DECLARED`
+- 文档性质：公开 remote / push / tag 前的 Git 历史、身份、仓库边界与 release bundle 隐私结论
+- 直接读者：项目负责人、release maintainer、安全/隐私 reviewer
+- 希望促成的行动：判断是否可以进入外部发布授权请求；若失败则准确指出阻断对象
+- 时间范围：本地 `e38f461` 及其全部可达 refs、reflog residue 与 rc.1 bundle
+- 公开性：进入公开仓库；邮箱仅报告 noreply 分类，任何敏感值都不写入报告
+
+| 文中对象或指代 | 实际指向 | 交付给谁 | 接收者获得什么 |
+|---|---|---|---|
+| repository | 独立 Git root、refs、objects、worktree、tag、remote 与 nested boundary | release maintainer | normal push 会携带什么的明确判断 |
+| identity | future Git ident、全部 author/committer、annotated tagger | 项目负责人 / privacy reviewer | 是否泄露稳定个人邮箱或姓名 |
+| content scan | 当前树与全部 reachable/reflog history 的高信号 secret、私钥、本机路径和邮箱形态 | privacy reviewer | 区分真实风险与 adversarial fixture |
+| rc.1 bundle | wheel、sdist、hero image、Registry、release note、checksums | downloader / release maintainer | 上传前制品边界是否干净 |
+| “完成” | 无 Critical/High/Medium blocker，报告提交后工作树干净 | 项目负责人 | 可以明确授权或拒绝外部发布动作 |
+
+- 首要质量判断：公开动作是否只发布项目本身，不顺带发布个人身份、凭证、真实用户状态或私有历史。
+- 证据的角色：外部发布 gate；不进入普通 operator 的安装体验。
+- 与当前默认声明的差异：本报告只授权提出发布请求，本身不授权创建 remote、push、tag 或 release。
+
 ## 写作后回看
 
 正式文档完成后，用三句话复核：
