@@ -160,6 +160,26 @@
 - 证据的角色：release gate 与支持材料，不成为 operator 必须阅读的步骤。
 - 与当前默认声明的差异：只公开合成请求和必要行为结果；provider usage 元数据保留在本地。
 
+### 2026-08-26 — public hero cross-platform release evidence
+
+- 状态：`DECLARED`
+- 文档性质：同一个 rc.1 release bundle 在 Windows 与 WSL Linux 的首次路径复现记录
+- 直接读者：release maintainer、跨平台 package reviewer
+- 希望促成的行动：确认 hero release assets 可进入开源前隐私审查与外部发布授权边界
+- 时间范围：固定 `v0.1.0-rc.1` bundle
+- 公开性：进入公开仓库；只记录环境、digest、命令结果和能力边界
+
+| 文中对象或指代 | 实际指向 | 交付给谁 | 接收者获得什么 |
+|---|---|---|---|
+| cross-platform | Windows 与本机 WSL2 Ubuntu；不是未观察的 hosted CI 或 macOS | release maintainer / reviewer | 两个本地操作系统环境的实测边界 |
+| same artifact | file digest 与 Agent Image digest 均固定的同一 hero release asset | artifact consumer | 平台间验证、inspect、restore 对象未漂移 |
+| Linux path | checksum、联网依赖安装、wheel CLI、verify、inspect、Hermes P1 restore、target recognition | Linux operator | 与 Windows 一致的可恢复 Agent surface |
+| “完成” | 两环境均完成 release bundle 到 P1 restored target；Windows 额外完成实际 provider task | 项目负责人 / release maintainer | 可以推进发布；不声称两环境都跑了行为评测 |
+
+- 首要质量判断：同一 bundle 在两个环境中是否产生同一个可识别、可用的 restored Agent。
+- 证据的角色：cross-platform release gate；不增加 operator 主路径步骤。
+- 与当前默认声明的差异：Linux provider task 未重复执行；行为结果由 Windows operator path 与独立 48-call comparison 支撑。
+
 ## 写作后回看
 
 正式文档完成后，用三句话复核：

@@ -1,0 +1,72 @@
+{
+  "artifact": {
+    "file_digest": "sha256:9cd98ace2471203e93f07d3877a477b288ed08088df14a4ac02f0a3e36cd9206",
+    "image_digest": "sha256:8a258bc82ba8b161a107a4cf970c51e1f19228dcc78c8696e0bf13a699e257b2",
+    "name": "procurement-negotiator-v1.aimg"
+  },
+  "bundle": {
+    "checksum_manifest_digest": "sha256:b42944844ee2d1fee48d7667e9d5aaa404fe44b69209670e56ea4eaa605f68f6",
+    "release": "v0.1.0-rc.1",
+    "wheel": "open_agent_image-0.1.0rc1-py3-none-any.whl"
+  },
+  "completed_at": "2026-08-26T00:43:00Z",
+  "environments": [
+    {
+      "agent_image_version": "0.1.0-rc.1",
+      "actual_provider_task": "pass",
+      "artifact_checksums": "pass",
+      "harness": "hermes 0.20.5",
+      "inspect": "pass",
+      "name": "Windows",
+      "python": "3.12.13",
+      "restore": "P1 pass",
+      "target_recognition": {
+        "memory_chars": 3987,
+        "model": "deepseek-v4-flash",
+        "tools": 0
+      },
+      "verify": "pass",
+      "wheel_install": "pass"
+    },
+    {
+      "agent_image_version": "0.1.0-rc.1",
+      "actual_provider_task": "not_repeated",
+      "artifact_checksums": "pass",
+      "distribution": "Ubuntu on WSL2",
+      "harness": "hermes 0.20.5",
+      "inspect": "pass",
+      "name": "WSL Linux",
+      "python": "3.12.13",
+      "restore": "P1 pass",
+      "target_recognition": {
+        "memory_chars": 3987,
+        "model": "deepseek-v4-flash",
+        "tools": 0
+      },
+      "verify": "pass",
+      "wheel_install": "pass"
+    }
+  ],
+  "evidence": {
+    "inspect_reports": {
+      "digest": "sha256:2e4f64525ac0df78b185a90aa7529bb1e9aaafad81e3133042c0f487b3538b1b",
+      "identical_across_environments": true
+    },
+    "restore_reports": {
+      "digest": "sha256:cc494332f864fff39898e10d7b9f913c639199e41a1d0242990646ebceaa811f",
+      "identical_across_environments": true
+    },
+    "verify_reports": {
+      "digest": "sha256:263445422b6b4cd6a63f1249f7aa85b728e8f1c6bda5a5180b6071c0f4776d1c",
+      "identical_across_environments": true
+    },
+    "wsl_prompt_surface_digest": "sha256:fbeed5b9e2ef0abc75e81f02a7f0ef017cedb213856db7959bd2b644bba0985c"
+  },
+  "evidence_version": "agent-image-public-hero-cross-platform/v0.1",
+  "limitations": [
+    "Both environments are local to one host.",
+    "Hosted CI and macOS were not observed in this run.",
+    "The provider task was executed on Windows only; Linux verified the same restored runtime surface."
+  ],
+  "verdict": "PASS_LOCAL_WINDOWS_AND_WSL_LINUX"
+}
