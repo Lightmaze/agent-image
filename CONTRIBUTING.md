@@ -26,3 +26,12 @@ synthetic and must state whether they are mock/test-only.
 
 Harness capability claims require a pinned public contract and real target
 validation. Fixture success is never sufficient for P1 or P2.
+
+## Documentation delivery declaration
+
+Before adding or materially rewriting a plan, stage document, design note,
+acceptance note, or major README section, register its delivery declaration in
+`docs/DOCUMENT_DELIVERY_CHECKLIST.md`. Name the direct reader, the artifact or
+decision being delivered, who receives each referenced object, the intended
+result, and the role of evidence. Formal writing starts after the declaration
+is marked `DECLARED`.
