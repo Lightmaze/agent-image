@@ -61,10 +61,14 @@ def _scan_public_payload(path: str, data: bytes) -> None:
 def _public_layer(layer: Mapping[str, Any], *, source_digest: str) -> dict[str, Any]:
     result = copy.deepcopy(dict(layer))
     result["privacy"] = "public"
-    result["source"] = {
+    source = layer.get("source")
+    public_source = {
         "origin": f"agent-image:{source_digest}",
         "reason": "synthetic-only layer curated for public distribution",
     }
+    if isinstance(source, Mapping) and isinstance(source.get("path"), str):
+        public_source["path"] = str(source["path"])
+    result["source"] = public_source
     return result
 
 

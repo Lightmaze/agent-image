@@ -46,6 +46,7 @@ class RestoreOnlyHermesCLI:
 
 
 def _layer(path: str, kind: str, data: bytes, *, layer_id: str) -> dict[str, object]:
+    relative_source = path.split(f"/{kind}/", 1)[1]
     return {
         "id": layer_id,
         "kind": kind,
@@ -55,6 +56,7 @@ def _layer(path: str, kind: str, data: bytes, *, layer_id: str) -> dict[str, obj
         "size": len(data),
         "privacy": "private",
         "portability": "portable",
+        "source": {"path": relative_source, "origin": "hermes:trained", "reason": "synthetic fixture"},
     }
 
 
@@ -177,6 +179,14 @@ def test_curator_builds_public_minimal_native_image_and_restores(tmp_path: Path)
     cli = RestoreOnlyHermesCLI(tmp_path / "profiles")
     restore = HermesAdapter(cli).native_restore(document, "restored")
     assert restore["validated"] is True
+    outcomes = {item["id"]: item["action"] for item in restore["outcomes"]}
+    assert outcomes["layer-1"] == "unsupported"
+    assert outcomes["layer-3"] == "preserved"
+    assert outcomes["layer-4"] == "preserved"
+    assert outcomes["layer-5"] == "preserved"
+    assert outcomes["layer-6"] == "preserved"
+    assert outcomes["situated-gate-e-public-evidence"] == "unsupported"
+    assert outcomes["hermes-native-profile"] == "preserved"
     assert set(path.relative_to(cli.profiles["restored"]).as_posix() for path in cli.profiles["restored"].rglob("*") if path.is_file()) == PUBLIC_NATIVE_PATHS
 
 
