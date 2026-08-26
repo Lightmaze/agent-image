@@ -14,7 +14,6 @@
     "high_signal_local_private_path_matches": 0,
     "high_signal_private_key_matches": 0,
     "high_signal_provider_token_matches": 0,
-    "expected_tracked_files_after_audit_commit": 190,
     "tracked_files_at_base_commit": 187
   },
   "date": "2026-08-26",
@@ -37,7 +36,7 @@
     "already_public": false,
     "authorized": false,
     "force_push_required": "not_applicable_no_destination",
-    "normal_push_scope": "main branch with 26 reachable commits after the audit follow-up commit is added",
+    "normal_push_scope": "main branch after the audit report commit; final count is rechecked separately",
     "remote_created": false,
     "requested_next": "explicit authorization for public repository destination, push, rc.1 tag, release, and asset upload"
   },
