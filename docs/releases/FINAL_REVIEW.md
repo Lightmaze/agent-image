@@ -2,6 +2,11 @@
 
 Date: 2026-08-25
 
+This review closes the semantic and engineering questions for the **protocol
+substrate**. It does not claim that the broader product experience is already
+compelling, or that a person can recognize a restored Agent as the same
+developed collaborator without reading an evaluation report.
+
 ## Eight human questions
 
 | # | Question | Verdict | Evidence |
@@ -19,6 +24,11 @@ All eight semantic acceptance questions are now Yes. The Gate E answer is
 limited to one synthetic mission under same-harness P1 restore and does not
 claim P3. Public release remains subject to observed remote CI and explicit
 publication authorization.
+
+All eight answers being Yes therefore means “the protocol is an honest local
+release candidate,” not “the Agent Image thesis has finished product
+discovery.” Experiential continuity is being tested separately through `The
+Return / 归来` before it is translated into new protocol mechanisms.
 
 ## Release verdict
 

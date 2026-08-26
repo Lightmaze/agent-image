@@ -20,6 +20,12 @@ Hermes-to-OpenClaw P2 semantic migration. A
 separate clean-room fifth adapter proves public entry-point registration without
 changing Core. No P3 claim is made.
 
+Protocol readiness and product discovery now have separate status. This
+repository is a rigorous transport and audit substrate; it has not yet proved
+that a person will recognize a restored developed Agent through its judgment,
+timing, and initiative. That experiential thesis is being tested independently
+before it is turned into new Core mechanisms.
+
 Create the reproducible development environment and verify the installed CLI:
 
 ```powershell

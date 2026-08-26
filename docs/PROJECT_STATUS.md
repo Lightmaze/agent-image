@@ -12,6 +12,11 @@ one harness as the semantic owner.
 adapters, the first P2 path, fifth-adapter extension, Registry, local hardening,
 and the redesigned trained-agent gate are implemented).
 
+That status applies to the **protocol substrate**. The **product / experience
+thesis** is still in discovery: we have not yet shown that a person can
+recognize a restored developed Agent through its judgment, timing, and
+initiative rather than through a benchmark report.
+
 The current evidence proves pinned native round-trips for Hermes, OpenClaw,
 DSH, and the scoped vHarness reference Guest, plus the declared
 Hermes-to-OpenClaw semantic migration. A preregistered synthetic Hermes
@@ -47,19 +52,26 @@ was built behind the adapter boundary and formalized from real gate evidence.
 
 ## Highest failure risks
 
-1. Adapter-specific files leaking into the core schema.
-2. Fixture success being described as real harness support.
-3. Secrets or private state entering a public image.
-4. Silent loss during export, restore, or migration.
-5. Self-referential or non-deterministic archive digests.
+1. Mistaking a rigorous transport protocol for the product itself.
+2. Adapter-specific files leaking into the core schema.
+3. Fixture success being described as real harness support.
+4. Secrets or private state entering a public image.
+5. Silent loss during export, restore, or migration.
+6. Self-referential or non-deterministic archive digests.
 
-## Next release gate
+## Next actions
 
-Gate E is green. An authorized remote run must still turn the configured
-Windows/Linux/macOS CI matrix into observed evidence, and repository creation,
-push, and tags require explicit user authorization at the execution point.
-Until then the honest result is a local RC candidate, not a public RC or final
-release.
+The next product-discovery action is the independent `The Return / 归来`
+experience: compare a lived Agent with a fresh Agent receiving an excellent
+handoff, without changing the protocol. Only after that scene creates an
+unmistakable difference should Agent Image freeze/restore enter the loop and
+inform future primitives.
+
+Separately, Gate E is green. An authorized remote run must still turn the
+configured Windows/Linux/macOS CI matrix into observed evidence, and repository
+creation, push, and tags require explicit user authorization at the execution
+point. Until then the honest protocol result is a local RC candidate, not a
+public RC or final release.
 
 ## Source provenance
 

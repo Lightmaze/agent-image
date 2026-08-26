@@ -40,6 +40,29 @@ and what to protect when the normative documents leave ambiguity.
 10. Protocol timestamp, portable proof, cross-harness adapters, and the minimal
     registry outrank platform breadth during the current strategic window.
 
+## Design-order correction — 2026-08-25
+
+The latest project correction is not another schema requirement. It changes the
+order in which we discover what deserves to become architecture.
+
+- Local correctness, defensibility, completeness, and governance can all be
+  excellent while the whole product remains unconvincing.
+- Strong intuitions must first be allowed to become a felt experience. Only
+  then should successful moments be translated into primitives, interfaces,
+  and policy.
+- Existing artifacts create gravity. Working code may be demoted to substrate
+  or prototype when it begins to define the product instead of serving it.
+- Protocol proof and product proof are different. Gate E shows that measured
+  developed state can survive freeze/restore; it does not yet show that a human
+  experiences the returned Agent as the same collaborator.
+- The current protocol repository is therefore treated as a rigorous transport
+  and audit substrate. The next discovery surface is the independent `The
+  Return / 归来` scene, not a new Core field or CLI command.
+
+The governing sentence is:
+
+> First make the thing become itself; then make it a rigorous software system.
+
 ## Bootstrap drift audit
 
 | Risk from handoff | Current finding | Verdict |
