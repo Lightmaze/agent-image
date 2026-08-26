@@ -3,13 +3,13 @@
 - 日期：2026-08-25
 - 项目：Open Agent Image Protocol
 - 当前状态：`LOCAL RC / PUBLIC EXPERIENCE INCOMPLETE`
-- 文档性质：阶段性工作判断，不是第四份规格，也不修改 v0.1 的规范优先级
+- 文档性质：阶段性工作判断；v0.1 的规范优先级保持不变
 
 ## 一句话判断
 
 Open Agent Image Protocol 已经拥有可信的本地协议与实现证据，但还没有形成一个陌生开发者能够下载、理解、恢复并亲自验证的公开 Agent Image。
 
-下一阶段不应继续扩张架构，也不应另做体验产品。它应该把现有能力收束成一个足够清楚、足够有力的开源制品闭环。
+下一阶段把现有能力收束成一个足够清楚、足够有力的开源制品闭环。
 
 ## 原始目标
 
@@ -30,18 +30,16 @@ train
 
 首发对象始终是开放协议、参考实现、四个 harness adapter、最小 Registry，以及一个能够证明“这不是 profile backup”的 trained-agent artifact。
 
-## 群发纠偏在本项目中的正确含义
+## 本阶段的设计原则
 
-“先把东西做成它自己，再把它做成一套严谨的软件系统”对本项目有效，但不能把其他项目的具体体验任务带进来。
+“先把东西做成它自己，再把它做成一套严谨的软件系统”在当前阶段意味着：
 
-对 Agent Image 而言，它要求：
+- 以首个公开 hero artifact 为中心组织现有能力；
+- 将 79 项测试、四个 adapter 和 Gate E 报告作为可信的支持证据；
+- 从外部开发者的完整使用路径重新呈现协议与参考实现；
+- 让开发者直接感受到 image 恢复了一个已经发展过的 Agent，再从真实使用暴露的缺口决定是否扩展协议。
 
-- 不用更多 schema 和治理掩盖首个公开制品尚未出现；
-- 不把 79 项测试、四个 adapter 和一份实验报告误当成采用体验已经闭环；
-- 不让现有实现决定项目只能以内部工程报告的形态被理解；
-- 先让开发者直接感受到 image 恢复了一个已经发展过的 Agent，再从真实使用暴露的缺口决定是否扩展协议。
-
-本项目需要体验，但它需要的是 **Agent Image 自身的开源使用体验**，不是伴随计算或关系产品体验。
+本阶段所说的体验，是外部开发者从获得 artifact 到验证其能力状态的完整开源使用体验。
 
 ## 当前已经成立的部分
 
@@ -114,9 +112,9 @@ procurement-negotiator-v1.aimg
 - practice episode、reflection 和 evaluation 的 digest-bound evidence；
 - source harness 与 portability declaration；
 - privacy classification 与 public-redaction report；
-- 当前能力声明的严格边界：same-harness P1 developed-state retention，不宣称 P3。
+- 当前验证等级：same-harness P1 developed-state retention。
 
-这个名字和包装可以在实际 artifact 生成时调整，但不能用虚构的训练时长或夸大的 portability 换取传播效果。
+这个名字和包装可以在实际 artifact 生成时调整，但必须与实际训练量和 portability evidence 对齐。
 
 ## 首次使用体验
 
@@ -138,10 +136,10 @@ procurement-negotiator-v1.aimg
 
 ## 阶段推进
 
-### Stage A — 恢复单一项目主线
+### Stage A — 收束发布主线
 
-- 撤回与伴随计算具体场景有关的串线表述；
-- 保持 v0.1 schema beta freeze，不因本次纠偏新增字段；
+- 统一 README、PROJECT_STATUS、Final Review 与阶段判断；
+- 保持 v0.1 schema beta freeze；
 - 将现有 Gate E 定位为 supporting evidence，而不是完整采用体验。
 
 退出条件：README、PROJECT_STATUS、Final Review 与本文件对项目目标和证据边界没有冲突。
@@ -170,14 +168,9 @@ procurement-negotiator-v1.aimg
 
 退出条件：外部开发者能够从公开入口完成首次使用体验；正式标签仍受 Final Review 与明确发布授权约束。
 
-## 当前不做
+## 范围纪律
 
-- 不做伴随计算或关系型 Agent 场景；
-- 不创建独立体验产品、GUI 或 hosted Hub；
-- 不启动 vHabitat、Team Image 或通用训练平台；
-- 不为传播效果宣称 cross-harness P3；
-- 不重新跑完整 Gate E，除非 hero artifact 暴露状态缺失或不可复现；
-- 不因为已有代码很多，就继续增加与首个公开 artifact 无关的机制。
+当前资源集中于 hero artifact、外部复现和公开发布闭环。v0.1 schema 维持 beta freeze；只有真实使用证据暴露状态边界缺失时，才讨论兼容扩展。完整 Gate E 仅在 hero artifact 出现状态缺失或不可复现时重跑。所有能力描述以已验证的 portability level 为准。
 
 ## 本阶段的最终判断
 

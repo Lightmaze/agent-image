@@ -27,8 +27,7 @@ publication authorization.
 
 All eight answers being Yes therefore means “the protocol is an honest local
 release candidate,” not “the public adoption experience is complete.” The next
-proof is a downloadable, public-safe hero image using the current protocol, not
-a separate experience product or new Core mechanism.
+proof is a downloadable, public-safe hero image using the current protocol.
 
 ## Release verdict
 

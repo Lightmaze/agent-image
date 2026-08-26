@@ -57,8 +57,8 @@ order in which we discover what deserves to become architecture.
   developer a downloadable artifact and a short reproducible hero path.
 - The current protocol repository is therefore treated as a rigorous transport
   and audit substrate. The next discovery surface is Agent Image's own public
-  install / inspect / restore / compare experience, not another product's
-  scenario and not a new Core field or CLI command.
+  install / inspect / restore / compare experience. Protocol changes should be
+  justified by evidence from that path.
 
 The governing sentence is:
 
