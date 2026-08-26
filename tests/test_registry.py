@@ -19,10 +19,10 @@ def test_checked_in_registry_reconciles_evidence_digests() -> None:
     assert result == {
         "valid": True,
         "registry_version": "agent-image-registry/v0.1",
-        "entries": 6,
-        "evidence_status": {"negative": 1, "unverified": 0, "verified": 5},
-        "privacy": {"public": 0, "private": 6, "unknown": 0},
-        "source_harnesses": {"dsh": 1, "hermes": 3, "openclaw": 1, "vharness": 1},
+        "entries": 7,
+        "evidence_status": {"negative": 1, "unverified": 0, "verified": 6},
+        "privacy": {"public": 1, "private": 6, "unknown": 0},
+        "source_harnesses": {"dsh": 1, "hermes": 4, "openclaw": 1, "vharness": 1},
         "artifact_digests_unique": True,
         "evidence_digests_verified": True,
     }

@@ -4,12 +4,13 @@
 digests, source harness contracts, license assertions, privacy/distribution status, lineage,
 portability claims, and digest-bound evidence.
 
-The initial artifacts are private local evidence images, so their URIs use the
-`withheld://` scheme. This is deliberate: a registry record must not turn a
-private image into a public download. The original trained-agent entry is
-retained with `behavioral: negative` as historical evidence. A separate v0.2
-entry records the bounded positive Gate E result with `behavioral: verified`;
-neither private image is published.
+The first six artifacts are private local evidence images, so their URIs use
+the `withheld://` scheme. This is deliberate: a registry record must not turn a
+private image into a public download. The seventh artifact is itself public-safe
+but remains withheld while it is only a local release candidate; publication
+replaces that locator with the real release asset URL and changes distribution
+to `publishable` in the same commit. The negative and positive private training
+images remain available only as digest-bound historical evidence.
 
 Validate the registry from the repository root:
 

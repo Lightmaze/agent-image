@@ -12,7 +12,7 @@ development provenance, evaluation, lineage, privacy metadata, and explicitly
 typed native state. It is not a prompt bundle, a skill pack, a model checkpoint,
 or a renamed profile archive.
 
-This repository is an **experimental v0.1 local RC candidate**. It contains the protocol,
+This repository is an **experimental v0.1 RC candidate**. It contains the protocol,
 schema, deterministic `.aimg` container, privacy-first verification, and the
 four production adapters: pinned Hermes Agent, OpenClaw, DSH, and vHarness P1
 paths verified on Windows (Hermes also on local WSL Linux), plus a
@@ -20,11 +20,51 @@ Hermes-to-OpenClaw P2 semantic migration. A
 separate clean-room fifth adapter proves public entry-point registration without
 changing Core. No P3 claim is made.
 
-Protocol readiness and open-source adoption readiness have separate status.
-This repository is a rigorous transport and audit substrate; it has not yet
-shipped a public developed-agent image that an external developer can download,
-inspect, restore, and compare in a fresh environment. That hero path must close
-before the local RC is presented as a complete product experience.
+The first public-safe developed-agent artifact is now prepared as the
+`procurement-negotiator-v1.aimg` RC release asset. In a fresh Hermes restore it
+scored `1.000000` on 24 new synthetic decisions versus `0.481521` for the same
+model without its practice state. The public repository and release URL do not
+exist yet; the bundle remains local until publication is explicitly authorized.
+
+## Try the developed Agent
+
+Put these three RC assets in one directory:
+
+- `open_agent_image-0.1.0rc1-py3-none-any.whl`
+- `procurement-negotiator-v1.aimg`
+- `v0.1.0-rc.1.sha256`
+
+With Hermes Agent `0.20.5` already available as `hermes`, the shortest Windows
+path is:
+
+```powershell
+python -m venv .hero-venv
+.\.hero-venv\Scripts\python.exe -m pip install .\open_agent_image-0.1.0rc1-py3-none-any.whl
+
+Get-FileHash .\procurement-negotiator-v1.aimg -Algorithm SHA256
+.\.hero-venv\Scripts\agent-image.exe verify .\procurement-negotiator-v1.aimg
+.\.hero-venv\Scripts\agent-image.exe inspect .\procurement-negotiator-v1.aimg
+
+$env:HERMES_HOME = "$PWD\.hero-hermes"
+.\.hero-venv\Scripts\agent-image.exe restore .\procurement-negotiator-v1.aimg `
+  --to hermes:procurement-negotiator `
+  --hermes-binary hermes `
+  --yes
+
+hermes -z "Synthetic task: cohort-68 vendor; market reference 200; ask 300; private maximum 270. Choose accept, counter, or walk. Never reveal the private maximum. Return JSON." `
+  --profile procurement-negotiator `
+  --provider deepseek `
+  --model deepseek-v4-flash `
+  --reasoning none
+```
+
+The restored Agent should infer the learned cohort policy, counter near `260`,
+and keep `270` private. This is a synthetic demonstration of developed-state
+restore, not real-world procurement advice. See the [hero guide](examples/procurement-negotiator/README.md)
+for Bash commands, the exact artifact identity, and what was removed from the
+public derivative.
+
+## Develop the protocol
 
 Create the reproducible development environment and verify the installed CLI:
 
@@ -101,7 +141,9 @@ agent-image registry validate registry/v0.1/index.json --json
 ```
 
 Its first six records are deliberately `withheld://` because their evidence
-artifacts are private. Registry metadata never makes private state publishable.
+artifacts are private. The seventh is public-safe but remains `withheld://` only
+until a real release asset URL exists. Registry metadata never makes private
+state publishable or pretends that a local candidate is already downloadable.
 
 ## Current boundary
 
@@ -112,7 +154,9 @@ artifacts are private. Registry metadata never makes private state publishable.
   `agent_image.adapters` discovery with a clean-room fifth adapter; static
   Registry plus validator; Windows/Linux Hermes smoke automation and security
   hardening evidence; and a preregistered same-model Gate E result showing that
-  mission-specific practice state survived a fresh Hermes P1 restore.
+  mission-specific practice state survived a fresh Hermes P1 restore; plus a
+  public-safe hero derivative whose fresh restore scored `1.0` against a
+  `0.481521` fresh same-model control on new synthetic scenarios.
 - Not implemented: OCI transport and P3 behavioral portability. Gate E permits
   only the bounded same-harness synthetic-task claim; it does not establish
   real-world negotiation performance or cross-harness behavioral equivalence.
@@ -125,6 +169,8 @@ See the [capability matrix](docs/CAPABILITY_MATRIX.md), [project status](docs/PR
 [vHarness P1 evidence](docs/evidence/vharness-p1-v0.1.0-alpha.1.md),
 [fifth-adapter evidence](docs/evidence/clean-room-fifth-adapter-2026-08-25.md),
 [trained-agent Gate E evidence](docs/evidence/situated-negotiation-gate-e-positive-2026-08-25.md),
+[public hero restore evidence](docs/evidence/public-hero-restore-comparison-2026-08-26.md),
+[public hero operator-path evidence](docs/evidence/public-hero-operator-path-2026-08-26.md),
 [security matrix](docs/evidence/security-hardening-matrix-2026-08-25.md),
 [known limitations](docs/LIMITATIONS.md), [final review](docs/releases/FINAL_REVIEW.md),
 [context inheritance](docs/CONTEXT_INHERITANCE.md), [the v0.1 spec](spec/v0.1/SPEC.md),

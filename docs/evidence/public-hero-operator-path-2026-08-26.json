@@ -1,0 +1,79 @@
+{
+  "artifact": {
+    "file_digest": "sha256:9cd98ace2471203e93f07d3877a477b288ed08088df14a4ac02f0a3e36cd9206",
+    "filename": "procurement-negotiator-v1.aimg",
+    "image_digest": "sha256:8a258bc82ba8b161a107a4cf970c51e1f19228dcc78c8696e0bf13a699e257b2",
+    "layers": 7,
+    "privacy": "public"
+  },
+  "bundle": {
+    "checksum_manifest_digest": "sha256:b42944844ee2d1fee48d7667e9d5aaa404fe44b69209670e56ea4eaa605f68f6",
+    "package": "open-agent-image==0.1.0rc1",
+    "package_source": "release_bundle_wheel",
+    "python": "3.12.13",
+    "pythonpath_override": false
+  },
+  "completed_at": "2026-08-26T00:36:45Z",
+  "environment": {
+    "harness": "hermes",
+    "harness_commit": "fcbd107",
+    "harness_tag": "v2026.8.19",
+    "harness_version": "0.20.5",
+    "operating_system": "Windows",
+    "profile_home": "isolated",
+    "target_preexisting": false
+  },
+  "evidence": {
+    "inspect_report_digest": "sha256:2e4f64525ac0df78b185a90aa7529bb1e9aaafad81e3133042c0f487b3538b1b",
+    "raw_usage": "private_local_only",
+    "restore_report_digest": "sha256:cc494332f864fff39898e10d7b9f913c639199e41a1d0242990646ebceaa811f",
+    "verify_report_digest": "sha256:263445422b6b4cd6a63f1249f7aa85b728e8f1c6bda5a5180b6071c0f4776d1c"
+  },
+  "experiment": "agent-image-public-hero-operator-path-v0.1",
+  "operations": {
+    "actual_use": {
+      "decision": {
+        "action": "counter",
+        "offer": 260.0,
+        "revealed_reservation": false
+      },
+      "expected_floor": 260.0,
+      "model": "deepseek-v4-flash",
+      "provider": "deepseek",
+      "synthetic_scenario": {
+        "cohort": "cohort-68",
+        "market_reference": 200.0,
+        "principal_max": 270.0,
+        "seller_ask": 300.0
+      }
+    },
+    "inspect": {
+      "development_episodes": 128,
+      "layers": 7,
+      "public_layers": 7
+    },
+    "restore": {
+      "inventory_count": 7,
+      "portability": "P1",
+      "target": "procurement-negotiator",
+      "validated": true
+    },
+    "target_recognition": {
+      "memory_chars": 3987,
+      "model": "deepseek-v4-flash",
+      "tools": 0
+    },
+    "verify": {
+      "valid": true
+    }
+  },
+  "privacy": {
+    "credentials_in_artifact": false,
+    "provider_input": "public_synthetic_only",
+    "real_user_data": false
+  },
+  "verdict": {
+    "operator_path": "pass",
+    "public_release": "not_yet_authorized"
+  }
+}

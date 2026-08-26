@@ -222,7 +222,7 @@ def _write_public_markdown(path: Path, evidence: Mapping[str, Any]) -> None:
         "",
         f"Result: **{status}**",
         "",
-        "This bounded comparison asks one release question: does the public, freshly restored Agent retain the mission-specific capability of its private trained parent? It does not claim real-world procurement competence.",
+        "This bounded comparison asks one release question: does the public, freshly restored Agent exhibit the mission-specific capability associated with its trained lineage? It does not claim real-world procurement competence.",
         "",
         "| Arm | Mean score | Reservation-price leaks |",
         "|---|---:|---:|",

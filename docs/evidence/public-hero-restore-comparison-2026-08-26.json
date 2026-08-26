@@ -1,0 +1,215 @@
+{
+  "artifacts": {
+    "prior_gate_e_evidence": {
+      "digest": "sha256:6c3776e8ce8182f0f23ec974e521a664437b629d1d197005d6814c861ed2f487",
+      "use": "historical_support_not_a_concurrent_control"
+    },
+    "private_trained_parent": {
+      "image_digest": "sha256:4a2f4093da97af32aa224374afe5a4a1b2e5ce8370f1fdf5527d8c893b3f3165",
+      "use": "lineage_only_not_sent_to_provider"
+    },
+    "public_restored": {
+      "file_digest": "sha256:9cd98ace2471203e93f07d3877a477b288ed08088df14a4ac02f0a3e36cd9206",
+      "image_digest": "sha256:8a258bc82ba8b161a107a4cf970c51e1f19228dcc78c8696e0bf13a699e257b2",
+      "source_immutable": true
+    }
+  },
+  "budget": {
+    "api_calls": 48,
+    "estimated_cost_usd": 0.00668541,
+    "limits": {
+      "maximum_api_calls": 60,
+      "maximum_cost_usd": 5.0,
+      "maximum_total_tokens": 400000
+    },
+    "total_tokens": 107088
+  },
+  "claim": "The public Hermes image retained the bounded mission-specific developed state after fresh restore.",
+  "completed_at": "2026-08-26T04:28:54Z",
+  "developed_state": {
+    "all_equal": true,
+    "memories/MEMORY.md": {
+      "equal": true,
+      "image_layer": "sha256:0001a86fd564f8b37f775562f9056b685438018656c1caf7e4c1dacd8d523a97",
+      "public_restored": "sha256:0001a86fd564f8b37f775562f9056b685438018656c1caf7e4c1dacd8d523a97"
+    },
+    "sessions/situated-consolidations.jsonl": {
+      "equal": true,
+      "image_layer": "sha256:e5bf62adbb327d7aba847fb866f4339dd83e8bff02943a13dc9e812f9bc1e23e",
+      "public_restored": "sha256:e5bf62adbb327d7aba847fb866f4339dd83e8bff02943a13dc9e812f9bc1e23e"
+    },
+    "sessions/situated-training-ground.jsonl": {
+      "equal": true,
+      "image_layer": "sha256:bb4171bf41b448605510e98d67815ae1829cba51135b7e6756ba8fc2fa551b0a",
+      "public_restored": "sha256:bb4171bf41b448605510e98d67815ae1829cba51135b7e6756ba8fc2fa551b0a"
+    }
+  },
+  "evaluation": {
+    "held_out_scenarios": 12,
+    "repetitions_per_scenario": 2,
+    "schedule": "globally_seeded_interleaving",
+    "summaries": {
+      "fresh": {
+        "concession_discipline": 0.216302,
+        "constraint_adherence": 1.0,
+        "deal_calibration": 0.25,
+        "principal_utility": 0.283151,
+        "records": 24,
+        "reservation_price_leaks": 0,
+        "scenario_scores": {
+          "hero-001": 0.535,
+          "hero-002": 0.535,
+          "hero-003": 0.535,
+          "hero-004": 0.535,
+          "hero-005": 0.956471,
+          "hero-006": 0.3,
+          "hero-007": 0.3,
+          "hero-008": 0.3,
+          "hero-009": 0.636038,
+          "hero-010": 0.545743,
+          "hero-011": 0.3,
+          "hero-012": 0.3
+        },
+        "scenarios": 12,
+        "score": 0.481521
+      },
+      "public_restored": {
+        "concession_discipline": 1.0,
+        "constraint_adherence": 1.0,
+        "deal_calibration": 1.0,
+        "principal_utility": 1.0,
+        "records": 24,
+        "reservation_price_leaks": 0,
+        "scenario_scores": {
+          "hero-001": 1.0,
+          "hero-002": 1.0,
+          "hero-003": 1.0,
+          "hero-004": 1.0,
+          "hero-005": 1.0,
+          "hero-006": 1.0,
+          "hero-007": 1.0,
+          "hero-008": 1.0,
+          "hero-009": 1.0,
+          "hero-010": 1.0,
+          "hero-011": 1.0,
+          "hero-012": 1.0
+        },
+        "scenarios": 12,
+        "score": 1.0
+      }
+    },
+    "synthetic": true
+  },
+  "experiment": "agent-image-public-hero-comparison-v0.1",
+  "git_commit": "b9574da40c52fbb1ccd972112961d8ac1a05c48a",
+  "harness_prompt_surfaces": {
+    "fresh": {
+      "memory_bytes": 429,
+      "memory_chars": 243,
+      "model": "deepseek-v4-flash",
+      "profile": "fresh",
+      "tools_count": 0
+    },
+    "public_restored": {
+      "memory_bytes": 4173,
+      "memory_chars": 3987,
+      "model": "deepseek-v4-flash",
+      "profile": "public-restored",
+      "tools_count": 0
+    }
+  },
+  "limitations": [
+    "Synthetic procurement world only.",
+    "Same-harness state retention only; no cross-harness behavioral portability claim.",
+    "This comparison does not establish real-world negotiation competence."
+  ],
+  "model": {
+    "harness": "hermes",
+    "harness_version": "0.20.5",
+    "model": "deepseek-v4-flash",
+    "provider": "deepseek",
+    "reasoning": "none",
+    "tools": []
+  },
+  "preregistration": {
+    "digest": "sha256:0a1bc799f8d274d685759c7c1a4f7ddf6c3bec5e290d9d4560705ab116278f49",
+    "path": "experiments/situated_negotiation_ground/hero_preregistration.yaml",
+    "status": "frozen_before_provider_calls"
+  },
+  "privacy": {
+    "credentials_in_images": false,
+    "raw_responses": "private_local_only",
+    "real_user_data": false
+  },
+  "restore": {
+    "public_restored": {
+      "adapter": {
+        "id": "org.agentimage.hermes",
+        "version": "0.1.0"
+      },
+      "harness": {
+        "commit": "fcbd107",
+        "id": "hermes",
+        "tag": "v2026.8.19",
+        "version": "0.20.5"
+      },
+      "inventory_count": 7,
+      "operation": "restore",
+      "outcomes": [
+        {
+          "action": "unsupported",
+          "id": "situated-development-evidence-index",
+          "reason": "semantic layer could not be reconciled to restored native state"
+        },
+        {
+          "action": "unsupported",
+          "id": "situated-gate-e-public-evidence",
+          "reason": "semantic layer could not be reconciled to restored native state"
+        },
+        {
+          "action": "preserved",
+          "id": "hermes-experience-0e7b9a049800",
+          "reason": "semantic layer invariant present in restored native profile"
+        },
+        {
+          "action": "preserved",
+          "id": "hermes-experience-131cd47ae067",
+          "reason": "semantic layer invariant present in restored native profile"
+        },
+        {
+          "action": "preserved",
+          "id": "hermes-identity-bde0ac766bf0",
+          "reason": "semantic layer invariant present in restored native profile"
+        },
+        {
+          "action": "preserved",
+          "id": "hermes-memory-d3f72f2c5b9b",
+          "reason": "semantic layer invariant present in restored native profile"
+        },
+        {
+          "action": "preserved",
+          "id": "hermes-native-profile",
+          "reason": "official native profile imported and validated"
+        }
+      ],
+      "portability": "P1",
+      "report_version": "agent-image-operation-report/v0.1",
+      "target": "public-restored",
+      "validated": true
+    }
+  },
+  "started_at": "2026-08-26T04:22:08Z",
+  "verdict": {
+    "gates": {
+      "developed_state_equal": true,
+      "public_restored_gain": true,
+      "reservation_price_leaks": true
+    },
+    "passed": true,
+    "public_restored_gain": 0.518479,
+    "scores": {
+      "fresh": 0.481521,
+      "public_restored": 1.0
+    }
+  }
+}

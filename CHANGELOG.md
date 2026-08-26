@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## 0.1.0-rc.1 — 2026-08-26
+
+- Prepared the first publishable developed-agent release asset,
+  `procurement-negotiator-v1.aimg`, from an explicit synthetic-only whitelist;
+  runtime caches, logs, databases, locks, and credentials are absent.
+- Preregistered and ran a 48-call public-restore comparison on new held-out
+  scenarios. The public-restored Agent scored `1.000000` versus `0.481521` for
+  the same-model fresh control, with zero reservation-price leaks and exact
+  restored-state layer digests.
+- Replaced the planned live private-parent arm before any provider call: model
+  credits do not authorize sending private Agent state to an external provider.
+- Added the operator-first hero path, publishable Registry record, and local
+  `v0.1.0-rc.1` release bundle.
 - Added a strict static Registry schema, five private/withheld initial records,
   digest-bound evidence validation, and `agent-image registry validate`.
 - Added full per-layer privacy metadata to `inspect` without exposing payloads.
@@ -15,8 +28,7 @@
   official host registration and adapter workspace rollback.
 - Expanded the installed-package gate to install both wheel and sdist in fresh
   environments and exercise inspect, verify, redact, diff, and Registry flows.
-- Pinned hosted Hermes CI source checkout to a full upstream commit; the final
-  release remains held because trained-agent Gate E is negative.
+- Pinned hosted Hermes CI source checkout to a full upstream commit.
 
 - Added the vHarness adapter pinned to local `0.1.0-alpha.1`, Node `24.15.0`,
   pnpm `11.7.0`, source-tree digest, runtime-build digest, and lockfile digest.

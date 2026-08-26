@@ -1,6 +1,6 @@
 """Open Agent Image Protocol reference implementation."""
 
-__version__ = "0.1.0-beta.1"
+__version__ = "0.1.0-rc.1"
 
 from agent_image.adapter_contract import (
     AdapterCapabilities,

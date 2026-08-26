@@ -118,6 +118,48 @@
 - 证据的角色：支持材料与 release gate，不是使用该 image 的必经流程。
 - 与当前默认声明的差异：本次“用户”明确仅指 hero image 的 developer / operator；原始模型响应不作为公开交付物。private-trained 在线对照在任何 provider call 前被移除，因为额度授权不等于私有状态外传授权；此前 Gate E 作为 lineage 支持证据，不与本轮分数混算。
 
+### 2026-08-26 — README hero path、示例指南、Registry public record 与 `v0.1.0-rc.1` release note
+
+- 状态：`DECLARED`
+- 文档性质：首次开源使用路径与本地 release candidate 交付说明
+- 直接读者：第一次取得 Agent Image 的 developer / operator；其次是 release maintainer
+- 希望促成的行动：让读者从 release asset 安装 CLI、验证并恢复 hero image，然后直接把恢复后的 Agent 用于一个任务
+- 时间范围：`v0.1.0-rc.1` 本地候选到首次公开 release
+- 公开性：进入公开仓库；尚未存在的公开 URL 必须明确标为发布时替换，不能伪装为已上线
+
+| 文中对象或指代 | 实际指向 | 交付给谁 | 接收者获得什么 |
+|---|---|---|---|
+| hero image | `procurement-negotiator-v1.aimg` 的固定 public artifact | developer / operator | 可验证、可 fresh restore、可立即调用的 developed Hermes Agent |
+| README first path | 安装、校验、恢复、实际询问的最短命令序列 | first-time operator | 不先阅读协议内部机制也能获得结果 |
+| Registry public record | hero artifact URI、digest、lineage、privacy、P1 与行为证据状态 | artifact consumer / reviewer | 能发现制品并判断其边界 |
+| rc.1 bundle | wheel、sdist、hero image、checksums 与 release note | release maintainer / downloader | 可上传且可在干净环境复验的一组 release assets |
+| “质量” | 首次路径是否短、命令是否真实、恢复后是否立刻可用 | first-time operator | 实际顺畅的使用结果 |
+| “完成” | 本地 bundle 与干净环境路径通过；公开 URL、push、tag 仍等待授权 | 项目负责人 / release maintainer | 明确区分本地候选完成与外部发布完成 |
+
+- 首要质量判断：读者是否能从一个公开 asset 到一个可工作的 restored Agent，而不是是否能读完全部 evidence。
+- 证据的角色：checksums 是主路径中的轻量完整性检查；行为与治理 evidence 是支持材料和 release gate。
+- 与当前默认声明的差异：`v0.1.0-rc.1` 在本轮只表示本地 release candidate；没有公开 remote 时不声称 artifact 已可下载。
+
+### 2026-08-26 — public hero operator-path evidence
+
+- 状态：`DECLARED`
+- 文档性质：从 rc.1 bundle 安装、恢复并实际调用 hero Agent 的发布证据
+- 直接读者：release maintainer 与需要复核首次体验是否成立的 reviewer
+- 希望促成的行动：确认本地 rc.1 bundle 可以进入跨环境复现与公开发布授权边界
+- 时间范围：固定 `v0.1.0-rc.1` 本地 bundle
+- 公开性：聚合结果与合成示例响应进入仓库；凭证、session id、原始 usage 文件和临时 Hermes home 不进入仓库
+
+| 文中对象或指代 | 实际指向 | 交付给谁 | 接收者获得什么 |
+|---|---|---|---|
+| operator path | 从 bundle wheel 安装到 public image fresh restore，再发出一个合成任务 | release maintainer / reviewer | 首次体验真正成立的结果证据 |
+| actual use | restored Agent 对 README cohort-68 场景的单次真实 provider 响应 | first-time operator 的代理证据 | `counter 260` 且不泄露 270 上限的可观察结果 |
+| clean environment | 不依赖源码或 `PYTHONPATH` 的 Python 3.12 venv，加隔离 Hermes home | package reviewer | wheel 与 artifact 自足地完成主路径 |
+| “完成” | verify、inspect、P1 restore、Hermes recognition 与实际任务全部成功 | 项目负责人 / release maintainer | 可以继续做第二操作系统复现；不等于已经公开发布 |
+
+- 首要质量判断：从 release bundle 恢复出的 Agent 是否第一次就给出预期的可用行为。
+- 证据的角色：release gate 与支持材料，不成为 operator 必须阅读的步骤。
+- 与当前默认声明的差异：只公开合成请求和必要行为结果；provider usage 元数据保留在本地。
+
 ## 写作后回看
 
 正式文档完成后，用三句话复核：

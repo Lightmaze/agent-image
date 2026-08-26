@@ -1,6 +1,6 @@
 {
   "registry_version": "agent-image-registry/v0.1",
-  "updated_at": "2026-08-25T21:17:14Z",
+  "updated_at": "2026-08-26T00:00:00Z",
   "entries": [
     {
       "id": "hermes-synthetic-p1",
@@ -146,6 +146,33 @@
         "path": "docs/evidence/situated-negotiation-gate-e-positive-2026-08-25.json",
         "digest": "sha256:6c3776e8ce8182f0f23ec974e521a664437b629d1d197005d6814c861ed2f487",
         "scope": "Mission-specific synthetic behavior retained by fresh Hermes P1 restore; not cross-harness P3"
+      }
+    },
+    {
+      "id": "procurement-negotiator-v1",
+      "name": "Public synthetic procurement negotiator after 128 practice episodes",
+      "artifact_uri": "withheld://local-release-candidate/procurement-negotiator-v1.aimg",
+      "artifact_digest": "sha256:8a258bc82ba8b161a107a4cf970c51e1f19228dcc78c8696e0bf13a699e257b2",
+      "source_harness": {"id": "hermes", "version": "0.20.5"},
+      "license": "Apache-2.0",
+      "privacy": {"classification": "public", "distribution": "withheld"},
+      "lineage": {
+        "parent_digests": [
+          "sha256:4a2f4093da97af32aa224374afe5a4a1b2e5ce8370f1fdf5527d8c893b3f3165"
+        ]
+      },
+      "portability": {
+        "level": "P1",
+        "archive": "verified",
+        "native_restore": "verified",
+        "semantic_migration": "unverified",
+        "behavioral": "verified"
+      },
+      "evidence": {
+        "status": "verified",
+        "path": "docs/evidence/public-hero-restore-comparison-2026-08-26.json",
+        "digest": "sha256:ca579fbf94f3201bca68bfd9a5dcdacff67dca35122ede5d751beddccc377617",
+        "scope": "Public Hermes P1 restore scored 1.0 versus 0.481521 fresh control in the bounded synthetic task"
       }
     }
   ]
