@@ -42,7 +42,6 @@ from experiments.situated_negotiation_ground.runner import (
 EXPERIMENT_ID = "agent-image-public-hero-comparison-v0.1"
 ARM_PROFILES = {
     "fresh": "fresh",
-    "private_trained": "private-trained",
     "public_restored": "public-restored",
 }
 
@@ -173,18 +172,11 @@ def analyze_hero_result(
     state_equal: bool,
 ) -> dict[str, Any]:
     fresh = float(summaries["fresh"]["score"])
-    private = float(summaries["private_trained"]["score"])
     public = float(summaries["public_restored"]["score"])
-    private_gain = private - fresh
     public_gain = public - fresh
-    retention = public_gain / private_gain if private_gain > 0 else 0.0
-    public_drop = private - public
     maximum_leaks = int(thresholds["maximum_reservation_price_leaks"])
     gates = {
-        "private_trained_gain": private_gain >= float(thresholds["minimum_private_trained_minus_fresh"]),
         "public_restored_gain": public_gain >= float(thresholds["minimum_public_restored_minus_fresh"]),
-        "public_restore_retention": retention >= float(thresholds["minimum_public_restore_retention"]),
-        "public_restored_drop": public_drop <= float(thresholds["maximum_public_restored_score_drop_from_private"]),
         "reservation_price_leaks": all(
             int(summary["reservation_price_leaks"]) <= maximum_leaks for summary in summaries.values()
         ),
@@ -192,26 +184,30 @@ def analyze_hero_result(
     }
     return {
         "scores": {key: float(value["score"]) for key, value in summaries.items()},
-        "private_trained_gain": round(private_gain, 6),
         "public_restored_gain": round(public_gain, 6),
-        "public_restore_retention": round(retention, 6),
-        "public_restored_score_drop_from_private": round(public_drop, 6),
         "gates": gates,
         "passed": all(gates.values()),
     }
 
 
-def _state_comparison(runner: HermesRunner, relative_paths: Sequence[str]) -> dict[str, Any]:
+def _state_comparison(runner: HermesRunner, image: Any, relative_paths: Sequence[str]) -> dict[str, Any]:
+    semantic_layers = {
+        str(layer.get("source", {}).get("path")): layer
+        for layer in image.manifest["layers"]
+        if isinstance(layer.get("source"), Mapping) and layer.get("source", {}).get("path")
+    }
     values: dict[str, Any] = {}
     for relative in relative_paths:
-        private_path = runner.profile_path(ARM_PROFILES["private_trained"]) / Path(relative)
         public_path = runner.profile_path(ARM_PROFILES["public_restored"]) / Path(relative)
-        if not private_path.is_file() or not public_path.is_file():
+        layer = semantic_layers.get(relative)
+        if not public_path.is_file() or layer is None:
             raise RuntimeError(f"required developed-state file is missing after restore: {relative}")
+        actual = file_digest(public_path)
+        expected = str(layer["digest"])
         values[relative] = {
-            "private_trained": file_digest(private_path),
-            "public_restored": file_digest(public_path),
-            "equal": private_path.read_bytes() == public_path.read_bytes(),
+            "image_layer": expected,
+            "public_restored": actual,
+            "equal": actual == expected,
         }
     values["all_equal"] = all(item["equal"] for item in values.values())
     return values
@@ -231,18 +227,15 @@ def _write_public_markdown(path: Path, evidence: Mapping[str, Any]) -> None:
         "| Arm | Mean score | Reservation-price leaks |",
         "|---|---:|---:|",
     ]
-    for arm in ("fresh", "private_trained", "public_restored"):
+    for arm in ("fresh", "public_restored"):
         summary = summaries[arm]
         lines.append(f"| `{arm}` | {float(summary['score']):.6f} | {int(summary['reservation_price_leaks'])} |")
     lines.extend(
         [
             "",
-            f"- Private-trained gain over fresh: `{float(verdict['private_trained_gain']):.6f}`",
             f"- Public-restored gain over fresh: `{float(verdict['public_restored_gain']):.6f}`",
-            f"- Public restore retention: `{float(verdict['public_restore_retention']):.2%}`",
-            f"- Public score drop from private parent: `{float(verdict['public_restored_score_drop_from_private']):.6f}`",
             "",
-            "The three arms used Hermes 0.20.5, DeepSeek `deepseek-v4-flash`, reasoning `none`, no tools, 12 new synthetic held-out scenarios, and two repetitions per scenario. The 72 calls were globally interleaved from a frozen seed.",
+            "The two arms used Hermes 0.20.5, DeepSeek `deepseek-v4-flash`, reasoning `none`, no tools, 12 new synthetic held-out scenarios, and two repetitions per scenario. The 48 calls were globally interleaved from a frozen seed.",
             "",
             "Raw model responses and credentials remain local and private. The public evidence contains aggregate scores, content digests, the frozen preregistration digest, and the release verdict.",
             "",
@@ -256,7 +249,6 @@ def execute(
     *,
     repository: Path,
     run_root: Path,
-    private_image: Path,
     public_image: Path,
     preregistration_path: Path,
     public_json: Path,
@@ -276,8 +268,7 @@ def execute(
 
     commit = _require_clean_repository(repository)
     public = _require_pinned_image(public_image, registration, "public_image")
-    private = _require_pinned_image(private_image, registration, "private_trained_parent")
-    source_before = {"private": file_digest(private_image), "public": file_digest(public_image)}
+    source_before = file_digest(public_image)
 
     budget = TokenBudget(
         maximum_api_calls=int(registration["budget"]["maximum_api_calls"]),
@@ -296,12 +287,6 @@ def execute(
     runner.require_version()
 
     restore_root = run_root / "restore"
-    private_restore = _restore_once(
-        runner,
-        image=private["document"],
-        target=ARM_PROFILES["private_trained"],
-        report_path=restore_root / "private-trained.json",
-    )
     public_restore = _restore_once(
         runner,
         image=public["document"],
@@ -310,8 +295,8 @@ def execute(
     )
     _prepare_fresh_profile(runner)
     surfaces = {arm: runner.verify_profile_surface(profile) for arm, profile in ARM_PROFILES.items()}
-    required_state = [str(item) for item in registration["success"]["required_state_files_equal_between_private_and_public"]]
-    state = _state_comparison(runner, required_state)
+    required_state = [str(item) for item in registration["success"]["required_restored_state_files_match_public_image"]]
+    state = _state_comparison(runner, public["document"], required_state)
 
     metadata_path = run_root / "metadata.json"
     metadata = {
@@ -320,7 +305,6 @@ def execute(
         "git_commit": commit,
         "preregistration_digest": file_digest(preregistration_path),
         "artifacts": {
-            "private": {"image_digest": private["image_digest"], "file_digest": private["file_digest"]},
             "public": {"image_digest": public["image_digest"], "file_digest": public["file_digest"]},
         },
         "model": _model_record(runner),
@@ -395,7 +379,7 @@ def execute(
 
     summaries = {arm: aggregate(rows) for arm, rows in rows_by_arm.items()}
     verdict = analyze_hero_result(summaries, thresholds=registration["success"], state_equal=bool(state["all_equal"]))
-    source_after = {"private": file_digest(private_image), "public": file_digest(public_image)}
+    source_after = file_digest(public_image)
     if source_before != source_after:
         raise RuntimeError("source image changed during comparison")
     evidence = {
@@ -410,19 +394,19 @@ def execute(
         },
         "artifacts": {
             "private_trained_parent": {
-                "image_digest": private["image_digest"],
-                "file_digest": private["file_digest"],
-                "source_immutable": source_before["private"] == source_after["private"],
+                "image_digest": registration["artifacts"]["private_trained_parent"]["image_digest"],
+                "use": "lineage_only_not_sent_to_provider",
             },
             "public_restored": {
                 "image_digest": public["image_digest"],
                 "file_digest": public["file_digest"],
-                "source_immutable": source_before["public"] == source_after["public"],
+                "source_immutable": source_before == source_after,
             },
+            "prior_gate_e_evidence": registration["artifacts"]["prior_gate_e_evidence"],
         },
         "model": _model_record(runner),
         "harness_prompt_surfaces": surfaces,
-        "restore": {"private_trained": private_restore, "public_restored": public_restore},
+        "restore": {"public_restored": public_restore},
         "developed_state": state,
         "evaluation": {
             "synthetic": True,
@@ -457,9 +441,8 @@ def execute(
 
 
 def build_parser(repository: Path) -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Compare the public hero image against fresh and private-trained controls")
+    parser = argparse.ArgumentParser(description="Compare the public hero image against a same-model fresh Agent")
     parser.add_argument("--run-root", type=Path, required=True)
-    parser.add_argument("--private-image", type=Path, required=True)
     parser.add_argument("--public-image", type=Path, required=True)
     parser.add_argument(
         "--preregistration",
@@ -491,7 +474,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         return execute(
             repository=repository,
             run_root=args.run_root,
-            private_image=args.private_image,
             public_image=args.public_image,
             preregistration_path=args.preregistration,
             public_json=args.public_json,

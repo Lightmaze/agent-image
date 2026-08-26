@@ -99,7 +99,7 @@
 ### 2026-08-26 — `hero_preregistration.yaml` 与公开镜像行为对照证据
 
 - 状态：`DECLARED`
-- 文档性质：首个公开 trained-agent image 的有限行为验证预注册与结果报告
+- 文档性质：首个公开 trained-agent image 的有限行为验证预注册与结果报告；provider call 前因隐私边界修订一次
 - 直接读者：实验执行者、release maintainer，以及需要判断该 artifact 是否可作为首发示例的 reviewer
 - 希望促成的行动：在模型调用前冻结对照条件和成功阈值，随后决定该公开镜像能否进入 operator-first 发布路径
 - 时间范围：当前 `v0.1.0` release candidate；只评估已生成并固定 digest 的公开 hero image
@@ -108,15 +108,15 @@
 | 文中对象或指代 | 实际指向 | 交付给谁 | 接收者获得什么 |
 |---|---|---|---|
 | public-restored Agent | 从固定 digest 的公开 `.aimg` 在隔离 Hermes home 中恢复出的 Agent | image consumer / operator | 下载并恢复后即可使用的采购谈判能力 |
-| quick comparison | fresh、private-trained、public-restored 三臂、72 次模型调用的有限对照 | release maintainer / reviewer | 判断公开化与恢复是否保留训练所得能力的支持证据 |
-| fresh / private-trained controls | 同模型、参数、工具集与场景下的因果参照 | experiment reviewer | 区分基础模型能力、训练后状态与公开恢复状态 |
+| quick comparison | fresh、public-restored 两臂、48 次模型调用的有限对照 | release maintainer / reviewer | 判断公开恢复后是否仍显著优于没有实践史的 fresh Agent |
+| fresh control / prior Gate E | fresh 是本轮同条件因果参照；已发布 Gate E 只提供 private parent 的历史证据 | experiment reviewer | 区分基础模型能力与公开恢复状态，同时不把 private native context 发送给 provider |
 | “用户” | 首次取得并运行该 hero image 的 developer / operator | developer / operator | 不必先理解实验体系，即可完成恢复和实际任务 |
 | “质量” | 公开恢复后的 Agent 能否立即、稳定地完成目标任务 | developer / operator | 实际可用的能力，而不是额外的审计工作量 |
 | “完成” | 预注册冻结、对照执行、结果诚实发布并据此作出 release 判断 | 项目负责人 / release maintainer | 可继续进入首发体验，或明确知道需要修正什么 |
 
 - 首要质量判断：公开 artifact 恢复后，operator 能否直接获得已形成的任务能力。
 - 证据的角色：支持材料与 release gate，不是使用该 image 的必经流程。
-- 与当前默认声明的差异：本次“用户”明确仅指 hero image 的 developer / operator；原始模型响应不作为公开交付物。
+- 与当前默认声明的差异：本次“用户”明确仅指 hero image 的 developer / operator；原始模型响应不作为公开交付物。private-trained 在线对照在任何 provider call 前被移除，因为额度授权不等于私有状态外传授权；此前 Gate E 作为 lineage 支持证据，不与本轮分数混算。
 
 ## 写作后回看
 
