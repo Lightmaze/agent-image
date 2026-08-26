@@ -1,11 +1,11 @@
 # Agent Image Protocol v0.1 Final Review
 
-Date: 2026-08-25
+Date: 2026-08-26
 
-This review closes the semantic and engineering questions for the **protocol
-substrate**. It does not claim that an external developer can already download
-a public developed-agent image and independently complete the full install,
-inspect, fresh-restore, and behavioral-comparison journey.
+This review closes the semantic, engineering, and local first-use questions for
+the `v0.1.0-rc.1` candidate. A clean release-wheel environment can verify,
+inspect, fresh-restore, and use the public hero image. It does not claim that a
+public download URL or hosted release already exists.
 
 ## Eight human questions
 
@@ -17,17 +17,18 @@ inspect, fresh-restore, and behavioral-comparison journey.
 | 4 | Can a user see image privacy contents before publishing? | Yes | Build plans, per-layer inspect metadata, privacy summaries, and public redaction reports expose classification without payload. |
 | 5 | Does native round-trip really work? | Yes | Pinned real P1 evidence for all four adapters; Hermes also passes local WSL Linux. |
 | 6 | Does at least one semantic cross-harness migration really work? | Yes | Real Hermes-to-OpenClaw P2 with source immutability, target recognition, provenance, and loss report. |
-| 7 | Was practice-induced behavioral state shown to survive freeze/restore? | Yes, bounded | The preregistered v0.2 run passed all nine checks; trained and fresh-restored scored 1.0, with identical state digests and zero action/offer/leak mismatches across 192 paired records. |
+| 7 | Was practice-induced behavioral state shown to survive freeze/restore? | Yes, bounded | Private Gate E passed all nine checks; the public-safe derivative then scored 1.0 versus a 0.481521 fresh control on new scenarios and returned the expected `counter 260` after release-bundle restore. |
 | 8 | Can a third party add a fifth harness without forking Core? | Yes | Separate clean-room wheel registers through `agent_image.adapters` and builds/verifies P0 in a fresh environment. |
 
-All eight semantic acceptance questions are now Yes. The Gate E answer is
-limited to one synthetic mission under same-harness P1 restore and does not
-claim P3. Public release remains subject to observed remote CI and explicit
-publication authorization.
+All eight semantic acceptance questions are Yes. The hero path additionally
+passes from the rc.1 wheel and artifact on Windows, while Windows and WSL Linux
+produce identical verify, inspect, and P1 restore reports. The behavior answer
+remains limited to one synthetic mission under same-harness P1 and does not
+claim P3.
 
-All eight answers being Yes therefore means “the protocol is an honest local
-release candidate,” not “the public adoption experience is complete.” The next
-proof is a downloadable, public-safe hero image using the current protocol.
+The local adoption experience is complete. What remains is external state: a
+real public destination, release asset URL, observed hosted CI, and a download
+rerun from that URL.
 
 ## Release verdict
 
@@ -42,12 +43,15 @@ Cross-Harness Demo:    PASS
 Security:              PASS (local matrix; claim limits apply)
 Privacy:               PASS
 Trained-Agent Demo:    PASS (bounded same-harness synthetic mission)
-Registry:              PASS
+Public Hero:           PASS (local Windows use; Windows + WSL P1)
+Registry:              PASS (hero withheld until real URL exists)
 Third-party Adapter:   PASS
 
 Critical Blockers:
-- Hosted Windows/Linux/macOS CI is configured but not yet observed.
-- Public repository creation, push, and tags are not authorized in this run.
+- Public repository destination, push, rc.1 tag/release, and asset upload are
+  not yet authorized.
+- Hosted Windows/Linux/macOS CI is configured but cannot be observed before the
+  repository is pushed.
 
 Decision:
 [ ] RELEASE v0.1.0

@@ -8,14 +8,16 @@ one harness as the semantic owner.
 
 ## Current stage
 
-`Epoch 4 implementation and Gate E complete; local RC candidate` (all four
-adapters, the first P2 path, fifth-adapter extension, Registry, local hardening,
-and the redesigned trained-agent gate are implemented).
+`v0.1.0-rc.1 local release candidate complete` (all four adapters, the first
+P2 path, fifth-adapter extension, Registry, local hardening, trained-agent gate,
+public hero artifact, and operator-first release bundle are implemented).
 
-That status applies to the **protocol substrate**. The **open-source adoption
-experience** is incomplete: an external developer cannot yet download a public
-developed-agent image and independently complete inspect, fresh restore, and a
-short behavioral comparison.
+The local **open-source adoption experience** now closes: a clean environment
+can install the bundle wheel, verify and inspect the public hero image, fresh
+restore it, and use the restored Agent. Windows completed the actual synthetic
+task; Windows and WSL Linux produced identical verify, inspect, and P1 restore
+reports. External download remains unavailable only because no public remote or
+release URL has been authorized and created.
 
 The current evidence proves pinned native round-trips for Hermes, OpenClaw,
 DSH, and the scoped vHarness reference Guest, plus the declared
@@ -29,7 +31,7 @@ unverified.
 | Gate | Status | Evidence / blocker |
 |---|---|---|
 | Protocol | Beta schema freeze pass | `spec/v0.1/`, compatibility freeze, Apache-2.0; external review pending |
-| Core toolchain | Formal epoch pass | 79 tests plus 11 subtests; locked environment; wheel/sdist installed CLI smoke; typed adapter SDK and public entry points; production build/inspect/verify/redact/diff/restore/migrate/registry and reports |
+| Core toolchain | Formal epoch pass | 85 tests plus 11 subtests; locked environment; wheel/sdist installed CLI smoke; typed adapter SDK and public entry points; production build/inspect/verify/redact/diff/restore/migrate/registry and reports |
 | Hermes | P1 pass, pinned | Hermes 0.20.5 / v2026.8.19 / fcbd107; Windows and local WSL Linux named-profile round-trip with equal layer digests |
 | OpenClaw | P1 and P2-consumer pass, pinned | 2026.7.1-2 / 0790d9f / Node 24.15.0; real Windows agent/workspace round-trip and Hermes migration |
 | DSH | P1 pass, pinned | `@deepseek-ai/dsh@0.1.0-rc.6`; ordered in-box bundles and official dump round-trip on Windows; arbitrary external dependency reinstall not claimed |
@@ -37,11 +39,12 @@ unverified.
 | Fifth adapter | C0/P0 extension pass | Separate wheel discovered through `agent_image.adapters` in a fresh offline venv; no Core schema fork |
 | Security/privacy | Local hardening pass | path/symlink/structured-secret/privacy/no-overwrite/no-silent-loss matrix; malformed structured data fails closed; real OpenClaw rollback injection passes on Windows |
 | Trained-agent demonstration | Gate E pass, bounded | Preregistered v0.2: 128 trained + 128 shuffled episodes; 64 held-out scenarios x3; trained 1.0 vs before 0.414455 and concurrent base 0.433951; fresh restored 1.0; 0 action/offer/leak mismatches across 192 paired records |
-| Registry | Pass | six digest-bound private/withheld records; source harness, lineage, privacy, portability, and positive/negative evidence validated locally |
+| Public hero | Local release path pass | Seven public layers; fresh-restored score 1.0 vs 0.481521 fresh control; `counter 260` on the README task; identical Windows/WSL verify, inspect, and P1 restore reports |
+| Registry | Pass | six private evidence records plus one public-safe hero candidate; source harness, lineage, privacy, portability, and evidence digests validated locally |
 
 Release verdict: **LOCAL v0.1.0-rc.1 CANDIDATE; HOLD PUBLIC PUSH/TAG AND FINAL v0.1.0.**
 
-Current epistemic state: `EXTRACT:situated-negotiation-gate-e-positive`.
+Current epistemic state: `RELEASE_CANDIDATE:v0.1.0-rc.1`.
 
 The legacy EVC surface is maintained only as a knowledge capsule because the
 local skill has been demoted. It has no implementation or lifecycle authority.
@@ -61,17 +64,16 @@ was built behind the adapter boundary and formalized from real gate evidence.
 
 ## Next actions
 
-The next product action is to turn the bounded positive Gate E state into a
-public-safe hero artifact and close the external developer journey: obtain,
-verify, inspect, fresh restore, and run a short fresh-versus-restored comparison.
-This work should use the frozen protocol as-is unless real use exposes a missing
-state boundary.
+The next action is external publication: choose and authorize the public
+repository destination, push the audited history, publish `v0.1.0-rc.1`, upload
+the six release assets, and replace the Registry's local `withheld://` locator
+with the real HTTPS asset URL. The release asset must then be downloaded from
+that URL and rerun through the same operator path.
 
-Separately, Gate E is green. An authorized remote run must still turn the
-configured Windows/Linux/macOS CI matrix into observed evidence, and repository
-creation, push, and tags require explicit user authorization at the execution
-point. Until then the honest protocol result is a local RC candidate, not a
-public RC or final release.
+An authorized remote run must also turn the configured Windows/Linux/macOS CI
+matrix into observed hosted evidence. Until those external actions occur, the
+honest result is a complete local RC candidate, not a public RC or final
+release.
 
 ## Source provenance
 

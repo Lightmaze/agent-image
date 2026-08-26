@@ -201,6 +201,26 @@
 - 证据的角色：外部发布 gate；不进入普通 operator 的安装体验。
 - 与当前默认声明的差异：本报告只授权提出发布请求，本身不授权创建 remote、push、tag 或 release。
 
+### 2026-08-26 — `PROJECT_STATUS` 与 `FINAL_REVIEW` 的 rc.1 状态收敛
+
+- 状态：`DECLARED`
+- 文档性质：阶段状态与最终人工问题的事实更新，不产生新架构或新验收体系
+- 直接读者：项目负责人、release maintainer、首次判断项目成熟度的协议 reviewer
+- 希望促成的行动：让公开发布决定基于已经完成的 hero、operator 与 cross-platform 结果，而不是旧的“hero 尚缺失”状态
+- 时间范围：本地 `v0.1.0-rc.1` candidate
+- 公开性：进入公开仓库
+
+| 文中对象或指代 | 实际指向 | 交付给谁 | 接收者获得什么 |
+|---|---|---|---|
+| current status | 协议、四 adapter、P2、hero artifact、两环境 P1 与行为证据的当前实测状态 | project lead / reviewer | 一页内知道已经成立与仍未成立的内容 |
+| final review | 八项 semantic question 加本地 release readiness | release maintainer | 是否可请求公开发布授权的最终判断 |
+| remaining blocker | 真实 public destination / release URL 与未观察 hosted CI | 项目负责人 | 需要外部动作或后续观察的准确边界 |
+| “完成” | local rc.1 的代码、artifact、行为、首次体验、跨环境与隐私 gate 全部成立 | release maintainer | 可以进入明确授权的公开动作；不等于外部发布已经发生 |
+
+- 首要质量判断：状态文档是否让读者直接看见“这个东西现在能做什么”，而不是只看见治理过程。
+- 证据的角色：为状态结论提供可追溯支撑；正文只保留必要链接。
+- 与当前默认声明的差异：无。
+
 ## 写作后回看
 
 正式文档完成后，用三句话复核：
