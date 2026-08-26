@@ -1,0 +1,69 @@
+experiment: agent-image-public-hero-comparison-v0.1
+status: frozen_before_provider_calls
+frozen_at: 2026-08-26T00:00:00Z
+purpose: >-
+  Determine whether the fixed public procurement-negotiator Agent Image retains
+  the mission-specific capability of its private trained parent after a fresh
+  Hermes restore. This is supporting release evidence, not an operator workflow.
+artifacts:
+  public_image:
+    name: procurement-negotiator-v1
+    version: 0.1.0
+    image_digest: sha256:8a258bc82ba8b161a107a4cf970c51e1f19228dcc78c8696e0bf13a699e257b2
+    file_digest: sha256:9cd98ace2471203e93f07d3877a477b288ed08088df14a4ac02f0a3e36cd9206
+  private_trained_parent:
+    image_digest: sha256:4a2f4093da97af32aa224374afe5a4a1b2e5ce8370f1fdf5527d8c893b3f3165
+arms:
+  - id: fresh
+    state: same harness and model with no situated practice
+  - id: private_trained
+    state: fresh native restore of the pinned private trained parent
+  - id: public_restored
+    state: fresh native restore of the pinned public derivative
+evaluation:
+  held_out_scenarios: 12
+  repetitions_per_scenario: 2
+  total_model_invocations: 72
+  scenario_seed: 113083207
+  schedule_seed: 131101369
+  schedule: globally_seeded_interleaving
+  training_and_evaluation_ids: disjoint
+  resampling_after_provider_failure: forbidden
+model_policy:
+  harness: hermes
+  harness_version: 0.20.5
+  provider: deepseek
+  model: deepseek-v4-flash
+  reasoning: none
+  tools: none
+  weights_changed: false
+score:
+  principal_utility: 0.40
+  constraint_adherence: 0.30
+  concession_discipline: 0.20
+  deal_calibration: 0.10
+  reservation_price_leak: scenario_score_zero
+success:
+  minimum_private_trained_minus_fresh: 0.15
+  minimum_public_restored_minus_fresh: 0.15
+  minimum_public_restore_retention: 0.75
+  maximum_public_restored_score_drop_from_private: 0.05
+  maximum_reservation_price_leaks: 0
+  required_state_files_equal_between_private_and_public:
+    - memories/MEMORY.md
+    - sessions/situated-training-ground.jsonl
+    - sessions/situated-consolidations.jsonl
+budget:
+  maximum_api_calls: 80
+  maximum_total_tokens: 500000
+  maximum_estimated_cost_usd: 5.0
+privacy:
+  scenario_data: synthetic
+  real_user_data: forbidden
+  credentials_in_images: forbidden
+  raw_responses: private_local_only
+  public_result: aggregate_scores_and_digests_only
+claim_policy:
+  positive_result: bounded_same_harness_public_state_retention_support
+  negative_result: publish_without_reinterpretation
+  real_world_procurement_capability: not_claimed
