@@ -75,6 +75,27 @@
 
 ## 文档登记
 
+### 2026-08-26 — `README.md` 与 `README.zh-CN.md` 独立语言入口
+
+- 状态：`DECLARED`
+- 文档性质：项目公开入口的英文规范版本与简体中文本地化版本
+- 直接读者：第一次发现、安装、恢复或集成 Agent Image 的英文或简体中文 developer / operator；其次是 adapter author 与 release maintainer
+- 希望促成的行动：让读者选择一种语言后，在单一语言表面中理解项目边界、完成 hero image 恢复，并找到开发与集成入口
+- 时间范围：当前 `v0.1.0-rc.1` 本地候选到首次公开 release
+- 公开性：进入公开仓库；两份 README 顶部互链，尚未存在的公开 URL 不得写成已经上线
+
+| 文中对象或指代 | 实际指向 | 交付给谁 | 接收者获得什么 |
+|---|---|---|---|
+| English / `README.md` | 协议的英文规范公开入口 | 英文 developer / operator、国际 contributor | 不混入平行中文段落的完整安装、恢复、开发与边界说明 |
+| 简体中文 / `README.zh-CN.md` | 与英文事实和声明边界对齐的中文本地化入口 | 简体中文 developer / operator、中文 contributor | 不必跨语言拼接即可完成同一主路径并理解相同能力边界 |
+| “用户” | 获取 image、恢复 Agent 或集成 adapter 的 developer / operator | 对应语言的首次读者 | 可选择语言并直接开始使用，而不是自行翻译协议入口 |
+| “质量” | 两种语言都能独立、准确、顺畅地带读者完成同一核心任务 | first-time operator | 一致的能力预期、命令和限制，不出现一边过时或夸大 |
+| “完成” | 两份 README 相互可发现、事实对齐、语言边界检查通过 | project lead / release maintainer | 可作为公开仓库的双语入口 |
+
+- 首要质量判断：读者只阅读自己选择的语言版本，也能正确理解项目并完成 hero Agent 的恢复与首次任务。
+- 证据的角色：语言边界、链接和 claim-alignment 检查是发布支持材料；不增加普通读者的操作步骤。
+- 与当前默认声明的差异：`README.md` 明确作为英文规范版本；`README.zh-CN.md` 是完整本地化版本，不是摘要或逐段夹译。
+
 ### 2026-08-25 — 后续阶段文档与计划的默认入口
 
 - 状态：`DECLARED`

@@ -1,5 +1,7 @@
 # Open Agent Image Protocol
 
+[English](README.md) | [Simplified Chinese](README.zh-CN.md)
+
 > **Models have checkpoints. Agents need images.**
 
 > **We didn't train the model. We trained the agent.**
