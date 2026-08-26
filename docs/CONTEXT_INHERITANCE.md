@@ -52,12 +52,13 @@ order in which we discover what deserves to become architecture.
   and policy.
 - Existing artifacts create gravity. Working code may be demoted to substrate
   or prototype when it begins to define the product instead of serving it.
-- Protocol proof and product proof are different. Gate E shows that measured
-  developed state can survive freeze/restore; it does not yet show that a human
-  experiences the returned Agent as the same collaborator.
+- Protocol proof and adoption proof are different. Gate E shows that measured
+  developed state can survive freeze/restore; it does not yet give an external
+  developer a downloadable artifact and a short reproducible hero path.
 - The current protocol repository is therefore treated as a rigorous transport
-  and audit substrate. The next discovery surface is the independent `The
-  Return / 归来` scene, not a new Core field or CLI command.
+  and audit substrate. The next discovery surface is Agent Image's own public
+  install / inspect / restore / compare experience, not another product's
+  scenario and not a new Core field or CLI command.
 
 The governing sentence is:
 

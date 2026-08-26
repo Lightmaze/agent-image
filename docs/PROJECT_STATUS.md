@@ -12,10 +12,10 @@ one harness as the semantic owner.
 adapters, the first P2 path, fifth-adapter extension, Registry, local hardening,
 and the redesigned trained-agent gate are implemented).
 
-That status applies to the **protocol substrate**. The **product / experience
-thesis** is still in discovery: we have not yet shown that a person can
-recognize a restored developed Agent through its judgment, timing, and
-initiative rather than through a benchmark report.
+That status applies to the **protocol substrate**. The **open-source adoption
+experience** is incomplete: an external developer cannot yet download a public
+developed-agent image and independently complete inspect, fresh restore, and a
+short behavioral comparison.
 
 The current evidence proves pinned native round-trips for Hermes, OpenClaw,
 DSH, and the scoped vHarness reference Guest, plus the declared
@@ -61,11 +61,11 @@ was built behind the adapter boundary and formalized from real gate evidence.
 
 ## Next actions
 
-The next product-discovery action is the independent `The Return / 归来`
-experience: compare a lived Agent with a fresh Agent receiving an excellent
-handoff, without changing the protocol. Only after that scene creates an
-unmistakable difference should Agent Image freeze/restore enter the loop and
-inform future primitives.
+The next product action is to turn the bounded positive Gate E state into a
+public-safe hero artifact and close the external developer journey: obtain,
+verify, inspect, fresh restore, and run a short fresh-versus-restored comparison.
+This work should use the frozen protocol as-is unless real use exposes a missing
+state boundary.
 
 Separately, Gate E is green. An authorized remote run must still turn the
 configured Windows/Linux/macOS CI matrix into observed evidence, and repository

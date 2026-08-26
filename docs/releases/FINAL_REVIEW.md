@@ -3,9 +3,9 @@
 Date: 2026-08-25
 
 This review closes the semantic and engineering questions for the **protocol
-substrate**. It does not claim that the broader product experience is already
-compelling, or that a person can recognize a restored Agent as the same
-developed collaborator without reading an evaluation report.
+substrate**. It does not claim that an external developer can already download
+a public developed-agent image and independently complete the full install,
+inspect, fresh-restore, and behavioral-comparison journey.
 
 ## Eight human questions
 
@@ -26,9 +26,9 @@ claim P3. Public release remains subject to observed remote CI and explicit
 publication authorization.
 
 All eight answers being Yes therefore means “the protocol is an honest local
-release candidate,” not “the Agent Image thesis has finished product
-discovery.” Experiential continuity is being tested separately through `The
-Return / 归来` before it is translated into new protocol mechanisms.
+release candidate,” not “the public adoption experience is complete.” The next
+proof is a downloadable, public-safe hero image using the current protocol, not
+a separate experience product or new Core mechanism.
 
 ## Release verdict
 
