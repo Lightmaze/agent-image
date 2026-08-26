@@ -109,11 +109,16 @@ def _entries_for(
     return entries
 
 
-def publish_image(export: AdapterExport, output: Path) -> None:
+def publish_image(
+    export: AdapterExport,
+    output: Path,
+    *,
+    redaction_report: dict[str, Any] | None = None,
+) -> None:
     if output.exists():
         raise AgentImageError("E_TARGET_EXISTS", f"Output already exists: {output}")
     output.parent.mkdir(parents=True, exist_ok=True)
-    entries = _entries_for(export)
+    entries = _entries_for(export, redaction_report=redaction_report)
     with tempfile.TemporaryDirectory(prefix=".agent-image-formal-", dir=output.parent) as temporary:
         candidate = Path(temporary) / "candidate.aimg"
         pack_entries(entries, candidate)

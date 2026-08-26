@@ -836,23 +836,29 @@ def build_checkpoint(
         )
         exported.manifest["development"] = {
             "method": "habitat",
-            "environment": "situated-negotiation-training-ground-v0.2",
             "episodes": len(read_jsonl(development_paths[0])),
-            "weights_changed": False,
-            "evidence": {
-                "path": "layers/development/situated-development-index.json",
-                "digest": sha256_bytes(payload),
-                "status": "self_reported",
+            "habitat": {
+                "id": "situated-negotiation-training-ground",
+                "version": "0.2",
             },
+            "notes": "Model weights were unchanged; development used causal practice and consolidation.",
+            "evidence": [
+                {
+                    "kind": "log",
+                    "path": "layers/development/situated-development-index.json",
+                    "digest": sha256_bytes(payload),
+                }
+            ],
         }
     exported.manifest["evaluations"] = [
         {
             "id": "situated-negotiation-held-out-v0.2-before",
             "status": "self_reported",
-            "score": dict(before_summary),
+            "before": dict(before_summary),
             "evidence": {
+                "kind": "evaluation",
                 "path": "layers/evaluation/situated-evidence-index.json",
-                "privacy": "private",
+                "digest": sha256_bytes(exported.payloads["layers/evaluation/situated-evidence-index.json"]),
             },
         }
     ]
@@ -862,7 +868,7 @@ def build_checkpoint(
     }
     if parent_digest:
         exported.manifest["lineage"] = {
-            "parents": [{"digest": parent_digest, "relationship": "developed_from"}],
+            "parent": {"digest": parent_digest},
             "fork_reason": "mission-specific causal practice in a synthetic Training Ground",
         }
     exported.manifest["image"]["digest"] = layer_root_digest(exported.manifest["layers"])
