@@ -4,6 +4,13 @@
 
 ## 0.1.0-rc.1 — 2026-08-26
 
+- Adopted **Agent Image** as the public project and artifact name while keeping
+  **Open Agent Image Protocol v0.1** as the formal interoperability contract;
+  aligned the repository, `agent-image` distribution, CLI, and bilingual
+  first-run surfaces.
+- Rebuilt the README around the observable developed-state restore: the same
+  model scored 48% when fresh and 100% after a fresh Agent Image restore on the
+  bounded public synthetic comparison.
 - Prepared the first publishable developed-agent release asset,
   `procurement-negotiator-v1.aimg`, from an explicit synthetic-only whitelist;
   runtime caches, logs, databases, locks, and credentials are absent.

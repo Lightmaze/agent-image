@@ -25,7 +25,10 @@ def _common(parser: argparse.ArgumentParser) -> None:
 
 
 def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="agent-image", description="Open Agent Image Protocol reference CLI")
+    parser = argparse.ArgumentParser(
+        prog="agent-image",
+        description="Agent Image CLI for portable checkpoints of developed agents",
+    )
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     commands = parser.add_subparsers(dest="command", required=True)
 
@@ -124,4 +127,3 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

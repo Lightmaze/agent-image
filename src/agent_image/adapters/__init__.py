@@ -1,4 +1,4 @@
-"""Harness adapters for the Open Agent Image Protocol reference implementation."""
+"""Harness adapters for the Agent Image reference implementation."""
 
 from agent_image.adapters.dsh import DshAdapter
 from agent_image.adapters.hermes import HermesAdapter

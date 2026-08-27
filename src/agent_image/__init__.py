@@ -1,4 +1,4 @@
-"""Open Agent Image Protocol reference implementation."""
+"""Agent Image reference implementation."""
 
 __version__ = "0.1.0-rc.1"
 

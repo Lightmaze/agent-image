@@ -1,7 +1,7 @@
 # 文档交付与指代清单
 
 - 建立日期：2026-08-25
-- 适用范围：Open Agent Image Protocol 仓库中的计划、阶段判断、设计说明、验收说明和重要 README 改写
+- 适用范围：Agent Image 仓库中的计划、阶段判断、设计说明、验收说明和重要 README 改写
 - 使用顺序：先登记交付声明，再开始正式写作
 
 ## 为什么需要这份清单
@@ -28,7 +28,7 @@
 | 首要产品接收者 | 希望获得、恢复、迁移或继续发展 Agent 的 developer / operator |
 | 集成接口接收者 | harness maintainer、adapter author 与 runtime integrator |
 | 证据接收者 | release maintainer、安全/隐私复核者、协议评审者，以及主动查看证据的使用者 |
-| “我们” | Open Agent Image Protocol 的当前维护者与执行者 |
+| “我们” | Agent Image 项目的当前维护者与执行者 |
 | “用户” | 没有默认含义；正式文档必须写明是 operator、image producer、image consumer、adapter author 还是 reviewer |
 | “体验” | 首要接收者完成目标所经历的实际路径与结果 |
 | “质量” | 首要接收者能否顺畅、可信地获得预期结果；审计证据用于支撑这种质量 |
@@ -74,6 +74,29 @@
 ```
 
 ## 文档登记
+
+### 2026-08-27 — Agent Image 公开身份与 README 首屏修正
+
+- 状态：`DECLARED`
+- 文档性质：项目公开名称、包身份、仓库入口与首发叙事的统一改写
+- 直接读者：第一次从 GitHub、release 或生态引用进入项目的 developer / operator；其次是 package consumer、adapter author 与 release maintainer
+- 希望促成的行动：让读者在数秒内理解 Agent Image 保存的是发展后的 Agent 状态，并沿最短路径恢复首个可用 Agent；需要建立信任时再进入协议、边界与证据材料
+- 时间范围：`v0.1.0-rc.1` 首次公开发布及其发布后初期
+- 公开性：公开仓库、Python package metadata、release 说明与中英文 README；尚未存在的仓库和 release URL 不写成既成事实
+
+| 文中对象或指代 | 实际指向 | 交付给谁 | 接收者获得什么 |
+|---|---|---|---|
+| Agent Image | 项目公开主名，也是保存 developed-agent state 的制品类别 | first-time developer / operator、生态传播者 | 一个简短、可复述、可搜索的对象名称 |
+| Open Agent Image Protocol v0.1 | `.aimg`、manifest、privacy、provenance、loss 与 adapter contract 的正式协议名 | protocol implementer、adapter author、reviewer | 精确的互操作契约，而不是需要背诵的品牌全称 |
+| `agent-image` | Python distribution、CLI 与计划中的 GitHub repository slug | package consumer / contributor | 名称一致的安装、调用和贡献入口 |
+| hero comparison | 同模型 fresh Agent 为 `48%`、fresh-restored public image 为 `100%` 的 24 个新合成决策对照 | first-time developer / operator | 在第一屏看见“恢复了什么”的直接结果；精确分数和限制链接到 evidence |
+| “体验” | 从理解对象，到取得 artifact、验证、恢复并让 Agent 完成首个任务 | first-time operator | 不必先学习完整协议或审计体系即可看见开发状态被保留 |
+| “质量” | 首屏认知压缩、命名一致性、命令可执行性和恢复后能力共同成立 | project lead / release maintainer | 不是更少严谨性，而是严谨性服务于可理解、可使用的结果 |
+| “完成” | 两种语言的首屏与命令对齐；包和制品名一致；新发布包通过 clean install、测试、语言与隐私检查 | project lead / release maintainer | 可以继续进入公开仓库创建和 rc.1 发布动作的统一候选 |
+
+- 首要质量判断：陌生读者能否先看懂并试用“下载一个成长后的 Agent”，而不是先面对协议治理清单。
+- 证据的角色：行为数字后的可追溯支持材料，以及 release gate；不占据首次使用路径的主叙事。
+- 与当前默认声明的差异：公开主名从完整协议名称收敛为 `Agent Image`；正式标准仍称 `Open Agent Image Protocol v0.1`。Python distribution 从 `open-agent-image` 统一为 `agent-image`，import namespace 保持 `agent_image`。
 
 ### 2026-08-26 — `README.md` 与 `README.zh-CN.md` 独立语言入口
 

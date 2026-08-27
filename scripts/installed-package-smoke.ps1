@@ -24,17 +24,17 @@ if (Test-Path -LiteralPath $smokeRoot) {
 }
 New-Item -ItemType Directory -Path $smokeRoot | Out-Null
 
-$wheel = Get-ChildItem -LiteralPath $dist -Filter "open_agent_image-*.whl" |
+$wheel = Get-ChildItem -LiteralPath $dist -Filter "agent_image-*.whl" |
     Sort-Object LastWriteTime -Descending |
     Select-Object -First 1
 if (-not $wheel) {
-    throw "No open-agent-image wheel found under dist/. Run 'uv build' first."
+    throw "No agent-image wheel found under dist/. Run 'uv build' first."
 }
-$sdist = Get-ChildItem -LiteralPath $dist -Filter "open_agent_image-*.tar.gz" |
+$sdist = Get-ChildItem -LiteralPath $dist -Filter "agent_image-*.tar.gz" |
     Sort-Object LastWriteTime -Descending |
     Select-Object -First 1
 if (-not $sdist) {
-    throw "No open-agent-image sdist found under dist/. Run 'uv build' first."
+    throw "No agent-image sdist found under dist/. Run 'uv build' first."
 }
 
 uv venv --offline --cache-dir $uvCache --python 3.12 $wheelVenv
@@ -44,7 +44,7 @@ $wheelAgentImage = Join-Path $wheelVenv "Scripts\agent-image.exe"
 uv pip install --offline --cache-dir $uvCache --python $wheelPython $wheel.FullName
 & $wheelAgentImage --help | Out-Null
 & $wheelPython -m agent_image --help | Out-Null
-& $wheelPython -c "import agent_image; print(agent_image.__version__)"
+& $wheelPython -c "from importlib.metadata import distribution; import agent_image; assert distribution('agent-image').metadata['Name'] == 'agent-image'; print(agent_image.__version__)"
 
 $fixture = Join-Path $projectRoot "tests\fixtures\minimal"
 $privateImage = Join-Path $smokeRoot "installed-private.aimg"
@@ -62,4 +62,4 @@ $sdistAgentImage = Join-Path $sdistVenv "Scripts\agent-image.exe"
 uv pip install --offline --cache-dir $uvCache --python $sdistPython $sdist.FullName
 & $sdistAgentImage --help | Out-Null
 & $sdistAgentImage verify $privateImage --json | Out-Null
-& $sdistPython -c "import agent_image; print(agent_image.__version__)"
+& $sdistPython -c "from importlib.metadata import distribution; import agent_image; assert distribution('agent-image').metadata['Name'] == 'agent-image'; print(agent_image.__version__)"

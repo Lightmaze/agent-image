@@ -12,12 +12,13 @@ one harness as the semantic owner.
 P2 path, fifth-adapter extension, Registry, local hardening, trained-agent gate,
 public hero artifact, and operator-first release bundle are implemented).
 
-The local **open-source adoption experience** now closes: a clean environment
-can install the bundle wheel, verify and inspect the public hero image, fresh
-restore it, and use the restored Agent. Windows completed the actual synthetic
-task; Windows and WSL Linux produced identical verify, inspect, and P1 restore
-reports. External download remains unavailable only because no public remote or
-release URL has been authorized and created.
+The local **open-source adoption experience** now closes under the public name
+**Agent Image**: clean Windows environments installed the renamed wheel and
+source distribution as `agent-image==0.1.0rc1`; Windows and WSL Linux installed
+the release wheel, verified the public hero image, fresh-restored it through
+real Hermes, and recognized the restored Agent. Windows also completed the
+actual synthetic task. External download remains unavailable only because the
+public repository and release URL have not yet been created.
 
 The current evidence proves pinned native round-trips for Hermes, OpenClaw,
 DSH, and the scoped vHarness reference Guest, plus the declared
@@ -64,8 +65,8 @@ was built behind the adapter boundary and formalized from real gate evidence.
 
 ## Next actions
 
-The next action is external publication: choose and authorize the public
-repository destination, push the audited history, publish `v0.1.0-rc.1`, upload
+The next action is external publication: create the selected public destination
+`Lightmaze/agent-image`, push the audited history, publish `v0.1.0-rc.1`, upload
 the six release assets, and replace the Registry's local `withheld://` locator
 with the real HTTPS asset URL. The release asset must then be downloaded from
 that URL and rerun through the same operator path.
