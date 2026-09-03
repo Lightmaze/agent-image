@@ -2,7 +2,17 @@
 
 ## Unreleased
 
-## 0.1.0-rc.1 — 2026-08-26
+## 0.1.0-alpha.2 — 2026-09-03
+
+- Published the first public technical preview under an intentionally alpha
+  contract: the tested artifact, adapters, privacy/loss semantics, and
+  developed-state hero remain unchanged, while broader computational identity
+  and strong vHarness isolation are reserved for forward protocol evolution.
+- Clarified that the current `image.digest` identifies the canonical declared
+  layer payload root, separately from the physical release-file SHA-256.
+- Reframed the previously prepared local `v0.1.0-rc.1` candidate as this public
+  alpha rather than presenting the newly discovered Phase I lifecycle as
+  complete.
 
 - Adopted **Agent Image** as the public project and artifact name while keeping
   **Open Agent Image Protocol v0.1** as the formal interoperability contract;
@@ -21,7 +31,7 @@
 - Replaced the planned live private-parent arm before any provider call: model
   credits do not authorize sending private Agent state to an external provider.
 - Added the operator-first hero path, publishable Registry record, and local
-  `v0.1.0-rc.1` release bundle.
+  `v0.1.0-alpha.2` release bundle.
 - Added a strict static Registry schema, five private/withheld initial records,
   digest-bound evidence validation, and `agent-image registry validate`.
 - Added full per-layer privacy metadata to `inspect` without exposing payloads.

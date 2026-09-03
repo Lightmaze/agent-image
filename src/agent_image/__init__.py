@@ -1,6 +1,6 @@
 """Agent Image reference implementation."""
 
-__version__ = "0.1.0-rc.1"
+__version__ = "0.1.0-alpha.2"
 
 from agent_image.adapter_contract import (
     AdapterCapabilities,

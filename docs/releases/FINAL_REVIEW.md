@@ -3,7 +3,7 @@
 Date: 2026-08-26
 
 This review closes the semantic, engineering, and local first-use questions for
-the `v0.1.0-rc.1` candidate. A clean release-wheel environment can verify,
+the `v0.1.0-alpha.2` public preview. A clean release-wheel environment can verify,
 inspect, fresh-restore, and use the public hero image. It does not claim that a
 public download URL or hosted release already exists.
 
@@ -21,7 +21,7 @@ public download URL or hosted release already exists.
 | 8 | Can a third party add a fifth harness without forking Core? | Yes | Separate clean-room wheel registers through `agent_image.adapters` and builds/verifies P0 in a fresh environment. |
 
 All eight semantic acceptance questions are Yes. The hero path additionally
-passes from the rc.1 wheel and artifact on Windows, while Windows and WSL Linux
+passes from the alpha.2 wheel and artifact on Windows, while Windows and WSL Linux
 produce identical verify, inspect, and P1 restore reports. The behavior answer
 remains limited to one synthetic mission under same-harness P1 and does not
 claim P3.
@@ -33,7 +33,7 @@ rerun from that URL.
 ## Release verdict
 
 ```text
-Protocol:              PASS (beta schema freeze)
+Protocol:              PASS (alpha compatibility boundary)
 Core Toolchain:        PASS (local)
 Hermes Adapter:        P1
 OpenClaw Adapter:      P1 + P2 consumer
@@ -47,16 +47,16 @@ Public Hero:           PASS (local Windows use; Windows + WSL P1)
 Registry:              PASS (hero withheld until real URL exists)
 Third-party Adapter:   PASS
 
-Critical Blockers:
-- Public repository destination, push, rc.1 tag/release, and asset upload are
-  not yet authorized.
+External publication work:
+- Public repository creation, push, alpha.2 tag/release, and asset upload are
+  authorized and in progress.
 - Hosted Windows/Linux/macOS CI is configured but cannot be observed before the
   repository is pushed.
 
 Decision:
 [ ] RELEASE v0.1.0
-[x] PREPARE LOCAL v0.1.0-rc.1 CANDIDATE
-[x] HOLD public push/tag and v0.1.0
+[x] RELEASE v0.1.0-alpha.2 PUBLIC PREVIEW
+[x] HOLD final v0.1.0
 ```
 
 Public repository creation, push, and tags require explicit user authorization

@@ -29,18 +29,20 @@ Agent 时所依赖的持续状态。
 
 ## 恢复这个发展后的 Agent
 
-`v0.1.0-rc.1` 发布包包含：
+`v0.1.0-alpha.2` 预览发布包包含：
 
-- `agent_image-0.1.0rc1-py3-none-any.whl`
+- `agent_image-0.1.0a2-py3-none-any.whl`
 - `procurement-negotiator-v1.aimg`
-- `v0.1.0-rc.1.sha256`
+- `v0.1.0-alpha.2.sha256`
 
-发布包已在本地准备完成；第一次公开 release 发布后会补上真实下载地址。请先确保
-Hermes Agent `0.20.5` 可以通过 `hermes` 调用。Windows 上的最短路径是：
+请从
+[v0.1.0-alpha.2 prerelease](https://github.com/Lightmaze/agent-image/releases/tag/v0.1.0-alpha.2)
+下载这些文件。请先确保 Hermes Agent `0.20.5` 可以通过 `hermes` 调用。Windows
+上的最短路径是：
 
 ```powershell
 python -m venv .hero-venv
-.\.hero-venv\Scripts\python.exe -m pip install .\agent_image-0.1.0rc1-py3-none-any.whl
+.\.hero-venv\Scripts\python.exe -m pip install .\agent_image-0.1.0a2-py3-none-any.whl
 
 Get-FileHash .\procurement-negotiator-v1.aimg -Algorithm SHA256
 .\.hero-venv\Scripts\agent-image.exe verify .\procurement-negotiator-v1.aimg
@@ -110,7 +112,7 @@ agent-image migrate researcher.aimg `
 Hermes 原生数据库和会话状态会留在源 image 中，并明确记为 `unsupported`，
 不会被静默丢弃。目标 provenance 会回指源 image digest。
 
-## rc.1 的运行时支持
+## alpha.2 的运行时支持
 
 | 运行时 | 已验证路径 | 边界 |
 |---|---|---|
@@ -141,10 +143,15 @@ Registry 记录制品摘要、谱系、隐私、可移植性与证据状态，
 
 ## 证据与边界
 
-当前 release candidate 已实现确定性打包；`build`、`inspect`、`verify`、`redact`、
+当前 alpha 预览版已实现确定性打包；`build`、`inspect`、`verify`、`redact`、
 `diff`、`restore` 与默认 dry-run 的 `migrate`；四个参考 adapter；第一条 P2 迁移；
 公开 adapter 入口；以及最小 Registry。它不声称 OCI transport 或 P3 行为
 可移植性。
+
+本 alpha 中的 `image.digest` 是所声明 layer payload 的规范化根摘要，并与物理
+release 文件的 SHA-256 分离。未来协议版本可能把 computational identity 扩展到
+完整的 harness、lineage 与 provenance 对象图；本预览版不宣称这种更宽的身份语义，
+也不宣称强 vHarness 隔离。
 
 建议从 [capability matrix](docs/CAPABILITY_MATRIX.md)、
 [项目状态](docs/PROJECT_STATUS.md)、[已知限制](docs/LIMITATIONS.md)、

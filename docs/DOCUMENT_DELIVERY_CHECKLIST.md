@@ -265,6 +265,26 @@
 - 证据的角色：为状态结论提供可追溯支撑；正文只保留必要链接。
 - 与当前默认声明的差异：无。
 
+### 2026-09-03 — v0.1.0-alpha.2 public preview release
+
+- 状态：`DECLARED`
+- 文档性质：当前可移植 developed-state artifact 的首次公开预览与发布说明
+- 直接读者：第一次发现 Agent Image 的开发者、准备恢复示例 Agent 的 operator、后续贡献者
+- 希望促成的行动：从公开 release 安装 CLI，验证并恢复 hero image，理解当前能力边界后决定试用或贡献
+- 时间范围：固定 `v0.1.0-alpha.2`；后续完整 vHarness / Agent Image 生命周期通过新版本向前演进
+- 公开性：进入公开仓库与 GitHub prerelease；只包含合成数据、公开制品、项目 noreply 身份和经过复核的证据
+
+| 文中对象或指代 | 实际指向 | 交付给谁 | 接收者获得什么 |
+|---|---|---|---|
+| Agent Image alpha | 可检查、可验证并能在已声明 harness 中原生恢复的 developed-state artifact | first-time operator | 一个真实可运行的公开预览，不是未来完整生命周期的代称 |
+| image digest | 当前 v0.1 alpha 的 layer payload root；与物理 release 文件 SHA-256 分离 | protocol implementer / artifact consumer | 可核对当前 payload 身份，同时知道完整 computational identity 仍会继续演进 |
+| hero image | 只含合成采购训练状态的 Hermes image | developer / evaluator | 一条短而完整的恢复与使用路径 |
+| “发布” | 新公开 GitHub 仓库、不可变 alpha tag、prerelease 与六个可下载制品 | open-source user | 可以 clone、安装、下载和复核；不等于正式 v0.1 或完整 vHarness 隔离已经完成 |
+
+- 首要质量判断：陌生用户能否从公开 release 直接获得一个可安装、可验证、可恢复、可使用的 Agent Image。
+- 证据的角色：支撑公开声明与故障定位，不增加普通用户主路径的步骤。
+- 与当前默认声明的差异：原本地 `rc.1` 改为公开 `alpha.2`，因为新的身份与隔离语义尚未进入当前实现；已完成能力不撤回，未完成能力不提前宣称。
+
 ## 写作后回看
 
 正式文档完成后，用三句话复核：

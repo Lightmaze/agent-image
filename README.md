@@ -32,19 +32,19 @@ restore the persistent state through which practice changed a particular Agent.
 
 ## Restore the developed Agent
 
-The `v0.1.0-rc.1` bundle contains:
+The `v0.1.0-alpha.2` preview bundle contains:
 
-- `agent_image-0.1.0rc1-py3-none-any.whl`
+- `agent_image-0.1.0a2-py3-none-any.whl`
 - `procurement-negotiator-v1.aimg`
-- `v0.1.0-rc.1.sha256`
+- `v0.1.0-alpha.2.sha256`
 
-The bundle is ready locally; its public release URL will be added when the first
-release is published. With Hermes Agent `0.20.5` available as `hermes`, the
-shortest Windows path is:
+Download these files from the
+[v0.1.0-alpha.2 prerelease](https://github.com/Lightmaze/agent-image/releases/tag/v0.1.0-alpha.2).
+With Hermes Agent `0.20.5` available as `hermes`, the shortest Windows path is:
 
 ```powershell
 python -m venv .hero-venv
-.\.hero-venv\Scripts\python.exe -m pip install .\agent_image-0.1.0rc1-py3-none-any.whl
+.\.hero-venv\Scripts\python.exe -m pip install .\agent_image-0.1.0a2-py3-none-any.whl
 
 Get-FileHash .\procurement-negotiator-v1.aimg -Algorithm SHA256
 .\.hero-venv\Scripts\agent-image.exe verify .\procurement-negotiator-v1.aimg
@@ -118,7 +118,7 @@ Hermes-native database and session state stay in the source image and appear as
 explicitly unsupported rather than being silently discarded. Target provenance
 points back to the source image digest.
 
-## Runtime support in rc.1
+## Runtime support in alpha.2
 
 | Runtime | Verified path | Boundary |
 |---|---|---|
@@ -149,11 +149,17 @@ portability, and evidence status without turning private images into downloads.
 
 ## Evidence and limits
 
-The current release candidate implements deterministic packing; `build`,
+The current alpha preview implements deterministic packing; `build`,
 `inspect`, `verify`, `redact`, `diff`, `restore`, and dry-run-first `migrate`;
 four reference adapters; the first P2 migration; a public adapter entry point;
 and a minimal Registry. It does not claim OCI transport or P3 behavioral
 portability.
+
+In this alpha, `image.digest` is the canonical root of the declared layer
+payloads and is independent of the physical release-file SHA-256. A future
+protocol revision may widen computational identity to cover the complete
+harness, lineage, and provenance object graph; this preview does not claim that
+broader identity or strong vHarness isolation.
 
 Start with the [capability matrix](docs/CAPABILITY_MATRIX.md),
 [project status](docs/PROJECT_STATUS.md), [known limitations](docs/LIMITATIONS.md),

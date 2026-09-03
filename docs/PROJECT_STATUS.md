@@ -8,13 +8,13 @@ one harness as the semantic owner.
 
 ## Current stage
 
-`v0.1.0-rc.1 local release candidate complete` (all four adapters, the first
+`v0.1.0-alpha.2 public preview prepared; publication authorized` (all four adapters, the first
 P2 path, fifth-adapter extension, Registry, local hardening, trained-agent gate,
 public hero artifact, and operator-first release bundle are implemented).
 
 The local **open-source adoption experience** now closes under the public name
 **Agent Image**: clean Windows environments installed the renamed wheel and
-source distribution as `agent-image==0.1.0rc1`; Windows and WSL Linux installed
+source distribution as `agent-image==0.1.0a2`; Windows and WSL Linux installed
 the release wheel, verified the public hero image, fresh-restored it through
 real Hermes, and recognized the restored Agent. Windows also completed the
 actual synthetic task. External download remains unavailable only because the
@@ -31,7 +31,7 @@ unverified.
 
 | Gate | Status | Evidence / blocker |
 |---|---|---|
-| Protocol | Beta schema freeze pass | `spec/v0.1/`, compatibility freeze, Apache-2.0; external review pending |
+| Protocol | Alpha compatibility boundary | `spec/v0.1/`, immutable published artifacts, documented forward evolution, Apache-2.0 |
 | Core toolchain | Formal epoch pass | 85 tests plus 11 subtests; locked environment; wheel/sdist installed CLI smoke; typed adapter SDK and public entry points; production build/inspect/verify/redact/diff/restore/migrate/registry and reports |
 | Hermes | P1 pass, pinned | Hermes 0.20.5 / v2026.8.19 / fcbd107; Windows and local WSL Linux named-profile round-trip with equal layer digests |
 | OpenClaw | P1 and P2-consumer pass, pinned | 2026.7.1-2 / 0790d9f / Node 24.15.0; real Windows agent/workspace round-trip and Hermes migration |
@@ -43,9 +43,9 @@ unverified.
 | Public hero | Local release path pass | Seven public layers; fresh-restored score 1.0 vs 0.481521 fresh control; `counter 260` on the README task; identical Windows/WSL verify, inspect, and P1 restore reports |
 | Registry | Pass | six private evidence records plus one public-safe hero candidate; source harness, lineage, privacy, portability, and evidence digests validated locally |
 
-Release verdict: **LOCAL v0.1.0-rc.1 CANDIDATE; HOLD PUBLIC PUSH/TAG AND FINAL v0.1.0.**
+Release verdict: **v0.1.0-alpha.2 PUBLICATION AUTHORIZED; EXTERNAL PUBLICATION IN PROGRESS.**
 
-Current epistemic state: `RELEASE_CANDIDATE:v0.1.0-rc.1`.
+Current epistemic state: `PUBLIC_PREVIEW_PREPARED:v0.1.0-alpha.2`.
 
 The legacy EVC surface is maintained only as a knowledge capsule because the
 local skill has been demoted. It has no implementation or lifecycle authority.
@@ -65,8 +65,8 @@ was built behind the adapter boundary and formalized from real gate evidence.
 
 ## Next actions
 
-The next action is external publication: create the selected public destination
-`Lightmaze/agent-image`, push the audited history, publish `v0.1.0-rc.1`, upload
+The next action is external publication: create the selected destination
+`Lightmaze/agent-image`, push the audited history, publish `v0.1.0-alpha.2`, upload
 the six release assets, and replace the Registry's local `withheld://` locator
 with the real HTTPS asset URL. The release asset must then be downloaded from
 that URL and rerun through the same operator path.

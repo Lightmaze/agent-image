@@ -1,6 +1,6 @@
 {
   "registry_version": "agent-image-registry/v0.1",
-  "updated_at": "2026-08-26T00:00:00Z",
+  "updated_at": "2026-09-03T00:00:00Z",
   "entries": [
     {
       "id": "hermes-synthetic-p1",
@@ -151,11 +151,11 @@
     {
       "id": "procurement-negotiator-v1",
       "name": "Public synthetic procurement negotiator after 128 practice episodes",
-      "artifact_uri": "withheld://local-release-candidate/procurement-negotiator-v1.aimg",
+      "artifact_uri": "https://github.com/Lightmaze/agent-image/releases/download/v0.1.0-alpha.2/procurement-negotiator-v1.aimg",
       "artifact_digest": "sha256:8a258bc82ba8b161a107a4cf970c51e1f19228dcc78c8696e0bf13a699e257b2",
       "source_harness": {"id": "hermes", "version": "0.20.5"},
       "license": "Apache-2.0",
-      "privacy": {"classification": "public", "distribution": "withheld"},
+      "privacy": {"classification": "public", "distribution": "publishable"},
       "lineage": {
         "parent_digests": [
           "sha256:4a2f4093da97af32aa224374afe5a4a1b2e5ce8370f1fdf5527d8c893b3f3165"

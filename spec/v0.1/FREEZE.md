@@ -1,15 +1,16 @@
-# v0.1 beta schema freeze
+# v0.1 alpha compatibility boundary
 
-The `agent-image/v0.1` manifest and operation-report vocabulary entered beta
-freeze after the four built-in adapter C0 gates and the clean-room fifth-adapter
-gate passed on 2026-08-25.
+The `agent-image/v0.1` manifest and operation-report vocabulary entered an alpha
+compatibility boundary after the four built-in adapter C0 gates and the
+clean-room fifth-adapter gate passed on 2026-08-25.
 
-Until `v0.1.0`, changes to existing v0.1 fields, enum meanings, digest rules,
-privacy defaults, and loss outcomes are forbidden. Additions must be optional,
-backward-compatible extensions. Breaking discoveries require a new protocol
-version rather than silently changing v0.1 semantics.
+Published alpha artifacts remain immutable and future implementations should
+continue to inspect them or provide an explicit migration path. Before beta,
+identity, object-graph, and lifecycle discoveries may still require breaking
+schema changes. Such changes must be documented and versioned; they must not be
+silently applied to an already published artifact.
 
-This freeze does not assert that final release gates have passed. In
-particular, the trained-agent Gate E remains negative, cross-platform hardening
-has only local Windows/WSL evidence until hosted CI runs, and no P3 claim is
-permitted. The Registry is outside the frozen Core manifest schema.
+This boundary does not assert that final release gates have passed. The current
+alpha has positive bounded same-harness developed-state evidence, but complete
+computational identity, strong vHarness isolation, and P3 remain outside its
+claims. The Registry is outside the Core manifest schema.

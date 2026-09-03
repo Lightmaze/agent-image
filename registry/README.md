@@ -6,11 +6,10 @@ portability claims, and digest-bound evidence.
 
 The first six artifacts are private local evidence images, so their URIs use
 the `withheld://` scheme. This is deliberate: a registry record must not turn a
-private image into a public download. The seventh artifact is itself public-safe
-but remains withheld while it is only a local release candidate; publication
-replaces that locator with the real release asset URL and changes distribution
-to `publishable` in the same commit. The negative and positive private training
-images remain available only as digest-bound historical evidence.
+private image into a public download. The seventh artifact is a public-safe
+release asset and uses its immutable GitHub prerelease URL with distribution
+`publishable`. The negative and positive private training images remain
+available only as digest-bound historical evidence.
 
 Validate the registry from the repository root:
 
