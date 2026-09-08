@@ -1,0 +1,78 @@
+{
+  "evidence_type": "public-release-download-install-restore-use",
+  "status": "passed",
+  "date": "2026-09-07",
+  "timezone": "America/New_York",
+  "repository": "https://github.com/Lightmaze/agent-image",
+  "anonymous_repository_access": true,
+  "release": {
+    "url": "https://github.com/Lightmaze/agent-image/releases/tag/v0.1.0-alpha.2",
+    "tag": "v0.1.0-alpha.2",
+    "commit": "d4cca1cc48529425feffb32ac8c2c47d140da4f1",
+    "published_at": "2026-09-08T01:40:38Z",
+    "prerelease": true,
+    "draft": false,
+    "asset_count": 6
+  },
+  "assets_sha256": {
+    "agent_image-0.1.0a2-py3-none-any.whl": "3437c555c0d09a8730649aeb6ed0b830f1fbcd9f66e701341e141e5ae7b0dd9d",
+    "agent_image-0.1.0a2.tar.gz": "cd0faf758b39d885c4c6d0de7f40584f505baa75651a04e4f304bb0c6fcaa920",
+    "procurement-negotiator-v1.aimg": "9cd98ace2471203e93f07d3877a477b288ed08088df14a4ac02f0a3e36cd9206",
+    "registry-v0.1.json": "3ace310f022aa6e9a698edd5666ffe878e9af0091b116779667429c717b96b47",
+    "v0.1.0-alpha.2.md": "40f8ced49542df843e37549486e88929f8c1e89c6dff869f6826d5d127a4a961",
+    "v0.1.0-alpha.2.sha256": "b7b56f7d46ce3cfcfd115dc161138c563ff49716bf87101d1990a82e39dd2b32"
+  },
+  "anonymous_download_platforms": ["Windows", "WSL Linux"],
+  "all_download_checksums_match": true,
+  "installed_package": {
+    "version": "0.1.0a2",
+    "cli_version": "0.1.0-alpha.2",
+    "windows_wheel": "passed",
+    "windows_sdist": "passed",
+    "linux_wheel": "passed",
+    "pythonpath_required": false,
+    "windows_python": "3.12.10",
+    "linux_python": "3.12.13"
+  },
+  "hero": {
+    "payload_root": "sha256:8a258bc82ba8b161a107a4cf970c51e1f19228dcc78c8696e0bf13a699e257b2",
+    "public_layers": 7,
+    "harness": "hermes-agent==0.20.5",
+    "harness_commit": "fcbd1076a93841fa88855acce810e342a5b78101",
+    "fresh_homes": true,
+    "windows_restore": "P1 validated",
+    "linux_restore": "P1 validated",
+    "target_recognized_by_real_cli": true,
+    "preserved_layers": 5,
+    "unsupported_layers_retained_in_image": [
+      "situated-development-evidence-index",
+      "situated-gate-e-public-evidence"
+    ],
+    "cross_platform_reports_identical": true,
+    "report_sha256": {
+      "verify": "263445422b6b4cd6a63f1249f7aa85b728e8f1c6bda5a5180b6071c0f4776d1c",
+      "inspect": "2e4f64525ac0df78b185a90aa7529bb1e9aaafad81e3133042c0f487b3538b1b",
+      "restore": "cc494332f864fff39898e10d7b9f913c639199e41a1d0242990646ebceaa811f"
+    }
+  },
+  "readme_task": {
+    "platform": "Windows",
+    "data": "synthetic procurement cohort-68",
+    "model": "deepseek-v4-flash",
+    "reasoning": "none",
+    "response": {"action": "counter", "offer": 260.0},
+    "private_limit_disclosed": false,
+    "scope": "one actual-use smoke; not a repeat of the controlled experiment"
+  },
+  "ci": {
+    "corrected_commit_run": "https://github.com/Lightmaze/agent-image/actions/runs/34177276201",
+    "release_tag_run": "https://github.com/Lightmaze/agent-image/actions/runs/34177445943",
+    "jobs_passed": 12,
+    "core_os": ["ubuntu-latest", "windows-latest", "macos-latest"],
+    "core_python": ["3.11", "3.12", "3.13"],
+    "real_hermes_os": ["ubuntu-latest", "windows-latest"],
+    "clean_package_os": "windows-latest"
+  },
+  "registry": {"valid": true, "entries": 7, "public": 1, "private": 6},
+  "publication_scope": "independent audited repository, main and alpha.2 only; project noreply identities"
+}

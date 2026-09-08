@@ -1,11 +1,11 @@
 # Agent Image Protocol v0.1 Final Review
 
-Date: 2026-08-26
+Updated: 2026-09-07 (America/New_York)
 
-This review closes the semantic, engineering, and local first-use questions for
-the `v0.1.0-alpha.2` public preview. A clean release-wheel environment can verify,
-inspect, fresh-restore, and use the public hero image. It does not claim that a
-public download URL or hosted release already exists.
+This review closes the semantic, engineering, and public first-use questions
+for the [v0.1.0-alpha.2 preview](https://github.com/Lightmaze/agent-image/releases/tag/v0.1.0-alpha.2).
+The public repository and six downloadable assets are live. Fresh environments
+can install, verify, inspect, restore, and use the public hero image.
 
 ## Eight human questions
 
@@ -26,15 +26,17 @@ produce identical verify, inspect, and P1 restore reports. The behavior answer
 remains limited to one synthetic mission under same-harness P1 and does not
 claim P3.
 
-The local adoption experience is complete. What remains is external state: a
-real public destination, release asset URL, observed hosted CI, and a download
-rerun from that URL.
+The public adoption path is complete: anonymous downloads passed checksum
+verification, clean Windows wheel/sdist installation, and real Windows/WSL
+Hermes restore. The downloaded Agent returned `counter 260` on the README task.
+All 12 hosted release-tag CI jobs passed. See
+[publication evidence](../evidence/publication-v0.1.0-alpha.2-2026-09-07.md).
 
 ## Release verdict
 
 ```text
 Protocol:              PASS (alpha compatibility boundary)
-Core Toolchain:        PASS (local)
+Core Toolchain:        PASS (local and hosted Windows/Linux/macOS)
 Hermes Adapter:        P1
 OpenClaw Adapter:      P1 + P2 consumer
 DSH Adapter:           P1 (shipped headless scope)
@@ -43,15 +45,13 @@ Cross-Harness Demo:    PASS
 Security:              PASS (local matrix; claim limits apply)
 Privacy:               PASS
 Trained-Agent Demo:    PASS (bounded same-harness synthetic mission)
-Public Hero:           PASS (local Windows use; Windows + WSL P1)
-Registry:              PASS (hero withheld until real URL exists)
+Public Hero:           PASS (public download; Windows use; Windows + WSL P1)
+Registry:              PASS (public HTTPS hero asset; private records withheld)
 Third-party Adapter:   PASS
 
-External publication work:
-- Public repository creation, push, alpha.2 tag/release, and asset upload are
-  authorized and in progress.
-- Hosted Windows/Linux/macOS CI is configured but cannot be observed before the
-  repository is pushed.
+External publication:
+- Public repository, alpha.2 tag, prerelease, and six assets are live.
+- Twelve hosted CI jobs passed; anonymous download/install/restore/use passed.
 
 Decision:
 [ ] RELEASE v0.1.0
@@ -59,5 +59,5 @@ Decision:
 [x] HOLD final v0.1.0
 ```
 
-Public repository creation, push, and tags require explicit user authorization
-at the execution point. Gate E is no longer the release blocker.
+Publication was explicitly authorized. This completes the current alpha release,
+not the later final v0.1.0 development scope.
