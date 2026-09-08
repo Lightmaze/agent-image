@@ -1,4 +1,15 @@
+param([switch]$Offline)
+
 $ErrorActionPreference = "Stop"
+$networkArgs = if ($Offline) { @("--offline") } else { @() }
+
+function Invoke-CheckedNative {
+    param([scriptblock]$Command)
+    & $Command
+    if ($LASTEXITCODE -ne 0) {
+        throw "Native command failed with exit code ${LASTEXITCODE}: $Command"
+    }
+}
 
 $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
 [Console]::InputEncoding = $utf8NoBom
@@ -37,29 +48,29 @@ if (-not $sdist) {
     throw "No agent-image sdist found under dist/. Run 'uv build' first."
 }
 
-uv venv --offline --cache-dir $uvCache --python 3.12 $wheelVenv
+Invoke-CheckedNative { uv venv @networkArgs --cache-dir $uvCache --python 3.12 $wheelVenv }
 $wheelPython = Join-Path $wheelVenv "Scripts\python.exe"
 $wheelAgentImage = Join-Path $wheelVenv "Scripts\agent-image.exe"
 
-uv pip install --offline --cache-dir $uvCache --python $wheelPython $wheel.FullName
-& $wheelAgentImage --help | Out-Null
-& $wheelPython -m agent_image --help | Out-Null
-& $wheelPython -c "from importlib.metadata import distribution; import agent_image; assert distribution('agent-image').metadata['Name'] == 'agent-image'; print(agent_image.__version__)"
+Invoke-CheckedNative { uv pip install @networkArgs --cache-dir $uvCache --python $wheelPython $wheel.FullName }
+Invoke-CheckedNative { & $wheelAgentImage --help | Out-Null }
+Invoke-CheckedNative { & $wheelPython -m agent_image --help | Out-Null }
+Invoke-CheckedNative { & $wheelPython -c "from importlib.metadata import distribution; import agent_image; assert distribution('agent-image').metadata['Name'] == 'agent-image'; print(agent_image.__version__)" }
 
 $fixture = Join-Path $projectRoot "tests\fixtures\minimal"
 $privateImage = Join-Path $smokeRoot "installed-private.aimg"
 $publicImage = Join-Path $smokeRoot "installed-public.aimg"
-& $wheelPython -c "from pathlib import Path; from agent_image.service import build_fixture_image; build_fixture_image(Path(r'$fixture'), Path(r'$privateImage'), policy='private')"
-& $wheelAgentImage inspect $privateImage --json | Out-Null
-& $wheelAgentImage verify $privateImage --json | Out-Null
-& $wheelAgentImage redact $privateImage --policy public --output $publicImage --json | Out-Null
-& $wheelAgentImage diff $privateImage $publicImage --json | Out-Null
-& $wheelAgentImage registry validate (Join-Path $projectRoot "registry\v0.1\index.json") --json | Out-Null
+Invoke-CheckedNative { & $wheelPython -c "from pathlib import Path; from agent_image.service import build_fixture_image; build_fixture_image(Path(r'$fixture'), Path(r'$privateImage'), policy='private')" }
+Invoke-CheckedNative { & $wheelAgentImage inspect $privateImage --json | Out-Null }
+Invoke-CheckedNative { & $wheelAgentImage verify $privateImage --json | Out-Null }
+Invoke-CheckedNative { & $wheelAgentImage redact $privateImage --policy public --output $publicImage --json | Out-Null }
+Invoke-CheckedNative { & $wheelAgentImage diff $privateImage $publicImage --json | Out-Null }
+Invoke-CheckedNative { & $wheelAgentImage registry validate (Join-Path $projectRoot "registry\v0.1\index.json") --json | Out-Null }
 
-uv venv --offline --cache-dir $uvCache --python 3.12 $sdistVenv
+Invoke-CheckedNative { uv venv @networkArgs --cache-dir $uvCache --python 3.12 $sdistVenv }
 $sdistPython = Join-Path $sdistVenv "Scripts\python.exe"
 $sdistAgentImage = Join-Path $sdistVenv "Scripts\agent-image.exe"
-uv pip install --offline --cache-dir $uvCache --python $sdistPython $sdist.FullName
-& $sdistAgentImage --help | Out-Null
-& $sdistAgentImage verify $privateImage --json | Out-Null
-& $sdistPython -c "from importlib.metadata import distribution; import agent_image; assert distribution('agent-image').metadata['Name'] == 'agent-image'; print(agent_image.__version__)"
+Invoke-CheckedNative { uv pip install @networkArgs --cache-dir $uvCache --python $sdistPython $sdist.FullName }
+Invoke-CheckedNative { & $sdistAgentImage --help | Out-Null }
+Invoke-CheckedNative { & $sdistAgentImage verify $privateImage --json | Out-Null }
+Invoke-CheckedNative { & $sdistPython -c "from importlib.metadata import distribution; import agent_image; assert distribution('agent-image').metadata['Name'] == 'agent-image'; print(agent_image.__version__)" }
