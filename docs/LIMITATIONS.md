@@ -1,4 +1,4 @@
-# Known v0.1 beta limitations
+# Known v0.1.0-alpha.2 limitations
 
 These are release boundaries, not implied future capability.
 
@@ -16,9 +16,14 @@ These are release boundaries, not implied future capability.
 - vHarness P1 covers a reference persistent process-Guest. Restored Host
   authority is fresh; kernel/journal/token authority is not transported, and
   strong isolation is not claimed.
-- Real P1 evidence exists primarily on Windows; Hermes also passes local WSL
-  Linux. Hosted Windows/Ubuntu CI and the macOS Core matrix are configured but
-  have not been observed without an authorized remote push.
+- At the alpha.2 release, Core CI passed on hosted Windows, Ubuntu, and macOS
+  with Python 3.11–3.13; real Hermes smoke passed on hosted Windows and Ubuntu.
+  Public-download Hermes restore on Windows and local WSL Linux is documented
+  in the [publication evidence](evidence/publication-v0.1.0-alpha.2-2026-09-07.md).
+  See the [12 successful release-tag CI jobs](https://github.com/Lightmaze/agent-image/actions/runs/34177445943).
+  Other pinned native-runtime evidence remains primarily Windows-specific;
+  macOS Core success does not establish macOS harness P1, and these historical
+  results do not certify later harness versions or untested commits.
 - Secret scanning is fail-closed and format-aware but is not universal DLP.
   Images may still contain sensitive private material and remain private by
   default.
