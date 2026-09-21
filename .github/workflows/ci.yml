@@ -62,3 +62,23 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - run: uv run --isolated --with-editable .tmp/hermes-src python scripts/hermes_ci_smoke.py
+
+  real-hermes-continuation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+        with:
+          repository: NousResearch/hermes-agent
+          ref: fcbd1076a93841fa88855acce810e342a5b78101
+          path: .tmp/hermes-src
+          fetch-depth: 1
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv run --isolated --with-editable .tmp/hermes-src python scripts/hermes_continuation_ci.py
