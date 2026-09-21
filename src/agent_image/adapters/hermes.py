@@ -32,6 +32,10 @@ class HermesPin:
 HERMES_PIN = HermesPin(version="0.20.5", tag="v2026.8.19", commit="fcbd107")
 HERMES_NATIVE_MEDIA_TYPE = "application/vnd.hermes-agent.profile.v2026.8.19+tar+gzip"
 PROFILE_NAME = re.compile(r"^[a-z0-9][a-z0-9_-]{0,63}$")
+HERMES_RUNTIME_COORDINATION_PATHS = {
+    "memories/MEMORY.md.lock",
+    "memories/USER.md.lock",
+}
 
 
 @dataclass(frozen=True)
@@ -370,7 +374,11 @@ class HermesAdapter:
                     details={"filename": filename, "structured_keys": keys},
                 )
 
-        selected_snapshot = dict(snapshot)
+        selected_snapshot = {
+            path: data
+            for path, data in snapshot.items()
+            if path not in HERMES_RUNTIME_COORDINATION_PATHS
+        }
         if not include_experience:
             selected_snapshot = {path: data for path, data in selected_snapshot.items() if not path.startswith("sessions/")}
         if not include_workspace:
@@ -388,6 +396,8 @@ class HermesAdapter:
             item_id = f"source-{sha256_bytes(path.encode('utf-8'))[7:23]}"
             if source_item is not None and source_item.symlink:
                 action, reason = "unsupported", "symlink is not admitted into Agent Image snapshots"
+            elif path in HERMES_RUNTIME_COORDINATION_PATHS:
+                action, reason = "unsupported", "Hermes memory lock is runtime coordination state and is recreated locally"
             elif secret_filename_reason(path):
                 action, reason = "redacted", "credential filename excluded"
             elif snapshot_data is None:
