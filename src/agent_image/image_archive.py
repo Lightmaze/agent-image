@@ -152,13 +152,20 @@ def _validate_checksums(entries: Mapping[str, bytes]) -> None:
 
 
 def load_image(image: Path) -> ImageDocument:
-    verify_image(image)
+    # Keep the verified bytes: reopening the pathname after verification could
+    # return a different archive to inspect, redact, or a restore adapter.
     entries = read_entries(image)
-    return ImageDocument(path=image, manifest=load_yaml_bytes(entries["manifest.yaml"]), entries=entries)
+    manifest, _ = _verify_entries(entries)
+    return ImageDocument(path=image, manifest=manifest, entries=entries)
 
 
 def verify_image(image: Path) -> dict[str, Any]:
-    entries = read_entries(image)
+    _, report = _verify_entries(read_entries(image))
+    return report
+
+
+def _verify_entries(entries: Mapping[str, bytes]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Validate one captured entry set without reopening its source pathname."""
     missing = sorted(REQUIRED_CONTROL_PATHS - set(entries))
     if missing:
         raise AgentImageError("E_IMAGE_CORRUPT", f"Missing control files: {', '.join(missing)}")
@@ -206,7 +213,7 @@ def verify_image(image: Path) -> dict[str, Any]:
             except (UnicodeDecodeError, json.JSONDecodeError) as error:
                 raise AgentImageError("E_IMAGE_CORRUPT", f"Invalid report {report_path}: {error}") from error
             _operation_report(report, report_path)
-    return {"valid": True, "spec": manifest["spec"], "image_digest": root, "layers": len(manifest["layers"])}
+    return manifest, {"valid": True, "spec": manifest["spec"], "image_digest": root, "layers": len(manifest["layers"])}
 
 
 def inspect_image(image: Path) -> dict[str, Any]:

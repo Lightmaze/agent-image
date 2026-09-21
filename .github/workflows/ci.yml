@@ -36,6 +36,8 @@ jobs:
         with:
           python-version: "3.12"
           enable-cache: true
+          # Match the explicit cache path in the commands and smoke script.
+          cache-local-path: .tmp/uv-cache
       - run: uv sync --locked --cache-dir .tmp/uv-cache
       - run: uv build --cache-dir .tmp/uv-cache
       - shell: pwsh
