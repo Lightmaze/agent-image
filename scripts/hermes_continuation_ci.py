@@ -13,6 +13,8 @@ from agent_image.adapters.hermes import (
     HermesAdapter,
     SubprocessHermesCLI,
 )
+from agent_image.canonical import canonical_json_bytes
+from agent_image.continuation import build_continuation_binding, verify_continuation_binding
 from agent_image.formal_service import build_image, restore_image
 from agent_image.image_archive import diff_images, load_image, verify_image
 
@@ -230,10 +232,48 @@ def main() -> int:
         if (child_profile / Path(*path.split("/"))).exists():
             raise RuntimeError(f"Fresh child restore materialized a runtime coordination file: {path}")
 
+    transition_observation = {
+        "schema": "agent-image-hermes-continuation-observation/v0.1",
+        "platform": platform_label,
+        "harness": {"id": "hermes", "version": "0.20.5"},
+        "adapter": {"id": adapter.id, "version": adapter.version},
+        "steps": {
+            "parent_restore_validated": True,
+            "native_update_surface": "tools.memory_tool.MemoryStore.add",
+            "native_update_success": memory_result.get("success") is True,
+            "child_source_immutable_during_build": child_source_before == child_source_after,
+            "live_continuation_source_deleted_before_child_restore": True,
+            "child_restore_validated": True,
+            "inherited_parent_memory": BASE_MEMORY in child_text,
+            "retained_post_restore_memory": CONTINUED_MEMORY in child_text,
+        },
+    }
+    transition_evidence = canonical_json_bytes(transition_observation)
+    continuation_binding = build_continuation_binding(
+        parent_image,
+        child_image,
+        transition_evidence=transition_evidence,
+        evidence_kind="hermes-runtime-continuation-observation",
+        evidence_media_type="application/json",
+    )
+    binding_path = smoke / "continuation-binding.json"
+    binding_path.write_text(json.dumps(continuation_binding, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    round_tripped_binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    binding_verification = verify_continuation_binding(
+        round_tripped_binding,
+        parent_image,
+        child_image,
+        transition_evidence=transition_evidence,
+    )
+    if binding_verification.get("valid") is not True:
+        raise RuntimeError("Continuation evidence binding did not verify.")
+    if set(continuation_binding["state_delta"]["state_changed"]) != set(image_diff["layers"]["state_changed"]):
+        raise RuntimeError("Continuation binding and generic diff disagree about state-changing layers.")
+
     result = {
         "valid": True,
         "claim": "pinned Hermes native-state continuation across parent restore -> native update -> child image -> independent child restore",
-        "claim_boundary": "state continuation only; not learning, skill acquisition, behavioral retention, causal lineage, or cross-harness portability",
+        "claim_boundary": "state continuation only; binding verification is not causal proof, learning, skill acquisition, behavioral retention, or cross-harness portability",
         "harness": "hermes-agent==0.20.5",
         "platform": os.name,
         "parent": {
@@ -269,6 +309,8 @@ def main() -> int:
             "retained_post_restore_memory": CONTINUED_MEMORY in child_text,
         },
         "diff": image_diff,
+        "continuation_binding": continuation_binding,
+        "continuation_binding_verification": binding_verification,
     }
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
