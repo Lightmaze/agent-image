@@ -29,6 +29,8 @@ OPTIONAL_CONTROL_PATHS = {
     "meta/migration-report.json",
 }
 OUTCOMES = {"preserved", "transformed", "redacted", "unsupported", "dropped_by_user"}
+LAYER_STATE_PROJECTION_VERSION = "agent-image-layer-state-projection/v0.1"
+LAYER_STATE_FIELDS = ("kind", "media_type", "digest", "size")
 
 
 @dataclass(frozen=True)
@@ -283,6 +285,10 @@ def redact_image(image: Path, output: Path) -> dict[str, Any]:
     return {"operation": "redact", "output": str(output.resolve()), "layers": len(kept), "verified": True}
 
 
+def _layer_state_projection(layer: Mapping[str, Any]) -> dict[str, Any]:
+    return {field: layer[field] for field in LAYER_STATE_FIELDS}
+
+
 def diff_images(before: Path, after: Path) -> dict[str, Any]:
     left = load_image(before).manifest
     right = load_image(after).manifest
@@ -290,14 +296,28 @@ def diff_images(before: Path, after: Path) -> dict[str, Any]:
     right_layers = {layer["id"]: layer for layer in right["layers"]}
     added = sorted(set(right_layers) - set(left_layers))
     removed = sorted(set(left_layers) - set(right_layers))
-    changed = sorted(
+    shared = set(left_layers) & set(right_layers)
+    changed = sorted(layer_id for layer_id in shared if left_layers[layer_id] != right_layers[layer_id])
+    state_changed = sorted(
         layer_id
-        for layer_id in set(left_layers) & set(right_layers)
-        if left_layers[layer_id] != right_layers[layer_id]
+        for layer_id in shared
+        if _layer_state_projection(left_layers[layer_id]) != _layer_state_projection(right_layers[layer_id])
     )
+    state_changed_set = set(state_changed)
+    metadata_changed = sorted(layer_id for layer_id in changed if layer_id not in state_changed_set)
     return {
         "spec": {"before": left["spec"], "after": right["spec"]},
-        "layers": {"added": added, "removed": removed, "changed": changed},
+        "layer_state_projection": {
+            "version": LAYER_STATE_PROJECTION_VERSION,
+            "fields": list(LAYER_STATE_FIELDS),
+        },
+        "layers": {
+            "added": added,
+            "removed": removed,
+            "changed": changed,
+            "state_changed": state_changed,
+            "metadata_changed": metadata_changed,
+        },
         "development": {"before": left.get("development"), "after": right.get("development")},
         "evaluations": {"before": left.get("evaluations", []), "after": right.get("evaluations", [])},
         "privacy": {"before": left["privacy"], "after": right["privacy"]},
