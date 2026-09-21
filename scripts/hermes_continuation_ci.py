@@ -107,6 +107,29 @@ def _assert_runtime_coordination_is_reported_not_carried(document) -> None:
             raise RuntimeError(f"Hermes runtime coordination file was not reported as unsupported: {path}")
 
 
+def _assert_truthful_diff_partition(image_diff: dict[str, object], memory_layer_id: str) -> None:
+    layers = image_diff.get("layers")
+    if not isinstance(layers, dict):
+        raise RuntimeError("Continuation diff did not return a layer result object.")
+    changed = set(layers.get("changed", []))
+    state_changed = set(layers.get("state_changed", []))
+    metadata_changed = set(layers.get("metadata_changed", []))
+    expected_state = {memory_layer_id, "hermes-native-profile"}
+    if state_changed != expected_state:
+        raise RuntimeError(
+            f"Continuation diff misclassified durable state changes: expected {sorted(expected_state)}, "
+            f"got {sorted(state_changed)}"
+        )
+    if not metadata_changed:
+        raise RuntimeError("Continuation diff did not expose any provenance-only descriptor changes.")
+    if state_changed & metadata_changed:
+        raise RuntimeError("Continuation diff classified a layer as both state and metadata changed.")
+    if changed != state_changed | metadata_changed:
+        raise RuntimeError("Legacy changed list is not the union of state_changed and metadata_changed.")
+    if layers.get("added") or layers.get("removed"):
+        raise RuntimeError("Continuation diff unexpectedly added or removed semantic layer identities.")
+
+
 def main() -> int:
     project = Path(__file__).resolve().parents[1]
     platform_label = platform.system().casefold() or os.name
@@ -186,8 +209,11 @@ def main() -> int:
     memory_path = "memories/MEMORY.md"
     if memory_path not in parent_memory_layers or memory_path not in child_memory_layers:
         raise RuntimeError("Expected Hermes memory layer was not represented in both images.")
+    if parent_memory_layers[memory_path]["id"] != child_memory_layers[memory_path]["id"]:
+        raise RuntimeError("Hermes memory logical layer identity changed across continuation.")
     if parent_memory_layers[memory_path]["digest"] == child_memory_layers[memory_path]["digest"]:
         raise RuntimeError("The memory layer digest did not record the post-restore native update.")
+    _assert_truthful_diff_partition(image_diff, child_memory_layers[memory_path]["id"])
 
     # Remove the live continuation target before testing the child artifact. The
     # fresh child restore therefore cannot read state from the source profile it
