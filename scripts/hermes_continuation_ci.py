@@ -8,7 +8,11 @@ import sys
 from contextlib import contextmanager
 from pathlib import Path
 
-from agent_image.adapters.hermes import HermesAdapter, SubprocessHermesCLI
+from agent_image.adapters.hermes import (
+    HERMES_RUNTIME_COORDINATION_PATHS,
+    HermesAdapter,
+    SubprocessHermesCLI,
+)
 from agent_image.formal_service import build_image, restore_image
 from agent_image.image_archive import diff_images, load_image, verify_image
 
@@ -80,6 +84,29 @@ def _memory_text(profile: Path) -> str:
     return (profile / "memories" / "MEMORY.md").read_text(encoding="utf-8")
 
 
+def _assert_runtime_coordination_is_reported_not_carried(document) -> None:
+    carried_sources = {
+        layer.get("source", {}).get("path")
+        for layer in document.manifest["layers"]
+        if isinstance(layer.get("source"), dict)
+    }
+    leaked = HERMES_RUNTIME_COORDINATION_PATHS & carried_sources
+    if leaked:
+        raise RuntimeError(f"Hermes runtime coordination files became semantic layers: {sorted(leaked)}")
+
+    source_report = document.json_entry("meta/source-report.json")
+    outcomes_by_source = {
+        item.get("source"): item
+        for item in source_report["outcomes"]
+        if isinstance(item.get("source"), str)
+    }
+    for path in HERMES_RUNTIME_COORDINATION_PATHS:
+        if path not in outcomes_by_source:
+            continue
+        if outcomes_by_source[path].get("action") != "unsupported":
+            raise RuntimeError(f"Hermes runtime coordination file was not reported as unsupported: {path}")
+
+
 def main() -> int:
     project = Path(__file__).resolve().parents[1]
     platform_label = platform.system().casefold() or os.name
@@ -120,6 +147,8 @@ def main() -> int:
     continued_text = _memory_text(continued_profile)
     if BASE_MEMORY not in continued_text or CONTINUED_MEMORY not in continued_text:
         raise RuntimeError("Hermes native memory update did not preserve parent state plus new state.")
+    if not (continued_profile / "memories" / "MEMORY.md.lock").exists():
+        raise RuntimeError("Pinned Hermes MemoryStore.add did not create the expected runtime coordination lock file.")
 
     child_source_before = adapter.inspect_source("continued")["source"]["digest"]
     child_image = smoke / "child.aimg"
@@ -143,6 +172,7 @@ def main() -> int:
     image_diff = diff_images(parent_image, child_image)
     parent_doc = load_image(parent_image)
     child_doc = load_image(child_image)
+    _assert_runtime_coordination_is_reported_not_carried(child_doc)
     parent_memory_layers = {
         layer["source"]["path"]: layer
         for layer in parent_doc.manifest["layers"]
@@ -170,6 +200,9 @@ def main() -> int:
     child_text = _memory_text(child_profile)
     if BASE_MEMORY not in child_text or CONTINUED_MEMORY not in child_text:
         raise RuntimeError("Fresh child restore lost inherited or post-restore Hermes memory state.")
+    for path in HERMES_RUNTIME_COORDINATION_PATHS:
+        if (child_profile / Path(*path.split("/"))).exists():
+            raise RuntimeError(f"Fresh child restore materialized a runtime coordination file: {path}")
 
     result = {
         "valid": True,
@@ -192,6 +225,11 @@ def main() -> int:
             "entry_count": memory_result.get("entry_count"),
             "source_digest_before_child_build": child_source_before,
             "source_immutable_during_child_build": child_source_before == child_source_after,
+        },
+        "runtime_coordination": {
+            "observed_after_native_update": True,
+            "reported_not_carried": True,
+            "paths": sorted(HERMES_RUNTIME_COORDINATION_PATHS),
         },
         "child": {
             "image": child_verify,
