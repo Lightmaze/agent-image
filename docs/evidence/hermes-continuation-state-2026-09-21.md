@@ -13,12 +13,12 @@ byte-identical images.
 
 ## Pinned contract
 
-- Agent Image branch under review: `web/diff-state-vs-metadata-20260921`
+- Agent Image branch under review: `web/continuation-binding-20260921`
 - Hermes Agent: `0.20.5`
 - Hermes source commit: `fcbd1076a93841fa88855acce810e342a5b78101`
 - Existing Agent Image adapter: `org.agentimage.hermes` `0.1.0`
-- Continuation + truthful-diff CI evidence:
-  [35624511901](https://github.com/Lightmaze/agent-image/actions/runs/35624511901)
+- Continuation + exact evidence-binding CI evidence:
+  [35656310081](https://github.com/Lightmaze/agent-image/actions/runs/35656310081)
 
 The experiment uses synthetic local state only and performs no model/provider API
 call. The post-restore mutation is executed through pinned upstream
@@ -38,6 +38,8 @@ synthetic Hermes parent profile
     -> delete the live `continued` profile
     -> independent Hermes native P1 restore as `child-restored`
     -> verify inherited parent memory + post-restore memory
+    -> bind exact verified parent + exact verified child + state delta + runtime observation
+    -> round-trip binding JSON and verify all bindings again
 ```
 
 The parent and child source profiles are also hashed immediately before and after
@@ -162,9 +164,114 @@ This result gives future lineage work a cleaner empirical input: the experiment
 can now say which carried state actually changed without mistaking a different
 producer profile name for Agent development. It is still **not** an
 authoritative-state commitment and does not prove that a particular development
-process caused the delta. Such a commitment would need a separately specified
-resource-selection rule, parent binding, and transition evidence rather than
-silently promoting this reporting projection into protocol identity.
+process caused the delta.
+
+## Continuation evidence binding
+
+The next missing layer was not another lineage field. The experiment already had
+a real parent, real child, truthful state delta, and runtime observation, but
+those objects were not cryptographically bound to one another. A copied report
+could therefore be displayed beside the wrong parent or child without the generic
+Core detecting that mismatch.
+
+The candidate branch now introduces an **external evidence object**, not a new
+portable Image identity:
+
+```text
+agent-image-continuation-binding/v0.1
+scope = artifact-delta-evidence-binding
+
+parent:
+  spec
+  image_digest
+  verified_entry_set:
+    version = agent-image-verified-entry-set/v0.1
+    digest
+    entries
+
+child:
+  ...same exact-content binding...
+
+state_delta:
+  projection = agent-image-layer-state-projection/v0.1
+  added
+  removed
+  state_changed
+  digest
+
+descriptor_metadata_changed
+
+transition_evidence:
+  kind
+  media_type
+  digest
+  size
+```
+
+### Why the binding needs more than `image.digest`
+
+The released v0.1 `image.digest` is intentionally the layer payload root. It does
+not commit all manifest, provenance, index, or operation-report bytes. The new
+`verified_entry_set` digest therefore hashes a sorted inventory of every archive
+entry that Core has already validated, each represented as `{path, SHA-256,
+size}`. It binds the **exact verified artifact content** without redefining the
+released v0.1 image identity and without depending on physical tar/gzip byte
+layout.
+
+This distinction is tested explicitly: a second valid parent can have the same
+v0.1 layer-root `image.digest` while differing in image/provenance metadata. Such
+a parent receives a different verified-entry-set digest and cannot verify against
+the original continuation binding.
+
+### What verification recomputes
+
+`verify_continuation_binding` reloads and verifies the supplied parent and child,
+recomputes both exact-content subjects and the state delta from the actual
+artifacts, hashes the supplied evidence bytes, and requires the complete binding
+to equal this recomputed object. Negative tests cover:
+
+- a wrong but valid parent with the same v0.1 layer-root digest;
+- modified transition-evidence bytes;
+- a forged state delta whose attacker also recomputed its internal delta digest;
+- missing evidence bytes.
+
+The real Hermes continuation CI also serializes the generated binding to JSON,
+reads it back, verifies it against the parent and child Images plus the canonical
+runtime-observation bytes, and requires the binding's `state_changed` set to
+match the independently produced generic diff.
+
+The PR-head run
+[35656310081](https://github.com/Lightmaze/agent-image/actions/runs/35656310081)
+completed successfully with all 14 jobs, including real Hermes continuation on
+both hosted Windows and Ubuntu.
+
+### Deliberate proof boundary
+
+A valid binding proves **association and integrity**, not truth of the runtime
+observation. Core treats transition evidence as opaque bytes and records its kind,
+media type, digest, and size. The generic verifier therefore returns:
+
+```text
+causal_transition_verified = false
+behavioral_retention_verified = false
+```
+
+This is intentional. A future harness-specific verifier, trusted attestation,
+or controlled behavioral experiment may raise a stronger claim, but a hash that
+correctly binds a report to two artifacts must not itself be rendered as causal
+development proof.
+
+The resulting evidence ladder is now explicit:
+
+```text
+declared parentage
+    != observed state delta
+    != exact artifact/delta/evidence binding
+    != causal developmental transition proof
+    != behavioral retention proof
+```
+
+Only the third level is added by this revision.
 
 ## Claim boundary
 
@@ -173,7 +280,9 @@ a **real upstream persistent memory-state update** through a parent restore,
 child refreeze, deletion of the live continuation source, and independent child
 restore on the tested Windows and Ubuntu runners. It also proves, for this
 fixture, that the formal CLI diff can separate the durable payload changes from
-capture-provenance-only descriptor changes.
+capture-provenance-only descriptor changes and that a continuation evidence
+object can be bound to the exact verified parent, exact verified child, the
+versioned state delta, and the observed runtime-evidence bytes.
 
 It does not prove that the new memory was learned from experience, that behavior
 changed or was retained, that the parent caused the child state, or that the
