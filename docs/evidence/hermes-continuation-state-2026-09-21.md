@@ -13,12 +13,12 @@ byte-identical images.
 
 ## Pinned contract
 
-- Agent Image branch under review: `web/hermes-continuation-state-20260921`
+- Agent Image branch under review: `web/diff-state-vs-metadata-20260921`
 - Hermes Agent: `0.20.5`
 - Hermes source commit: `fcbd1076a93841fa88855acce810e342a5b78101`
 - Existing Agent Image adapter: `org.agentimage.hermes` `0.1.0`
-- CI evidence run after the runtime-artifact correction:
-  [35593576621](https://github.com/Lightmaze/agent-image/actions/runs/35593576621)
+- Continuation + truthful-diff CI evidence:
+  [35624511901](https://github.com/Lightmaze/agent-image/actions/runs/35624511901)
 
 The experiment uses synthetic local state only and performs no model/provider API
 call. The post-restore mutation is executed through pinned upstream
@@ -48,7 +48,9 @@ build interval.
 
 Both `real-hermes-continuation (ubuntu-latest)` and
 `real-hermes-continuation (windows-latest)` completed the continuation script
-successfully.
+successfully. The complete PR run passed all 14 jobs: the nine Core OS/Python
+matrix jobs, installed-package smoke, the two existing real-Hermes smoke jobs,
+and the two real continuation jobs.
 
 On Ubuntu, the parent layer-root Image digest was
 `sha256:bfb488ca70bcb798b81aeb1042ee18dc81bc45ea10a80a076ec676b940903902`
@@ -112,29 +114,66 @@ child restore.
 After the correction, `diff` reports no added layer from the lock file and both
 parent and child contain seven layers in the continuation fixture.
 
-## Remaining diff limitation
+## Diff classification correction
 
-The experiment also exposed a separate problem that is **not** fixed here:
-`diff_images` compares complete layer descriptors. The same durable payload can
-therefore be reported as changed when only instance/provenance metadata such as
-`source.origin` changes from `hermes:source` to `hermes:continued`.
+The same experiment exposed that the former `diff_images` surface compared full
+layer descriptor dictionaries. That comparison is still useful as an artifact
+descriptor diff, but it is too noisy to stand in for a developmental-state delta:
+a byte-identical payload can appear changed merely because capture-instance
+provenance such as `source.origin` moves from `hermes:source` to
+`hermes:continued`.
 
-For developmental lineage work, the next diff surface should distinguish at
-least:
+The formal CLI diff now preserves the existing `layers.changed` list for
+compatibility and adds a separately versioned state view:
 
-1. payload/state change — digest, size, media type or semantic resource identity;
-2. provenance/instance metadata change — source locator/origin or capture context.
+```text
+agent-image-layer-state-projection/v0.1
+fields = kind, media_type, digest, size
+```
 
-This should be repaired before using today's `changed` layer list as an
-authoritative developmental delta or designing a stronger lineage commitment on
-top of it.
+For a layer id present in both Images, `state_changed` means that this projection
+changed. `metadata_changed` means the complete layer descriptor changed while the
+state projection stayed equal. The two lists are disjoint and their union equals
+the legacy `changed` list. `added` and `removed` keep their existing identity
+semantics. This is a report interpretation only: it does not redefine v0.1
+`image.digest`, layer identity, archive bytes, or restore behavior.
+
+The real Hermes parent -> continuation -> child experiment is now an executable
+acceptance test for that distinction. On both Windows and Ubuntu the observed
+classification was the same:
+
+```text
+state_changed:
+  hermes-memory-d3f72f2c5b9b    # memories/MEMORY.md
+  hermes-native-profile          # typed native profile contains the durable update
+
+metadata_changed:
+  hermes-experience-e7ba902847a4
+  hermes-identity-bde0ac766bf0
+  hermes-memory-2ddbb58fbbac     # unchanged USER memory
+  hermes-skills-59dcdc7d5364
+  hermes-workspace-d06347a55550
+
+added: []
+removed: []
+```
+
+This result gives future lineage work a cleaner empirical input: the experiment
+can now say which carried state actually changed without mistaking a different
+producer profile name for Agent development. It is still **not** an
+authoritative-state commitment and does not prove that a particular development
+process caused the delta. Such a commitment would need a separately specified
+resource-selection rule, parent binding, and transition evidence rather than
+silently promoting this reporting projection into protocol identity.
 
 ## Claim boundary
 
 This experiment proves that the existing pinned Hermes adapter and Core can carry
 a **real upstream persistent memory-state update** through a parent restore,
 child refreeze, deletion of the live continuation source, and independent child
-restore on the tested Windows and Ubuntu runners.
+restore on the tested Windows and Ubuntu runners. It also proves, for this
+fixture, that the formal CLI diff can separate the durable payload changes from
+capture-provenance-only descriptor changes.
 
 It does not prove that the new memory was learned from experience, that behavior
 changed or was retained, that the parent caused the child state, or that the
