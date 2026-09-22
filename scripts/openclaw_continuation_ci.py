@@ -125,6 +125,12 @@ def main(argv: list[str]) -> int:
             if adapter.agent_digest("continued") != continued_before:
                 raise AgentImageError("E_SOURCE_UNSUPPORTED", "No-op child build changed the OpenClaw source state.")
             noop_diff = diff_images(parent, noop_child)
+            if noop_diff["layers"]["state_changed"]:
+                raise AgentImageError(
+                    "E_NATIVE_INCOMPATIBLE",
+                    "OpenClaw no-op refreeze changed Agent state after native-state normalization.",
+                    details=noop_diff,
+                )
 
             # Native persistent-state update on OpenClaw's documented workspace memory surface.
             continued_memory.write_text(PARENT_MEMORY + CONTINUED_MEMORY, encoding="utf-8", newline="\n")
@@ -144,12 +150,16 @@ def main(argv: list[str]) -> int:
 
             actual_diff = diff_images(parent, child)
             memory_layer = _memory_layer_id(parent)
-            expected_semantic_change = memory_layer in actual_diff["layers"]["state_changed"]
-            if not expected_semantic_change:
+            expected_state_changes = {memory_layer, "openclaw-native-agent"}
+            actual_state_changes = set(actual_diff["layers"]["state_changed"])
+            if actual_state_changes != expected_state_changes:
                 raise AgentImageError(
                     "E_NATIVE_INCOMPATIBLE",
-                    "OpenClaw MEMORY.md mutation was not reported as a state change.",
-                    details=actual_diff,
+                    "OpenClaw continuation state delta was not exactly MEMORY.md plus normalized native state.",
+                    details={
+                        "expected_state_changed": sorted(expected_state_changes),
+                        "actual_diff": actual_diff,
+                    },
                 )
 
             # Independence boundary: remove the live continuation agent before child restore.
