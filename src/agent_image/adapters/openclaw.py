@@ -353,11 +353,10 @@ def _layer_id(kind: str, source: str) -> str:
     return f"openclaw-{kind}-{sha256_bytes(source.encode('utf-8'))[7:19]}"
 
 
-def _native_archive(source_agent: str, entries: Mapping[str, bytes]) -> bytes:
+def _native_archive(entries: Mapping[str, bytes]) -> bytes:
+    # Commit only receiver-materialized state. Producer identity belongs in
+    # manifest provenance / operation evidence, not in restorable native bytes.
     values = dict(entries)
-    values["meta/agent.json"] = canonical_json_bytes(
-        {"source_agent": source_agent, "contract": OPENCLAW_PIN.tag}
-    )
     raw = io.BytesIO()
     with gzip.GzipFile(filename="", mode="wb", fileobj=raw, compresslevel=9, mtime=0) as compressed:
         with tarfile.open(fileobj=compressed, mode="w", format=tarfile.PAX_FORMAT) as archive:
@@ -580,7 +579,7 @@ class OpenClawAdapter:
             )
 
         if policy == "private":
-            native = _native_archive(name, native_entries)
+            native = _native_archive(native_entries)
             native_path = "layers/native/openclaw-agent.tar.gz"
             payloads[native_path] = native
             layers.append(
