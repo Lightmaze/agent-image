@@ -82,3 +82,27 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - run: uv run --isolated --with-editable .tmp/hermes-src python scripts/hermes_continuation_ci.py
+
+  real-openclaw-continuation:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.15.0"
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked
+      - shell: pwsh
+        run: |
+          npm install --global npm@11.12.1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ((npm --version).Trim() -ne "11.12.1") { throw "Unexpected npm version" }
+          npm install --prefix .tmp/openclaw-runtime openclaw@2026.7.1-2 --no-audit --no-fund
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $openclaw = Join-Path $PWD ".tmp\openclaw-runtime\node_modules\.bin\openclaw.cmd"
+          $node = (Get-Command node).Source
+          uv run python scripts/openclaw_continuation_ci.py --openclaw-binary $openclaw --node-binary $node
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
