@@ -1,0 +1,58 @@
+name: apply-openclaw-normalization-candidate
+
+on:
+  push:
+    branches: [web/openclaw-native-state-normalization-20260922]
+
+permissions:
+  contents: write
+
+jobs:
+  patch-candidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: web/openclaw-native-state-normalization-20260922
+          fetch-depth: 0
+      - name: Apply exact scoped production patch
+        shell: python
+        run: |
+          from pathlib import Path
+
+          adapter = Path("src/agent_image/adapters/openclaw.py")
+          text = adapter.read_text(encoding="utf-8")
+          old = '''def _native_archive(source_agent: str, entries: Mapping[str, bytes]) -> bytes:\n    values = dict(entries)\n    values["meta/agent.json"] = canonical_json_bytes(\n        {"source_agent": source_agent, "contract": OPENCLAW_PIN.tag}\n    )\n'''
+          new = '''def _native_archive(entries: Mapping[str, bytes]) -> bytes:\n    # Commit only receiver-materialized state. Producer identity belongs in\n    # manifest provenance / operation evidence, not in restorable native bytes.\n    values = dict(entries)\n'''
+          if text.count(old) != 1:
+              raise SystemExit(f"expected one legacy native writer block, found {text.count(old)}")
+          text = text.replace(old, new, 1)
+          old_call = "native = _native_archive(name, native_entries)"
+          new_call = "native = _native_archive(native_entries)"
+          if text.count(old_call) != 1:
+              raise SystemExit(f"expected one native writer call, found {text.count(old_call)}")
+          adapter.write_text(text.replace(old_call, new_call, 1), encoding="utf-8")
+
+          script = Path("scripts/openclaw_continuation_ci.py")
+          text = script.read_text(encoding="utf-8")
+          old_noop = '''            noop_diff = diff_images(parent, noop_child)\n\n            # Native persistent-state update on OpenClaw's documented workspace memory surface.\n'''
+          new_noop = '''            noop_diff = diff_images(parent, noop_child)\n            if noop_diff["layers"]["state_changed"]:\n                raise AgentImageError(\n                    "E_NATIVE_INCOMPATIBLE",\n                    "OpenClaw no-op refreeze changed Agent state after native-state normalization.",\n                    details=noop_diff,\n                )\n\n            # Native persistent-state update on OpenClaw's documented workspace memory surface.\n'''
+          if text.count(old_noop) != 1:
+              raise SystemExit(f"expected one no-op control block, found {text.count(old_noop)}")
+          text = text.replace(old_noop, new_noop, 1)
+
+          old_positive = '''            actual_diff = diff_images(parent, child)\n            memory_layer = _memory_layer_id(parent)\n            expected_semantic_change = memory_layer in actual_diff["layers"]["state_changed"]\n            if not expected_semantic_change:\n                raise AgentImageError(\n                    "E_NATIVE_INCOMPATIBLE",\n                    "OpenClaw MEMORY.md mutation was not reported as a state change.",\n                    details=actual_diff,\n                )\n'''
+          new_positive = '''            actual_diff = diff_images(parent, child)\n            memory_layer = _memory_layer_id(parent)\n            expected_state_changes = {memory_layer, "openclaw-native-agent"}\n            actual_state_changes = set(actual_diff["layers"]["state_changed"])\n            if actual_state_changes != expected_state_changes:\n                raise AgentImageError(\n                    "E_NATIVE_INCOMPATIBLE",\n                    "OpenClaw continuation state delta was not exactly MEMORY.md plus normalized native state.",\n                    details={\n                        "expected_state_changed": sorted(expected_state_changes),\n                        "actual_diff": actual_diff,\n                    },\n                )\n'''
+          if text.count(old_positive) != 1:
+              raise SystemExit(f"expected one positive state block, found {text.count(old_positive)}")
+          script.write_text(text.replace(old_positive, new_positive, 1), encoding="utf-8")
+      - name: Commit candidate patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Open Agent Image Protocol"
+          git config user.email "agent-image@users.noreply.github.com"
+          git add src/agent_image/adapters/openclaw.py scripts/openclaw_continuation_ci.py
+          git diff --cached --check
+          git commit -m "fix: normalize OpenClaw native state commitment"
+          git push origin HEAD:web/openclaw-native-state-normalization-20260922
