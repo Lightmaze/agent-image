@@ -5,6 +5,11 @@ The experiment is no-model/no-provider. It derives the mutation from the real
 pinned rc.6 composed tree rather than assuming current upstream configuration.
 A no-op refreeze control runs before mutation, and the live continuation profile
 is deleted before child restore.
+
+DSH's --dump-config output uses the Cordis YAML dialect and may contain !!js.
+Those values are parsed as inert tagged scalars for comparison only; this script
+never evaluates them. The profile-owned patch is parsed with ordinary SafeLoader
+and therefore fails closed if it already contains executable YAML tags.
 """
 
 from __future__ import annotations
@@ -17,6 +22,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -32,6 +38,29 @@ from agent_image.image_archive import diff_images
 
 MUTATION_MARKER = " [agent-image-continuation]"
 SAFE_FIELDS = ("persona", "personaSuffix", "personaPrefix")
+
+
+@dataclass(frozen=True)
+class _TaggedJs:
+    source: str
+
+
+class _DshDumpLoader(yaml.SafeLoader):
+    """Non-evaluating loader for DSH's dump-config YAML dialect."""
+
+
+def _construct_js(loader: _DshDumpLoader, node: yaml.Node) -> _TaggedJs:
+    if not isinstance(node, yaml.ScalarNode):
+        raise yaml.constructor.ConstructorError(
+            None,
+            None,
+            "DSH !!js values must be scalar expressions for this acceptance test.",
+            node.start_mark,
+        )
+    return _TaggedJs(loader.construct_scalar(node))
+
+
+_DshDumpLoader.add_constructor("tag:yaml.org,2002:js", _construct_js)
 
 
 def _bootstrap_shipped_headless(node: str, dsh_bin_js: str, dsh_home: Path) -> None:
@@ -59,11 +88,16 @@ def _bootstrap_shipped_headless(node: str, dsh_bin_js: str, dsh_home: Path) -> N
         raise AgentImageError("E_SOURCE_UNSUPPORTED", "Pinned DSH returned an empty headless config dump.")
 
 
-def _load_rows(data: bytes, *, label: str) -> list[dict[str, Any]]:
+def _load_rows(data: bytes, *, label: str, dsh_dump: bool = False) -> list[dict[str, Any]]:
     try:
-        value = yaml.safe_load(data.decode("utf-8"))
+        text = data.decode("utf-8")
+        value = yaml.load(text, Loader=_DshDumpLoader) if dsh_dump else yaml.safe_load(text)
     except (UnicodeDecodeError, yaml.YAMLError) as error:
-        raise AgentImageError("E_NATIVE_INCOMPATIBLE", f"{label} is not safe-loadable UTF-8 YAML.") from error
+        dialect = "DSH dump-config" if dsh_dump else "safe"
+        raise AgentImageError(
+            "E_NATIVE_INCOMPATIBLE",
+            f"{label} is not {dialect}-loadable UTF-8 YAML.",
+        ) from error
     if not isinstance(value, list):
         raise AgentImageError("E_NATIVE_INCOMPATIBLE", f"{label} must be a top-level YAML list.")
     rows: list[dict[str, Any]] = []
@@ -120,7 +154,7 @@ def _select_safe_mutation(dump_rows: list[dict[str, Any]]) -> tuple[str, str, di
 def _write_profile_patch(profile: Path, row_id: str, mutated_config: dict[str, Any]) -> tuple[bytes, bytes]:
     patch_path = profile / "cordis.patch.yml"
     before = patch_path.read_bytes()
-    patch_rows = _load_rows(before, label="Profile cordis.patch.yml")
+    patch_rows = _load_rows(before, label="Profile cordis.patch.yml", dsh_dump=False)
     replacement = {"id": row_id, "config": mutated_config}
 
     updated: list[dict[str, Any]] = []
@@ -148,8 +182,12 @@ def _write_profile_patch(profile: Path, row_id: str, mutated_config: dict[str, A
 
 
 def _assert_composed_mutation(before: bytes, after: bytes, *, row_id: str, field: str) -> None:
-    before_rows = _rows_by_id(_load_rows(before, label="Pre-mutation composed config"), label="before")
-    after_rows = _rows_by_id(_load_rows(after, label="Post-mutation composed config"), label="after")
+    before_rows = _rows_by_id(
+        _load_rows(before, label="Pre-mutation composed config", dsh_dump=True), label="before"
+    )
+    after_rows = _rows_by_id(
+        _load_rows(after, label="Post-mutation composed config", dsh_dump=True), label="after"
+    )
     if set(before_rows) != set(after_rows):
         raise AgentImageError(
             "E_NATIVE_INCOMPATIBLE",
@@ -268,7 +306,7 @@ def main(argv: list[str]) -> int:
                 )
 
             dump_before = cli.dump_config("continued")
-            dump_rows = _load_rows(dump_before, label="Pinned DSH composed config")
+            dump_rows = _load_rows(dump_before, label="Pinned DSH composed config", dsh_dump=True)
             row_id, field, mutated_config = _select_safe_mutation(dump_rows)
             patch_before, patch_after = _write_profile_patch(continued.path, row_id, mutated_config)
             if patch_before == patch_after:
