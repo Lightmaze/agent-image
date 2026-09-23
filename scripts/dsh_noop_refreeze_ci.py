@@ -43,12 +43,14 @@ from agent_image.image_archive import diff_images, layer_root_digest, load_image
 
 
 MUTATION_MARKER = "Agent Image DSH continuation marker v1."
+# Pinned rc.6 (release merge fb826987...) defines the headless system-prompt
+# row with one full `persona` config field, not the later personaPrefix/
+# personaSuffix split on current upstream. The profile patch replaces the row's
+# complete config and changes only that rc.6 persona string.
 PROFILE_PATCH = f"""- id: system-prompt
   config:
-    personaSuffix: >-
-      Your working directory is {{{{cwd}}}}. {MUTATION_MARKER}
-    personaPrefix: >-
-      You are a coding agent powered by the {{{{model}}}} model.
+    persona: >-
+      You are a coding agent powered by the {{{{model}}}} model. Your working directory is {{{{cwd}}}}. {MUTATION_MARKER}
 """.encode("utf-8")
 
 
@@ -230,10 +232,10 @@ def main(argv: list[str]) -> int:
                     details={"changed_members": changed_noop_members},
                 )
 
-            # Positive persistent profile-state mutation. We override a documented
-            # profile-owned Cordis row with a full config, preserving the two keys
-            # owned by the shipped headless system-prompt row while changing only
-            # personaSuffix. No model/provider call is made.
+            # Positive persistent profile-state mutation. The pinned rc.6 release
+            # defines system-prompt.config as a single `persona` field. We replace
+            # that full row config and change only the persona text. No model or
+            # provider call is made.
             continued = cli.show_profile("continued")
             patch_path = continued.path / "cordis.patch.yml"
             patch_path.write_bytes(PROFILE_PATCH)
@@ -271,6 +273,7 @@ def main(argv: list[str]) -> int:
                 "evidence_version": "agent-image-dsh-continuation-observation/v0.1",
                 "contract": {
                     "package": f"@deepseek-ai/dsh@{DSH_PIN.version}",
+                    "release_merge": "fb82698709c39f1860b0ab0ed147e1fa30c1d5d0",
                     "node": DSH_PIN.node,
                     "npm": DSH_PIN.npm,
                     "platform": "windows",
@@ -284,7 +287,7 @@ def main(argv: list[str]) -> int:
                 },
                 "mutation": {
                     "surface": "profile/cordis.patch.yml",
-                    "kind": "profile-owned full-row system-prompt config override",
+                    "kind": "profile-owned full-row rc.6 system-prompt persona override",
                     "marker": MUTATION_MARKER,
                     "observable_through_dump_config": True,
                     "state_changed": child_diff["layers"]["state_changed"],
