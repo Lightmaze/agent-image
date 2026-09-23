@@ -1,0 +1,33 @@
+name: dsh-continuation-candidate
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  real-dsh-continuation:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.15.0"
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked
+      - shell: pwsh
+        run: |
+          npm install --global npm@11.12.1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ((npm --version).Trim() -ne "11.12.1") { throw "Unexpected npm version" }
+          npm install --prefix .tmp/dsh-runtime @deepseek-ai/dsh@0.1.0-rc.6 --no-audit --no-fund
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $dsh = Join-Path $PWD ".tmp\dsh-runtime\node_modules\@deepseek-ai\dsh\lib\bin.js"
+          $node = (Get-Command node).Source
+          uv run python scripts/dsh_continuation_ci.py --dsh-bin-js $dsh --node-binary $node
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
