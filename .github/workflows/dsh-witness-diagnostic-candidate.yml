@@ -22,10 +22,11 @@ jobs:
       - run: uv sync --locked
       - shell: pwsh
         run: |
-          npm install --global npm@11.12.1 --no-audit --no-fund
+          npm install --prefix .tmp/npm-runtime npm@11.12.1 --no-audit --no-fund
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          if ((npm --version).Trim() -ne "11.12.1") { throw "Unexpected npm version" }
-          npm install --prefix .tmp/dsh-runtime @deepseek-ai/dsh@0.1.0-rc.6 --no-audit --no-fund
+          $npm = Join-Path $PWD ".tmp\npm-runtime\node_modules\npm\bin\npm-cli.js"
+          if ((node $npm --version).Trim() -ne "11.12.1") { throw "Unexpected pinned npm version" }
+          node $npm install --prefix .tmp/dsh-runtime @deepseek-ai/dsh@0.1.0-rc.6 --no-audit --no-fund
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $dsh = Join-Path $PWD ".tmp\dsh-runtime\node_modules\@deepseek-ai\dsh\lib\bin.js"
           $node = (Get-Command node).Source
