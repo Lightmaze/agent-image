@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-"""Real pinned DSH no-op refreeze experiment.
+"""Real pinned DSH no-op refreeze acceptance gate.
 
 This deliberately performs no profile mutation after fresh P1 restore. It asks a
 narrow question required by the continuation-ready adapter profile: does a
 producer-instance rename alone change the carried Agent-state delta?
 
-The experiment is diagnostic rather than a new capability claim. It records the
-exact native-member difference when the current adapter reports a false-positive
-state change.
+The normalized writer must make the answer no. Any native-member difference or
+state_changed layer is a hard failure.
 """
 
 from __future__ import annotations
@@ -139,40 +138,35 @@ def main(argv: list[str]) -> int:
             parent_meta = _metadata(parent_entries)
             child_meta = _metadata(child_entries)
 
-            # This is the discriminative expectation for the current adapter:
-            # profile bytes and official composed config are stable; only the
-            # capture-side producer name changes inside meta/profile.json.
-            if changed_members != ["meta/profile.json"]:
+            if changed_members:
                 raise AgentImageError(
                     "E_NATIVE_INCOMPATIBLE",
-                    "DSH no-op native change was not isolated to meta/profile.json.",
+                    "Normalized DSH no-op refreeze changed native bytes.",
                     details={"changed_members": changed_members},
                 )
-            if parent_meta.get("source_name") != "headless" or child_meta.get("source_name") != "continued":
+            if "source_name" in parent_meta or "source_name" in child_meta:
                 raise AgentImageError(
                     "E_NATIVE_INCOMPATIBLE",
-                    "DSH native metadata did not expose the expected producer rename.",
+                    "Normalized DSH native metadata still contains producer identity.",
                     details={"parent_meta": parent_meta, "child_meta": child_meta},
                 )
-            parent_state_meta = {key: value for key, value in parent_meta.items() if key != "source_name"}
-            child_state_meta = {key: value for key, value in child_meta.items() if key != "source_name"}
-            if parent_state_meta != child_state_meta:
+            if parent_meta != child_meta:
                 raise AgentImageError(
                     "E_NATIVE_INCOMPATIBLE",
-                    "DSH no-op refreeze changed state-relevant native metadata.",
-                    details={"parent": parent_state_meta, "child": child_state_meta},
+                    "DSH no-op refreeze changed restore-witness metadata.",
+                    details={"parent": parent_meta, "child": child_meta},
                 )
 
             state_changed = noop_diff["layers"]["state_changed"]
-            if state_changed != ["dsh-native-profile"]:
+            if state_changed:
                 raise AgentImageError(
                     "E_NATIVE_INCOMPATIBLE",
-                    "Current DSH adapter no-op false positive changed shape unexpectedly.",
+                    "Normalized DSH no-op refreeze still reports Agent-state changes.",
                     details=noop_diff,
                 )
 
             report = {
-                "evidence_version": "agent-image-dsh-noop-refreeze-observation/v0.1",
+                "evidence_version": "agent-image-dsh-noop-refreeze-normalized/v0.1",
                 "contract": {
                     "package": f"@deepseek-ai/dsh@{DSH_PIN.version}",
                     "node": DSH_PIN.node,
@@ -188,17 +182,19 @@ def main(argv: list[str]) -> int:
                 "native_metadata": {
                     "parent": parent_meta,
                     "child": child_meta,
-                    "state_relevant_fields_equal_without_source_name": True,
+                    "producer_identity_absent": True,
+                    "restore_witness_equal": True,
                     "parent_meta_digest": sha256_bytes(parent_entries["meta/profile.json"]),
                     "child_meta_digest": sha256_bytes(child_entries["meta/profile.json"]),
                 },
                 "finding": {
-                    "producer_identity_inside_native_bytes": True,
+                    "producer_identity_inside_native_bytes": False,
                     "receiver_state_changed": False,
-                    "current_raw_native_digest_truthful_for_noop": False,
+                    "current_raw_native_digest_truthful_for_noop": True,
                 },
                 "claim_boundary": {
                     "dsh_p1_revalidated": True,
+                    "noop_discrimination_passed": True,
                     "continuation_ready": False,
                     "positive_mutation_not_run": True,
                     "causal_development_verified": False,

@@ -438,7 +438,7 @@ class DshAdapter:
             native_entries.update(
                 {
                     "meta/profile.json": canonical_json_bytes(
-                        {"source_name": name, "bundles": bundles, "dependencies": dependencies}
+                        {"bundles": bundles, "dependencies": dependencies}
                     )
                     + b"\n",
                     "meta/dump-config.yml": dump_config,
