@@ -1,18 +1,23 @@
 #!/usr/bin/env python3
-"""Real pinned DSH no-op refreeze experiment.
+"""Real pinned DSH normalization + persistent-state continuation experiment.
 
-This deliberately performs no profile mutation after fresh P1 restore. It asks a
-narrow question required by the continuation-ready adapter profile: does a
-producer-instance rename alone change the carried Agent-state delta?
+This is a discriminative implementation experiment for issue #12. It keeps the
+production DSH reader untouched and applies the proposed one-field writer
+normalization in a local adapter subclass: remove capture-only `source_name`
+from `meta/profile.json` while preserving bundles/dependencies and dump-config
+restore witnesses inside the hashed native layer.
 
-The experiment is diagnostic rather than a new capability claim. It records the
-exact native-member difference when the current adapter reports a false-positive
-state change.
+The run proves whether that minimal correction is sufficient for a rename-only
+no-op refreeze and then exercises one semantically valid profile-owned
+`cordis.patch.yml` mutation through independent child restore and the existing
+external Continuation Evidence Binding. It does not claim learning, causal
+development, behavioral retention, P3, or a production adapter fix.
 """
 
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import shutil
@@ -21,17 +26,30 @@ import sys
 import tempfile
 from pathlib import Path
 
+from agent_image.adapter_contract import AdapterExport
 from agent_image.adapters.dsh import (
     DSH_PIN,
     DSH_NATIVE_MEDIA_TYPE,
     DshAdapter,
     SubprocessDshCLI,
     _read_native,
+    _tar_bytes,
 )
-from agent_image.canonical import sha256_bytes
+from agent_image.canonical import canonical_json_bytes, sha256_bytes
+from agent_image.continuation import build_continuation_binding, verify_continuation_binding
 from agent_image.errors import AgentImageError
 from agent_image.formal_service import build_image, restore_image
-from agent_image.image_archive import diff_images, load_image
+from agent_image.image_archive import diff_images, layer_root_digest, load_image
+
+
+MUTATION_MARKER = "Agent Image DSH continuation marker v1."
+PROFILE_PATCH = f"""- id: system-prompt
+  config:
+    personaSuffix: >-
+      Your working directory is {{{{cwd}}}}. {MUTATION_MARKER}
+    personaPrefix: >-
+      You are a coding agent powered by the {{{{model}}}} model.
+""".encode("utf-8")
 
 
 def _bootstrap_shipped_headless(node: str, dsh_bin_js: str, dsh_home: Path) -> None:
@@ -59,8 +77,7 @@ def _bootstrap_shipped_headless(node: str, dsh_bin_js: str, dsh_home: Path) -> N
         raise AgentImageError("E_SOURCE_UNSUPPORTED", "Pinned DSH returned an empty headless config dump.")
 
 
-def _native_entries(image: Path) -> dict[str, bytes]:
-    document = load_image(image)
+def _native_layer(document: object) -> dict[str, object]:
     layers = [
         layer
         for layer in document.manifest["layers"]
@@ -68,7 +85,13 @@ def _native_entries(image: Path) -> dict[str, bytes]:
     ]
     if len(layers) != 1:
         raise AgentImageError("E_NATIVE_INCOMPATIBLE", "Expected exactly one DSH native layer.")
-    return _read_native(document.entries[layers[0]["path"]])
+    return layers[0]
+
+
+def _native_entries(image: Path) -> dict[str, bytes]:
+    document = load_image(image)
+    layer = _native_layer(document)
+    return _read_native(document.entries[layer["path"]])
 
 
 def _metadata(entries: dict[str, bytes]) -> dict[str, object]:
@@ -81,13 +104,67 @@ def _metadata(entries: dict[str, bytes]) -> dict[str, object]:
     return value
 
 
+class CandidateNormalizedDshAdapter(DshAdapter):
+    """Issue #12 writer correction, intentionally local to this real-runtime experiment."""
+
+    def export(
+        self,
+        source: str,
+        policy: str,
+        *,
+        include_experience: bool = False,
+        include_workspace: bool = False,
+    ) -> AdapterExport:
+        exported = super().export(
+            source,
+            policy,
+            include_experience=include_experience,
+            include_workspace=include_workspace,
+        )
+        if policy != "private":
+            return exported
+
+        manifest = copy.deepcopy(exported.manifest)
+        payloads = dict(exported.payloads)
+        native_layers = [
+            layer
+            for layer in manifest["layers"]
+            if layer["kind"] == "native" and layer["media_type"] == DSH_NATIVE_MEDIA_TYPE
+        ]
+        if len(native_layers) != 1:
+            raise AgentImageError("E_NATIVE_INCOMPATIBLE", "Candidate normalization expected one DSH native layer.")
+        layer = native_layers[0]
+        entries = _read_native(payloads[layer["path"]])
+        metadata = _metadata(entries)
+        metadata.pop("source_name", None)
+        entries["meta/profile.json"] = canonical_json_bytes(metadata) + b"\n"
+        native = _tar_bytes(entries)
+        payloads[layer["path"]] = native
+        layer["digest"] = sha256_bytes(native)
+        layer["size"] = len(native)
+        manifest["image"]["digest"] = layer_root_digest(manifest["layers"])
+        return AdapterExport(manifest=manifest, payloads=payloads, source_report=exported.source_report)
+
+
+def _build_checked(adapter: DshAdapter, source: str, output: Path) -> None:
+    before = adapter.inspect_source(source)["source"]["digest"]
+    build_image(adapter, source=source, output=output, policy="private")
+    after = adapter.inspect_source(source)["source"]["digest"]
+    if before != after:
+        raise AgentImageError(
+            "E_SOURCE_UNSUPPORTED",
+            "DSH build changed its source profile.",
+            details={"source": source, "before": before, "after": after},
+        )
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dsh-bin-js", required=True)
     parser.add_argument("--node-binary", required=True)
     args = parser.parse_args(argv)
 
-    with tempfile.TemporaryDirectory(prefix="agent-image-dsh-noop-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="agent-image-dsh-continuation-") as temporary:
         root = Path(temporary).resolve()
         dsh_home = root / "dsh-home"
         images = root / "images"
@@ -95,120 +172,172 @@ def main(argv: list[str]) -> int:
         images.mkdir(parents=True)
 
         _bootstrap_shipped_headless(args.node_binary, args.dsh_bin_js, dsh_home)
-
-        cli = SubprocessDshCLI(
-            binary=args.dsh_bin_js,
-            node_binary=args.node_binary,
-            dsh_home=dsh_home,
-        )
+        cli = SubprocessDshCLI(binary=args.dsh_bin_js, node_binary=args.node_binary, dsh_home=dsh_home)
         if cli.version() != DSH_PIN.version:
-            raise AgentImageError("E_SOURCE_UNSUPPORTED", "Pinned DSH version mismatch in no-op refreeze CI.")
-        adapter = DshAdapter(cli)
+            raise AgentImageError("E_SOURCE_UNSUPPORTED", "Pinned DSH version mismatch in continuation CI.")
 
+        legacy_adapter = DshAdapter(cli)
+        adapter = CandidateNormalizedDshAdapter(cli)
+        legacy = images / "legacy.aimg"
         parent = images / "parent.aimg"
         noop_child = images / "noop-child.aimg"
+        child = images / "child.aimg"
 
+        cleanup_profiles = ["legacy-restored", "continued", "child-restored"]
         try:
-            source_before = adapter.inspect_source("headless")["source"]["digest"]
-            build_image(adapter, source="headless", output=parent, policy="private")
-            if adapter.inspect_source("headless")["source"]["digest"] != source_before:
-                raise AgentImageError("E_SOURCE_UNSUPPORTED", "Parent build changed the DSH source profile.")
+            # Backward-reader witness: current production reader must still accept
+            # an old-style capsule containing source_name.
+            _build_checked(legacy_adapter, "headless", legacy)
+            legacy_meta = _metadata(_native_entries(legacy))
+            if legacy_meta.get("source_name") != "headless":
+                raise AgentImageError("E_IMAGE_CORRUPT", "Legacy DSH artifact did not contain source_name as expected.")
+            legacy_restore = restore_image(adapter, image=legacy, target="legacy-restored")
+            if not legacy_restore.get("validated") or legacy_restore.get("portability") != "P1":
+                raise AgentImageError("E_NATIVE_INCOMPATIBLE", "Legacy DSH capsule did not restore through normalized reader.")
+            cli.delete_profile("legacy-restored")
+
+            # Candidate normalized writer: producer identity must not enter native bytes.
+            _build_checked(adapter, "headless", parent)
+            parent_entries = _native_entries(parent)
+            parent_meta = _metadata(parent_entries)
+            if "source_name" in parent_meta:
+                raise AgentImageError("E_IMAGE_CORRUPT", "Candidate normalized parent still contains source_name.")
 
             parent_restore = restore_image(adapter, image=parent, target="continued")
             if not parent_restore.get("validated") or parent_restore.get("portability") != "P1":
                 raise AgentImageError("E_NATIVE_INCOMPATIBLE", "DSH parent fresh restore did not validate as P1.")
 
-            continued_before = adapter.inspect_source("continued")["source"]["digest"]
-            build_image(adapter, source="continued", output=noop_child, policy="private")
-            if adapter.inspect_source("continued")["source"]["digest"] != continued_before:
-                raise AgentImageError("E_SOURCE_UNSUPPORTED", "No-op child build changed the restored DSH profile.")
-
+            # No-op discrimination gate after instance rename.
+            before_dump = cli.dump_config("continued")
+            _build_checked(adapter, "continued", noop_child)
             noop_diff = diff_images(parent, noop_child)
-            parent_entries = _native_entries(parent)
-            child_entries = _native_entries(noop_child)
-            if set(parent_entries) != set(child_entries):
+            if noop_diff["layers"]["state_changed"]:
                 raise AgentImageError(
                     "E_NATIVE_INCOMPATIBLE",
-                    "DSH no-op refreeze changed native member inventory.",
-                    details={"parent": sorted(parent_entries), "child": sorted(child_entries)},
-                )
-
-            changed_members = sorted(
-                path for path in parent_entries if parent_entries[path] != child_entries[path]
-            )
-            parent_meta = _metadata(parent_entries)
-            child_meta = _metadata(child_entries)
-
-            # This is the discriminative expectation for the current adapter:
-            # profile bytes and official composed config are stable; only the
-            # capture-side producer name changes inside meta/profile.json.
-            if changed_members != ["meta/profile.json"]:
-                raise AgentImageError(
-                    "E_NATIVE_INCOMPATIBLE",
-                    "DSH no-op native change was not isolated to meta/profile.json.",
-                    details={"changed_members": changed_members},
-                )
-            if parent_meta.get("source_name") != "headless" or child_meta.get("source_name") != "continued":
-                raise AgentImageError(
-                    "E_NATIVE_INCOMPATIBLE",
-                    "DSH native metadata did not expose the expected producer rename.",
-                    details={"parent_meta": parent_meta, "child_meta": child_meta},
-                )
-            parent_state_meta = {key: value for key, value in parent_meta.items() if key != "source_name"}
-            child_state_meta = {key: value for key, value in child_meta.items() if key != "source_name"}
-            if parent_state_meta != child_state_meta:
-                raise AgentImageError(
-                    "E_NATIVE_INCOMPATIBLE",
-                    "DSH no-op refreeze changed state-relevant native metadata.",
-                    details={"parent": parent_state_meta, "child": child_state_meta},
-                )
-
-            state_changed = noop_diff["layers"]["state_changed"]
-            if state_changed != ["dsh-native-profile"]:
-                raise AgentImageError(
-                    "E_NATIVE_INCOMPATIBLE",
-                    "Current DSH adapter no-op false positive changed shape unexpectedly.",
+                    "Candidate DSH normalization still reports state change on rename-only no-op refreeze.",
                     details=noop_diff,
                 )
+            child_noop_entries = _native_entries(noop_child)
+            if set(parent_entries) != set(child_noop_entries):
+                raise AgentImageError("E_NATIVE_INCOMPATIBLE", "Normalized no-op changed native member inventory.")
+            changed_noop_members = sorted(
+                path for path in parent_entries if parent_entries[path] != child_noop_entries[path]
+            )
+            if changed_noop_members:
+                raise AgentImageError(
+                    "E_NATIVE_INCOMPATIBLE",
+                    "Normalized no-op changed committed native bytes.",
+                    details={"changed_members": changed_noop_members},
+                )
 
-            report = {
-                "evidence_version": "agent-image-dsh-noop-refreeze-observation/v0.1",
+            # Positive persistent profile-state mutation. We override a documented
+            # profile-owned Cordis row with a full config, preserving the two keys
+            # owned by the shipped headless system-prompt row while changing only
+            # personaSuffix. No model/provider call is made.
+            continued = cli.show_profile("continued")
+            patch_path = continued.path / "cordis.patch.yml"
+            patch_path.write_bytes(PROFILE_PATCH)
+            mutated_dump = cli.dump_config("continued")
+            if mutated_dump == before_dump or MUTATION_MARKER.encode("utf-8") not in mutated_dump:
+                raise AgentImageError(
+                    "E_NATIVE_INCOMPATIBLE",
+                    "DSH profile patch mutation was not observable through official --dump-config.",
+                )
+
+            _build_checked(adapter, "continued", child)
+            child_diff = diff_images(parent, child)
+            if child_diff["layers"]["state_changed"] != ["dsh-native-profile"]:
+                raise AgentImageError(
+                    "E_NATIVE_INCOMPATIBLE",
+                    "DSH persistent profile mutation produced unexpected Agent-state delta.",
+                    details=child_diff,
+                )
+
+            # Independence boundary: remove live source before child restore.
+            cli.delete_profile("continued")
+            if cli.target_profile("continued").exists():
+                raise AgentImageError("E_NATIVE_INCOMPATIBLE", "Live DSH continuation source survived deletion.")
+            child_restore = restore_image(adapter, image=child, target="child-restored")
+            if not child_restore.get("validated") or child_restore.get("portability") != "P1":
+                raise AgentImageError("E_NATIVE_INCOMPATIBLE", "DSH child independent restore did not validate as P1.")
+            restored = cli.show_profile("child-restored")
+            if (restored.path / "cordis.patch.yml").read_bytes() != PROFILE_PATCH:
+                raise AgentImageError("E_NATIVE_INCOMPATIBLE", "DSH child restore lost the post-restore profile patch.")
+            restored_dump = cli.dump_config("child-restored")
+            if restored_dump != mutated_dump or MUTATION_MARKER.encode("utf-8") not in restored_dump:
+                raise AgentImageError("E_NATIVE_INCOMPATIBLE", "DSH child restore changed the composed config witness.")
+
+            transition_observation = {
+                "evidence_version": "agent-image-dsh-continuation-observation/v0.1",
                 "contract": {
                     "package": f"@deepseek-ai/dsh@{DSH_PIN.version}",
                     "node": DSH_PIN.node,
                     "npm": DSH_PIN.npm,
                     "platform": "windows",
                 },
+                "legacy_reader": {"validated": True, "portability": "P1", "source_name_accepted": True},
                 "parent_restore": {"validated": True, "portability": "P1"},
                 "noop_control": {
-                    "state_changed": state_changed,
+                    "state_changed": noop_diff["layers"]["state_changed"],
                     "metadata_changed": noop_diff["layers"]["metadata_changed"],
-                    "changed_native_members": changed_members,
+                    "changed_native_members": changed_noop_members,
                 },
-                "native_metadata": {
-                    "parent": parent_meta,
-                    "child": child_meta,
-                    "state_relevant_fields_equal_without_source_name": True,
-                    "parent_meta_digest": sha256_bytes(parent_entries["meta/profile.json"]),
-                    "child_meta_digest": sha256_bytes(child_entries["meta/profile.json"]),
+                "mutation": {
+                    "surface": "profile/cordis.patch.yml",
+                    "kind": "profile-owned full-row system-prompt config override",
+                    "marker": MUTATION_MARKER,
+                    "observable_through_dump_config": True,
+                    "state_changed": child_diff["layers"]["state_changed"],
+                    "behavior_executed": False,
                 },
-                "finding": {
-                    "producer_identity_inside_native_bytes": True,
-                    "receiver_state_changed": False,
-                    "current_raw_native_digest_truthful_for_noop": False,
+                "independence": {
+                    "live_continuation_source_deleted_before_child_restore": True,
+                    "child_restore_validated": True,
+                    "profile_patch_preserved": True,
+                    "dump_config_preserved": True,
                 },
                 "claim_boundary": {
-                    "dsh_p1_revalidated": True,
-                    "continuation_ready": False,
-                    "positive_mutation_not_run": True,
+                    "persistent_profile_state_continuation_observed": True,
                     "causal_development_verified": False,
                     "behavioral_retention_verified": False,
+                    "learning_verified": False,
+                    "p3_verified": False,
                 },
+            }
+            evidence_bytes = canonical_json_bytes(transition_observation)
+            binding = build_continuation_binding(
+                parent,
+                child,
+                transition_evidence=evidence_bytes,
+                evidence_kind="dsh-runtime-continuation-observation",
+                evidence_media_type="application/json",
+            )
+            binding_verification = verify_continuation_binding(
+                binding,
+                parent,
+                child,
+                transition_evidence=evidence_bytes,
+            )
+            if not binding_verification.get("valid"):
+                raise AgentImageError("E_DIGEST_MISMATCH", "DSH continuation binding did not verify.")
+
+            report = {
+                "evidence_version": "agent-image-dsh-normalization-and-continuation/v0.1",
+                "candidate_writer_normalization": {
+                    "removed_field": "meta/profile.json.source_name",
+                    "restore_witness_preserved": ["bundles", "dependencies", "meta/dump-config.yml"],
+                    "legacy_reader_p1": True,
+                },
+                "noop_control": transition_observation["noop_control"],
+                "persistent_profile_mutation": transition_observation["mutation"],
+                "independence": transition_observation["independence"],
+                "continuation_binding": binding_verification,
+                "claim_boundary": transition_observation["claim_boundary"],
             }
             print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
             return 0
         finally:
-            for name in ("continued",):
+            for name in cleanup_profiles:
                 try:
                     if cli.target_profile(name).exists():
                         cli.delete_profile(name)
