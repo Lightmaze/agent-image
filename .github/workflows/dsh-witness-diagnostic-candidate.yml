@@ -20,7 +20,10 @@ jobs:
         with:
           python-version: "3.12"
           enable-cache: true
-      - run: uv sync --locked
+      # pytest/build are acceptance-controller tooling, not part of the DSH
+      # receiver runtime fixture. Install the project's declared dev extra here
+      # instead of assuming observer tooling exists inside the runtime under test.
+      - run: uv sync --locked --extra dev
 
       # Runtime acquisition is an execution fixture, not Agent state. Restore an
       # exact-requirement cache first so a semantic diagnostic failure does not
