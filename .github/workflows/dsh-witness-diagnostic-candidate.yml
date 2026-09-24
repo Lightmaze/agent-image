@@ -22,15 +22,15 @@ jobs:
       - run: uv sync --locked
       - shell: pwsh
         run: |
-          npm install --prefix .tmp/npm-runtime npm@11.12.1 --no-audit --no-fund
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $npm = Join-Path $PWD ".tmp\npm-runtime\node_modules\npm\bin\npm-cli.js"
-          if ((node $npm --version).Trim() -ne "11.12.1") { throw "Unexpected pinned npm version" }
-          node $npm install --prefix .tmp/dsh-runtime @deepseek-ai/dsh@0.1.0-rc.6 --no-audit --no-fund
+          $npmVersion = (npm --version).Trim()
+          if (-not $npmVersion) { throw "Could not resolve host npm version" }
+          npm install --prefix .tmp/dsh-runtime @deepseek-ai/dsh@0.1.0-rc.6 --save-exact --no-audit --no-fund --fetch-retries=2 --fetch-retry-maxtimeout=20000 --fetch-timeout=60000
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $dsh = Join-Path $PWD ".tmp\dsh-runtime\node_modules\@deepseek-ai\dsh\lib\bin.js"
+          $lock = Join-Path $PWD ".tmp\dsh-runtime\package-lock.json"
+          if (-not (Test-Path $lock)) { throw "DSH acquisition did not produce package-lock.json" }
           $node = (Get-Command node).Source
           uv run pytest tests/test_dsh_witness.py -q
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          uv run python scripts/dsh_witness_diagnostic_ci.py --dsh-bin-js $dsh --node-binary $node
+          uv run python scripts/dsh_witness_diagnostic_ci.py --dsh-bin-js $dsh --node-binary $node --acquisition-npm-version $npmVersion --runtime-lockfile $lock
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
