@@ -10,6 +10,7 @@ permissions:
 jobs:
   real-dsh-witness-diagnostic:
     runs-on: windows-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
@@ -20,17 +21,90 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - run: uv sync --locked
-      - shell: pwsh
+
+      # Runtime acquisition is an execution fixture, not Agent state. Restore an
+      # exact-requirement cache first so a semantic diagnostic failure does not
+      # force another 20-30 minute npm acquisition on the next run.
+      - name: Restore receiver-local DSH runtime fixture
+        id: dsh-runtime-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .tmp/dsh-runtime
+          key: dsh-runtime-${{ runner.os }}-node-24.15.0-dsh-0.1.0-rc.6-v1
+
+      - name: Acquire exact DSH runtime on cache miss
+        if: steps.dsh-runtime-cache.outputs.cache-hit != 'true'
+        shell: pwsh
         run: |
+          New-Item -ItemType Directory -Force -Path .tmp | Out-Null
           $npmVersion = (npm --version).Trim()
           if (-not $npmVersion) { throw "Could not resolve host npm version" }
-          npm install --prefix .tmp/dsh-runtime @deepseek-ai/dsh@0.1.0-rc.6 --save-exact --no-audit --no-fund --fetch-retries=2 --fetch-retry-maxtimeout=20000 --fetch-timeout=60000
+          $env:npm_config_loglevel = "warn"
+          npm install --prefix .tmp/dsh-runtime @deepseek-ai/dsh@0.1.0-rc.6 --save-exact --no-audit --no-fund --prefer-offline --fetch-retries=2 --fetch-retry-maxtimeout=20000 --fetch-timeout=60000
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $dsh = Join-Path $PWD ".tmp\dsh-runtime\node_modules\@deepseek-ai\dsh\lib\bin.js"
-          $lock = Join-Path $PWD ".tmp\dsh-runtime\package-lock.json"
-          if (-not (Test-Path $lock)) { throw "DSH acquisition did not produce package-lock.json" }
+
+      - name: Validate runtime fixture and expose acquisition evidence
+        shell: pwsh
+        run: |
+          $runtime = Join-Path $PWD ".tmp/dsh-runtime"
+          $packageJsonPath = Join-Path $runtime "node_modules/@deepseek-ai/dsh/package.json"
+          $dsh = Join-Path $runtime "node_modules/@deepseek-ai/dsh/lib/bin.js"
+          $lock = Join-Path $runtime "package-lock.json"
+          if (-not (Test-Path $packageJsonPath)) { throw "DSH runtime fixture has no package.json" }
+          if (-not (Test-Path $dsh)) { throw "DSH runtime fixture has no lib/bin.js" }
+          if (-not (Test-Path $lock)) { throw "DSH runtime fixture has no package-lock.json" }
+          $packageJson = Get-Content -Raw $packageJsonPath | ConvertFrom-Json
+          if ($packageJson.version -ne "0.1.0-rc.6") { throw "Unexpected DSH package version: $($packageJson.version)" }
+          $npmVersion = (npm --version).Trim()
           $node = (Get-Command node).Source
-          uv run pytest tests/test_dsh_witness.py -q
+          "DSH_BIN_JS=$dsh" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "DSH_RUNTIME_LOCKFILE=$lock" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "DSH_NODE_BINARY=$node" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "DSH_ACQUISITION_NPM_VERSION=$npmVersion" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          $cacheHit = "${{ steps.dsh-runtime-cache.outputs.cache-hit }}"
+          "DSH_RUNTIME_CACHE_HIT=$cacheHit" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          node $dsh --version
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          uv run python scripts/dsh_witness_diagnostic_ci.py --dsh-bin-js $dsh --node-binary $node --acquisition-npm-version $npmVersion --runtime-lockfile $lock
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      # Save immediately after acquisition/validation. A later semantic probe is
+      # allowed to fail without throwing away a valid receiver runtime fixture.
+      - name: Save validated DSH runtime fixture
+        if: steps.dsh-runtime-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .tmp/dsh-runtime
+          key: dsh-runtime-${{ runner.os }}-node-24.15.0-dsh-0.1.0-rc.6-v1
+
+      - name: Unit-check witness comparator
+        run: uv run pytest tests/test_dsh_witness.py -q
+
+      - name: Run diagnostic and retain exact stdout/stderr
+        id: dsh-witness-probe
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path .tmp/evidence | Out-Null
+          $stdout = Join-Path $PWD ".tmp/evidence/dsh-witness-diagnostic.stdout.jsonl"
+          $stderr = Join-Path $PWD ".tmp/evidence/dsh-witness-diagnostic.stderr.log"
+          $uv = (Get-Command uv).Source
+          $arguments = @(
+            "run", "python", "scripts/dsh_witness_diagnostic_ci.py",
+            "--dsh-bin-js", $env:DSH_BIN_JS,
+            "--node-binary", $env:DSH_NODE_BINARY,
+            "--acquisition-npm-version", $env:DSH_ACQUISITION_NPM_VERSION,
+            "--runtime-lockfile", $env:DSH_RUNTIME_LOCKFILE
+          )
+          $process = Start-Process -FilePath $uv -ArgumentList $arguments -Wait -PassThru -NoNewWindow -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          if (Test-Path $stdout) { Get-Content $stdout }
+          if (Test-Path $stderr) { Get-Content $stderr }
+          if ($process.ExitCode -ne 0) { exit $process.ExitCode }
+
+      - name: Upload diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsh-witness-diagnostic-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .tmp/evidence/
+            .tmp/dsh-runtime/package-lock.json
+          if-no-files-found: warn
+          retention-days: 14
