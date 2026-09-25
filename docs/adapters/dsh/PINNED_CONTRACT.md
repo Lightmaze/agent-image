@@ -119,6 +119,51 @@ receipt, investigate the production restore path before adding a broader
 runtime-tree commitment or relaxing P1 witness equality.
 
 
+## P1 mismatch diagnostic contract
+
+The production P1 decision remains raw byte equality for the official
+`--dump-config` witness. However, once raw equality fails, the adapter should
+retain enough non-evaluating evidence to distinguish the next engineering
+branch without changing acceptance.
+
+The already-real-runtime-tested DSH witness comparator can be used **only in the
+failure details**:
+
+```text
+raw witness mismatch
+→ P1 still FAILS
+→ compare expected/actual witness non-evaluating
+→ attach semantic digests + privacy-safe structural diff
+→ rollback target as before
+```
+
+This diagnostic path MUST NOT:
+
+- turn `semantic_equal == true` into a restore pass;
+- execute `!!js` expressions;
+- emit raw scalar values or full config bodies;
+- suppress parser rejection;
+- preserve a failed receiver profile merely for debugging.
+
+A mismatch error should retain:
+
+```text
+raw_equal = false
+expected_raw_digest
+actual_raw_digest
+parser_status
+semantic_equal
+expected_semantic_digest / actual_semantic_digest when parsed
+privacy-safe structural diff
+```
+
+This is now preferable to returning only the two raw digests because real
+continuation work has already produced receiver mismatches that were rolled back
+before their structure could be inspected. The comparator has separately passed
+synthetic fail-closed tests and real pinned DSH dump parsing, so using it as a
+failure-only instrument no longer asks an unvalidated parser to define
+acceptance semantics.
+
 ## Public contract used by the adapter
 
 ```text
