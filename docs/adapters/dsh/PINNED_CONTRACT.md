@@ -18,6 +18,24 @@ on mutable `master`. Compatibility authority therefore comes from the exact npm
 version, integrity, and locally hashed shipped contract—not from an inferred
 repository commit.
 
+
+## Runtime-resolution caveat
+
+The exact top-level package is an identity anchor for the published CLI tarball,
+but it is not a hermetic description of the receiver runtime. The published
+`@deepseek-ai/dsh@0.1.0-rc.6` package declares many internal
+`@deepseek-ai/dsh-*` dependencies with compatible semver ranges. A real
+receiver-local installation captured during continuation work resolved most of
+those internal packages to later release-candidate versions while
+`dsh --version` still reported `0.1.0-rc.6`.
+
+Strong P1/continuation evidence should therefore record a
+`ResolutionWitness` for the concrete receiver dependency graph. The witness
+is evidence context, not Agent identity and not a substitute for the top-level
+package pin. Current production P1 still requires byte-equal
+`--dump-config`; semantic witness comparison remains diagnostic only.
+
+
 ## Public contract used by the adapter
 
 ```text
