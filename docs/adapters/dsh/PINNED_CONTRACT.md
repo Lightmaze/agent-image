@@ -53,6 +53,71 @@ If install-script or other realization effects become material to a strong
 compatibility claim, add a receiver-local runtime-tree witness rather than
 pretending the lockfile already proves installed bytes.
 
+## Runtime realization receipt for continuation evidence
+
+Continuation evidence needs a stronger context than the top-level package pin,
+but that context must not be folded into Agent identity.
+
+The candidate continuation lane records a runtime realization receipt with four
+separate parts:
+
+```text
+RuntimeRequirement
+AcquisitionProvenance
+ResolutionWitness
+MaterializationPolicy
+```
+
+For the current npm-based experiment:
+
+- the requirement is DSH `0.1.0-rc.6` under the Node `24.15.0` test
+  profile;
+- the npm version is **acquisition provenance**, not an enforced DSH identity
+  field;
+- the package-lock package-identity projection is the strict experimental
+  resolution gate;
+- lifecycle scripts are recorded as enabled under npm's normal install policy;
+- no runtime-tree digest is claimed.
+
+The historical `DshPin.npm == 11.12.1` value therefore describes the tested
+adapter environment. Production `DshAdapter._require_pin()` does not enforce
+that npm version, so continuation evidence must record the **actual** receiver
+npm value separately instead of writing the historical tested value as if it
+were the observed runtime.
+
+A strong continuation binding SHOULD include this realization receipt inside
+the exact transition-evidence bytes. That binds the parent/child state delta to
+the runtime that interpreted the state without making that runtime part of the
+Agent's identity.
+
+Current known-good experimental package-identity projection:
+
+```text
+sha256:5d3de0bfbc06aae899246d27f2f32ae68b88241f8c1b4472688785b50f202e22
+```
+
+This digest is an **acceptance fixture**, not a permanent protocol constant. A
+different registry URL may change the whole lockfile receipt without changing
+the package-identity projection. Conversely, version, integrity, link status,
+or install-script metadata changes alter the projection.
+
+The candidate lane must still run a same-runtime witness control before the
+positive mutation:
+
+```text
+captured profile bytes
+→ fresh control receiver
+→ profile bytes equal
+→ raw dump witness equal
+→ semantic dump witness equal
+→ production parent P1
+→ positive mutation
+```
+
+If the control passes but production parent P1 fails under the same runtime
+receipt, investigate the production restore path before adding a broader
+runtime-tree commitment or relaxing P1 witness equality.
+
 
 ## Public contract used by the adapter
 
