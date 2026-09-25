@@ -36,6 +36,24 @@ package pin. Current production P1 still requires byte-equal
 `--dump-config`; semantic witness comparison remains diagnostic only.
 
 
+
+## Resolution witness is not a runtime-tree digest
+
+The recorded package-lock is a resolver receipt. Even a canonical lockfile
+digest is not automatically a byte-level fingerprint of the installed runtime:
+the observed passing lock contains packages with install scripts, whose
+post-install filesystem output can depend on the receiver environment.
+
+For current continuation experiments, an exact known-good lockfile semantic
+digest may be used as a **strict experimental gate** to control one variable.
+It should be named a `ResolutionWitness`, not a universal
+`ResolvedHarnessRuntimeClosure`.
+
+If install-script or other realization effects become material to a strong
+compatibility claim, add a receiver-local runtime-tree witness rather than
+pretending the lockfile already proves installed bytes.
+
+
 ## Public contract used by the adapter
 
 ```text
