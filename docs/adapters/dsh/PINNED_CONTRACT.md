@@ -216,3 +216,42 @@ bundles and empty external dependency metadata. Fail-loud unresolved dependency
 behavior is covered by deterministic fault injection. Arbitrary third-party
 plugin installation, session state, cross-platform DSH smoke, and P2/P3 are not
 claimed.
+
+## Differential-control diagnostic non-interference
+
+The same-home / same-target differential control is intended to isolate the
+production restore path, not to introduce a second acceptance relation.
+
+The control's authoritative gate is therefore:
+
+```text
+captured profile bytes == materialized profile bytes
+AND
+expected --dump-config bytes == actual --dump-config bytes
+AND
+control cleanup leaves no receiver-home residue
+```
+
+The semantic witness comparator may still run and its result should be retained
+as diagnostic evidence, but it MUST NOT become an additional prerequisite when
+the raw witness is already byte-equal. In particular:
+
+```text
+raw_equal == true
++
+semantic parser rejects / diagnostic raises
+→ control remains raw-P1-valid
+→ record diagnostic failure separately
+```
+
+Conversely:
+
+```text
+raw_equal == false
+→ control FAILS regardless of semantic_equal
+```
+
+This extends the P1 mismatch rule into experiment design: acceptance and
+explanation remain separate interfaces even inside a differential control.
+A diagnostic instrument may classify a failure, but it must not create a false
+negative for an otherwise valid raw-P1 observation.
