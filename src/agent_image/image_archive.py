@@ -29,6 +29,8 @@ OPTIONAL_CONTROL_PATHS = {
     "meta/migration-report.json",
 }
 OUTCOMES = {"preserved", "transformed", "redacted", "unsupported", "dropped_by_user"}
+LAYER_STATE_PROJECTION_VERSION = "agent-image-layer-state-projection/v0.1"
+LAYER_STATE_FIELDS = ("kind", "media_type", "digest", "size")
 
 
 @dataclass(frozen=True)
@@ -152,13 +154,20 @@ def _validate_checksums(entries: Mapping[str, bytes]) -> None:
 
 
 def load_image(image: Path) -> ImageDocument:
-    verify_image(image)
+    # Keep the verified bytes: reopening the pathname after verification could
+    # return a different archive to inspect, redact, or a restore adapter.
     entries = read_entries(image)
-    return ImageDocument(path=image, manifest=load_yaml_bytes(entries["manifest.yaml"]), entries=entries)
+    manifest, _ = _verify_entries(entries)
+    return ImageDocument(path=image, manifest=manifest, entries=entries)
 
 
 def verify_image(image: Path) -> dict[str, Any]:
-    entries = read_entries(image)
+    _, report = _verify_entries(read_entries(image))
+    return report
+
+
+def _verify_entries(entries: Mapping[str, bytes]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Validate one captured entry set without reopening its source pathname."""
     missing = sorted(REQUIRED_CONTROL_PATHS - set(entries))
     if missing:
         raise AgentImageError("E_IMAGE_CORRUPT", f"Missing control files: {', '.join(missing)}")
@@ -206,7 +215,7 @@ def verify_image(image: Path) -> dict[str, Any]:
             except (UnicodeDecodeError, json.JSONDecodeError) as error:
                 raise AgentImageError("E_IMAGE_CORRUPT", f"Invalid report {report_path}: {error}") from error
             _operation_report(report, report_path)
-    return {"valid": True, "spec": manifest["spec"], "image_digest": root, "layers": len(manifest["layers"])}
+    return manifest, {"valid": True, "spec": manifest["spec"], "image_digest": root, "layers": len(manifest["layers"])}
 
 
 def inspect_image(image: Path) -> dict[str, Any]:
@@ -276,6 +285,10 @@ def redact_image(image: Path, output: Path) -> dict[str, Any]:
     return {"operation": "redact", "output": str(output.resolve()), "layers": len(kept), "verified": True}
 
 
+def _layer_state_projection(layer: Mapping[str, Any]) -> dict[str, Any]:
+    return {field: layer[field] for field in LAYER_STATE_FIELDS}
+
+
 def diff_images(before: Path, after: Path) -> dict[str, Any]:
     left = load_image(before).manifest
     right = load_image(after).manifest
@@ -283,14 +296,28 @@ def diff_images(before: Path, after: Path) -> dict[str, Any]:
     right_layers = {layer["id"]: layer for layer in right["layers"]}
     added = sorted(set(right_layers) - set(left_layers))
     removed = sorted(set(left_layers) - set(right_layers))
-    changed = sorted(
+    shared = set(left_layers) & set(right_layers)
+    changed = sorted(layer_id for layer_id in shared if left_layers[layer_id] != right_layers[layer_id])
+    state_changed = sorted(
         layer_id
-        for layer_id in set(left_layers) & set(right_layers)
-        if left_layers[layer_id] != right_layers[layer_id]
+        for layer_id in shared
+        if _layer_state_projection(left_layers[layer_id]) != _layer_state_projection(right_layers[layer_id])
     )
+    state_changed_set = set(state_changed)
+    metadata_changed = sorted(layer_id for layer_id in changed if layer_id not in state_changed_set)
     return {
         "spec": {"before": left["spec"], "after": right["spec"]},
-        "layers": {"added": added, "removed": removed, "changed": changed},
+        "layer_state_projection": {
+            "version": LAYER_STATE_PROJECTION_VERSION,
+            "fields": list(LAYER_STATE_FIELDS),
+        },
+        "layers": {
+            "added": added,
+            "removed": removed,
+            "changed": changed,
+            "state_changed": state_changed,
+            "metadata_changed": metadata_changed,
+        },
         "development": {"before": left.get("development"), "after": right.get("development")},
         "evaluations": {"before": left.get("evaluations", []), "after": right.get("evaluations", [])},
         "privacy": {"before": left["privacy"], "after": right["privacy"]},
