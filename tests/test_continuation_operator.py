@@ -38,7 +38,7 @@ def test_formal_cli_bind_verify_and_evidence_mismatch(tmp_path: Path, capsys) ->
     binding = tmp_path / "binding.json"
 
     build_fixture_image(FIXTURE, parent, policy="private")
-    redact_image(parent, child, policy="public")
+    redact_image(parent, child)
     evidence.write_text(
         '{"schema":"agent-image-test-structural-evidence/v0.1","structural_only":true}',
         encoding="utf-8",
