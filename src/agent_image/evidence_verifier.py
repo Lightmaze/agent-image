@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Protocol
 
-from agent_image.errors import AgentImageError
 from agent_image.continuation import verify_continuation_binding
+from agent_image.errors import AgentImageError
 
 
 @dataclass(frozen=True)
