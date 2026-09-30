@@ -123,6 +123,33 @@ def test_binding_separates_state_delta_from_descriptor_metadata(tmp_path: Path) 
     assert binding["state_delta"]["added"] == []
     assert binding["state_delta"]["removed"] == []
     assert verified["valid"] is True
+    assert verified["binding_valid"] is True
+    assert verified["evidence_semantics_verified"] is False
+    assert verified["continuation_relation_verified"] is False
+    assert verified["causal_transition_verified"] is False
+    assert verified["behavioral_retention_verified"] is False
+
+
+def test_binding_validity_does_not_validate_relation_or_direction(tmp_path: Path) -> None:
+    parent, child, evidence = _images(tmp_path)
+
+    # The structural primitive can truthfully bind the same artifacts in reverse.
+    # That makes the byte-level binding valid, not the claimed continuation.
+    reversed_binding = build_continuation_binding(
+        child,
+        parent,
+        transition_evidence=evidence,
+        evidence_kind="synthetic-runtime-observation",
+        evidence_media_type="application/json",
+    )
+    verified = verify_continuation_binding(
+        reversed_binding, child, parent, transition_evidence=evidence
+    )
+
+    assert verified["valid"] is True
+    assert verified["binding_valid"] is True
+    assert verified["evidence_semantics_verified"] is False
+    assert verified["continuation_relation_verified"] is False
     assert verified["causal_transition_verified"] is False
     assert verified["behavioral_retention_verified"] is False
 
