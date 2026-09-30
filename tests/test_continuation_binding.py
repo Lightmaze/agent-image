@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import json
 from pathlib import Path
 
 import pytest
@@ -9,6 +10,11 @@ from agent_image.adapter_contract import AdapterExport
 from agent_image.canonical import canonical_json_bytes, sha256_bytes
 from agent_image.continuation import build_continuation_binding, verify_continuation_binding
 from agent_image.errors import AgentImageError
+from agent_image.evidence_verifier import (
+    ContinuationEvidenceClaims,
+    ContinuationEvidenceRequest,
+    verify_with_receiver_evidence,
+)
 from agent_image.image_archive import layer_root_digest, publish_image
 
 
@@ -236,3 +242,177 @@ def test_binding_requires_real_evidence_bytes(tmp_path: Path) -> None:
             evidence_media_type="application/json",
         )
     assert error.value.code == "E_SPEC_INVALID"
+
+
+
+class _DigestReceiptVerifier:
+    verifier_id = "test.receiver.digest-receipt"
+    verifier_version = "0.1"
+
+    def verify(self, request: ContinuationEvidenceRequest) -> ContinuationEvidenceClaims:
+        receipt = json.loads(request.evidence_bytes)
+        expected = {
+            "schema": "synthetic-digest-receipt/v0.1",
+            "parent_entry_set_digest": request.parent_entry_set_digest,
+            "child_entry_set_digest": request.child_entry_set_digest,
+            "state_delta_digest": request.state_delta_digest,
+        }
+        if receipt != expected:
+            raise AgentImageError(
+                "E_DIGEST_MISMATCH",
+                "Synthetic receipt does not match the receiver-verified transition inputs.",
+            )
+        return ContinuationEvidenceClaims(
+            evidence_semantics_verified=True,
+            continuation_relation_verified=True,
+        )
+
+
+class _OverclaimingVerifier:
+    verifier_id = "test.receiver.overclaim"
+    verifier_version = "0.1"
+
+    def verify(self, request: ContinuationEvidenceRequest) -> ContinuationEvidenceClaims:
+        del request
+        return ContinuationEvidenceClaims(
+            evidence_semantics_verified=False,
+            continuation_relation_verified=False,
+            causal_transition_verified=True,
+        )
+
+
+class _NoClaimsVerifier:
+    verifier_id = "test.receiver.explicit"
+    verifier_version = "0.1"
+
+    def __init__(self) -> None:
+        self.seen_kind: str | None = None
+
+    def verify(self, request: ContinuationEvidenceRequest) -> ContinuationEvidenceClaims:
+        self.seen_kind = request.evidence_kind
+        return ContinuationEvidenceClaims(
+            evidence_semantics_verified=False,
+            continuation_relation_verified=False,
+        )
+
+
+def _digest_receipt_case(
+    tmp_path: Path,
+    *,
+    forged_child: bool = False,
+) -> tuple[Path, Path, bytes, dict[str, object]]:
+    parent, child, _ = _images(tmp_path)
+    provisional = build_continuation_binding(
+        parent,
+        child,
+        transition_evidence=b"provisional",
+        evidence_kind="synthetic-digest-receipt",
+        evidence_media_type="application/json",
+    )
+    child_digest = str(provisional["child"]["verified_entry_set"]["digest"])
+    if forged_child:
+        child_digest = "sha256:" + ("0" * 64)
+    evidence = canonical_json_bytes(
+        {
+            "schema": "synthetic-digest-receipt/v0.1",
+            "parent_entry_set_digest": provisional["parent"]["verified_entry_set"]["digest"],
+            "child_entry_set_digest": child_digest,
+            "state_delta_digest": provisional["state_delta"]["digest"],
+        }
+    )
+    binding = build_continuation_binding(
+        parent,
+        child,
+        transition_evidence=evidence,
+        evidence_kind="synthetic-digest-receipt",
+        evidence_media_type="application/json",
+    )
+    return parent, child, evidence, binding
+
+
+def test_receiver_verifier_can_raise_only_evidence_backed_claims(tmp_path: Path) -> None:
+    parent, child, evidence, binding = _digest_receipt_case(tmp_path)
+
+    verified = verify_with_receiver_evidence(
+        binding,
+        parent,
+        child,
+        transition_evidence=evidence,
+        verifier=_DigestReceiptVerifier(),
+    )
+
+    assert verified["binding_valid"] is True
+    assert verified["evidence_semantics_verified"] is True
+    assert verified["continuation_relation_verified"] is True
+    assert verified["causal_transition_verified"] is False
+    assert verified["behavioral_retention_verified"] is False
+    assert verified["evidence_verifier"] == {
+        "id": "test.receiver.digest-receipt",
+        "version": "0.1",
+        "selection": "receiver-supplied",
+    }
+    assert verified["activation_binding_issued"] is False
+    assert verified["receiver_authority_transferred"] is False
+
+
+def test_receiver_verifier_rejects_forged_receipt_after_structural_binding_passes(
+    tmp_path: Path,
+) -> None:
+    parent, child, evidence, binding = _digest_receipt_case(tmp_path, forged_child=True)
+
+    assert verify_continuation_binding(
+        binding,
+        parent,
+        child,
+        transition_evidence=evidence,
+    )["binding_valid"] is True
+    with pytest.raises(AgentImageError) as error:
+        verify_with_receiver_evidence(
+            binding,
+            parent,
+            child,
+            transition_evidence=evidence,
+            verifier=_DigestReceiptVerifier(),
+        )
+    assert error.value.code == "E_DIGEST_MISMATCH"
+
+
+def test_receiver_verifier_rejects_claims_that_skip_prerequisites(tmp_path: Path) -> None:
+    parent, child, evidence, binding = _digest_receipt_case(tmp_path)
+
+    with pytest.raises(AgentImageError) as error:
+        verify_with_receiver_evidence(
+            binding,
+            parent,
+            child,
+            transition_evidence=evidence,
+            verifier=_OverclaimingVerifier(),
+        )
+    assert error.value.code == "E_SPEC_INVALID"
+
+
+def test_evidence_kind_cannot_select_executable_verifier(tmp_path: Path) -> None:
+    parent, child, _ = _images(tmp_path)
+    evidence = b'{"opaque":true}'
+    binding = build_continuation_binding(
+        parent,
+        child,
+        transition_evidence=evidence,
+        evidence_kind="python:os.system",
+        evidence_media_type="application/json",
+    )
+    verifier = _NoClaimsVerifier()
+
+    verified = verify_with_receiver_evidence(
+        binding,
+        parent,
+        child,
+        transition_evidence=evidence,
+        verifier=verifier,
+    )
+
+    assert verifier.seen_kind == "python:os.system"
+    assert verified["evidence_verifier"]["id"] == "test.receiver.explicit"
+    assert verified["evidence_verifier"]["selection"] == "receiver-supplied"
+    assert verified["evidence_semantics_verified"] is False
+    assert verified["activation_binding_issued"] is False
