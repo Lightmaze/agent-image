@@ -23,6 +23,27 @@ State delta uses the shared layer-state projection
 separate. Evidence stays opaque so later runtime-specific evidence formats do
 not couple the structural primitive to one harness.
 
+## Claim boundary
+
+A successful verify reports both `valid=true` (kept for compatibility) and the
+more precise `binding_valid=true`. These mean only that the supplied files and
+recomputed delta match the binding. They do **not** mean that the evidence is
+truthful, that parent and child are the same continuing subject, or that the
+named direction is a real transition. The command therefore also reports:
+
+```text
+evidence_semantics_verified=false
+continuation_relation_verified=false
+causal_transition_verified=false
+behavioral_retention_verified=false
+```
+
+This distinction is observable, not hypothetical: the structural primitive can
+validly bind a redaction/derivation pair, a reversed pair, or unrelated valid
+Images when the corresponding binding is built. A harness-specific verifier may
+later validate evidence semantics and subject continuity, but this file-only
+Core primitive must not imply either.
+
 This branch is integration-only. Source tests and fresh wheel/sdist installed
 package smoke must pass before any version bump or public release. The published
 v0.1.0-alpha.2 tag and assets remain immutable.
