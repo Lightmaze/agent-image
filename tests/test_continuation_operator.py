@@ -56,6 +56,9 @@ def test_formal_cli_bind_verify_and_evidence_mismatch(tmp_path: Path, capsys) ->
     ]) == 0
     created = json.loads(capsys.readouterr().out)
     assert created["valid"] is True
+    assert created["binding_valid"] is True
+    assert created["evidence_semantics_verified"] is False
+    assert created["continuation_relation_verified"] is False
     assert created["causal_transition_verified"] is False
     assert created["behavioral_retention_verified"] is False
 
@@ -68,6 +71,9 @@ def test_formal_cli_bind_verify_and_evidence_mismatch(tmp_path: Path, capsys) ->
     ]) == 0
     checked = json.loads(capsys.readouterr().out)
     assert checked["valid"] is True
+    assert checked["binding_valid"] is True
+    assert checked["evidence_semantics_verified"] is False
+    assert checked["continuation_relation_verified"] is False
 
     original = binding.read_bytes()
     assert main([
