@@ -134,7 +134,7 @@ def verify_continuation_binding(
     *,
     transition_evidence: bytes,
 ) -> dict[str, Any]:
-    """Verify structural binding only; do not upgrade it into causal or behavioral proof."""
+    """Verify byte-level structural binding only; do not infer evidence meaning or continuation."""
     if not isinstance(binding, Mapping) or binding.get("schema") != CONTINUATION_BINDING_SCHEMA:
         raise AgentImageError("E_SPEC_INVALID", "Unsupported or malformed continuation binding.")
     evidence = binding.get("transition_evidence")
@@ -160,7 +160,11 @@ def verify_continuation_binding(
             "Continuation binding does not match the verified parent, child, state delta, or evidence bytes.",
         )
     return {
+        # Keep `valid` for compatibility, but make its narrow meaning explicit.
         "valid": True,
+        "binding_valid": True,
+        "evidence_semantics_verified": False,
+        "continuation_relation_verified": False,
         "schema": CONTINUATION_BINDING_SCHEMA,
         "scope": BINDING_SCOPE,
         "binding_digest": sha256_bytes(canonical_json_bytes(expected)),
