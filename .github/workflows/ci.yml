@@ -35,7 +35,10 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-          enable-cache: true
+          # This job passes an explicit cache directory to every uv command.
+          # setup-uv's separate cache can remain empty and its post-job save
+          # then fails on Windows because that directory never existed.
+          enable-cache: false
       - run: uv sync --locked --cache-dir .tmp/uv-cache
       - run: uv build --cache-dir .tmp/uv-cache
       - shell: pwsh
