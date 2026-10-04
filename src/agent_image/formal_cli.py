@@ -22,6 +22,7 @@ from agent_image.formal_service import (
     restore_image,
 )
 from agent_image.image_archive import diff_images, inspect_image, redact_image, verify_image
+from agent_image.continuation_files import bind_continuation_files, verify_continuation_file
 from agent_image.registry import validate_registry
 
 
@@ -96,6 +97,31 @@ def _parser() -> argparse.ArgumentParser:
     migrate.add_argument("--openclaw-node-binary", default=os.environ.get("AGENT_IMAGE_OPENCLAW_NODE_BIN"))
     migrate.add_argument("--openclaw-workspace-root", type=Path)
     _common(migrate)
+    continuation = commands.add_parser(
+        "continuation",
+        help="Bind or verify structural parent/child continuation evidence.",
+    )
+    continuation_commands = continuation.add_subparsers(dest="continuation_command", required=True)
+    continuation_bind = continuation_commands.add_parser(
+        "bind",
+        help="Create a structural binding; does not prove causality, learning, or behavior.",
+    )
+    continuation_bind.add_argument("--parent", type=Path, required=True)
+    continuation_bind.add_argument("--child", type=Path, required=True)
+    continuation_bind.add_argument("--evidence", type=Path, required=True)
+    continuation_bind.add_argument("--kind", dest="evidence_kind", required=True)
+    continuation_bind.add_argument("--media-type", dest="evidence_media_type", required=True)
+    continuation_bind.add_argument("-o", "--output", type=Path, required=True)
+    _common(continuation_bind)
+    continuation_verify = continuation_commands.add_parser(
+        "verify",
+        help="Verify a structural binding against exact parent, child, and evidence files.",
+    )
+    continuation_verify.add_argument("binding", type=Path)
+    continuation_verify.add_argument("--parent", type=Path, required=True)
+    continuation_verify.add_argument("--child", type=Path, required=True)
+    continuation_verify.add_argument("--evidence", type=Path, required=True)
+    _common(continuation_verify)
     adapters = commands.add_parser("adapters", help="Inspect installed adapter declarations.")
     adapter_commands = adapters.add_subparsers(dest="adapter_command", required=True)
     adapter_list = adapter_commands.add_parser("list", help="List built-in and discovered adapters.")
@@ -211,6 +237,23 @@ def _run(args: argparse.Namespace) -> Any:
         return redact_image(args.image, args.output)
     if args.command == "diff":
         return diff_images(args.before, args.after)
+    if args.command == "continuation":
+        if args.continuation_command == "bind":
+            return bind_continuation_files(
+                parent=args.parent,
+                child=args.child,
+                evidence=args.evidence,
+                evidence_kind=args.evidence_kind,
+                evidence_media_type=args.evidence_media_type,
+                output=args.output,
+            )
+        if args.continuation_command == "verify":
+            return verify_continuation_file(
+                binding=args.binding,
+                parent=args.parent,
+                child=args.child,
+                evidence=args.evidence,
+            )
     if args.command == "restore":
         if not args.yes:
             raise AgentImageError(

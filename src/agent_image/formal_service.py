@@ -6,6 +6,7 @@ from typing import Any
 from agent_image.adapter_contract import ProductionAdapter
 from agent_image.canonical import sha256_bytes
 from agent_image.image_archive import load_image, publish_image
+from agent_image.native_export_planner import finalize_structured_native_export
 
 
 def plan_build(adapter: ProductionAdapter, *, source: str, policy: str) -> dict[str, Any]:
@@ -37,6 +38,7 @@ def build_image(
         include_experience=include_experience,
         include_workspace=include_workspace,
     )
+    exported = finalize_structured_native_export(exported, policy=policy)
     publish_image(exported, output)
     return {
         "operation": "build",
