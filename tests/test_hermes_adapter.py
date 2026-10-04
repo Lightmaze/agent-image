@@ -9,7 +9,13 @@ import pytest
 
 from agent_image.adapters.hermes import HERMES_PIN, HermesAdapter, HermesProfile
 from agent_image.errors import AgentImageError
-from agent_image.formal_service import build_image, restore_image
+from agent_image.formal_service import (
+    build_image,
+    plan_build,
+    prepare_image_workspace,
+    publish_prepared_workspace_image,
+    restore_image,
+)
 from agent_image.image_archive import load_image, verify_image
 
 
@@ -207,3 +213,41 @@ def test_experience_opt_in_controls_native_snapshot_too(hermes_source: Path, tmp
         if item.get("source") == "sessions/practice.jsonl"
     )
     assert outcome["action"] == "dropped_by_user"
+
+
+def test_prepared_workspace_publishes_exact_candidate_without_reopening_source(
+    hermes_source: Path, tmp_path: Path
+) -> None:
+    cli = FakeHermesCLI("source", hermes_source)
+    adapter = HermesAdapter(cli=cli)
+    workspace = tmp_path / "prepared"
+    output = tmp_path / "published.aimg"
+
+    plan = plan_build(
+        adapter,
+        source="source",
+        policy="private",
+        include_experience=True,
+        include_workspace=False,
+    )
+    prepared = prepare_image_workspace(
+        adapter,
+        source="source",
+        workspace=workspace,
+        policy="private",
+        include_experience=True,
+        include_workspace=False,
+        approved_plan=plan,
+    )
+    candidate = workspace / "candidate.aimg"
+    candidate_bytes = candidate.read_bytes()
+
+    # Publication takes only the prepared workspace; no adapter/source object is
+    # available to this API and the exact reviewed bytes must be copied.
+    published = publish_prepared_workspace_image(workspace=workspace, output=output)
+
+    assert output.read_bytes() == candidate_bytes
+    assert published["source_reopened"] is False
+    assert published["adapter_reinvoked"] is False
+    assert prepared["prepared_subject"]["archive_digest"] == published["archive_digest"]
+    assert verify_image(output)["valid"] is True

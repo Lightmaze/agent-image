@@ -24,6 +24,12 @@ from agent_image.formal_service import (
 from agent_image.image_archive import diff_images, inspect_image, redact_image, verify_image
 from agent_image.continuation_files import bind_continuation_files, verify_continuation_file
 from agent_image.registry import validate_registry
+from agent_image.prepared_cli_surface import (
+    execute_prepare_build,
+    execute_publish_prepared,
+    execute_recover_prepared,
+    register_prepared_build_commands,
+)
 
 
 def _common(parser: argparse.ArgumentParser) -> None:
@@ -58,6 +64,7 @@ def _parser() -> argparse.ArgumentParser:
     build.add_argument("--vharness-node-binary", default=os.environ.get("AGENT_IMAGE_VHARNESS_NODE_BIN"))
     build.add_argument("--vharness-home", type=Path)
     _common(build)
+    register_prepared_build_commands(commands, _common)
     inspect = commands.add_parser("inspect", help="Inspect verified image metadata without printing payloads.")
     inspect.add_argument("image", type=Path)
     _common(inspect)
@@ -220,7 +227,13 @@ def _run(args: argparse.Namespace) -> Any:
         else:
             adapter = _external_adapter(adapter_id)
         if not args.yes:
-            return plan_build(adapter, source=source, policy=args.policy)
+            return plan_build(
+                adapter,
+                source=source,
+                policy=args.policy,
+                include_experience=args.include_experience,
+                include_workspace=args.include_workspace,
+            )
         return build_image(
             adapter,
             source=source,
@@ -229,6 +242,23 @@ def _run(args: argparse.Namespace) -> Any:
             include_experience=args.include_experience,
             include_workspace=args.include_workspace,
         )
+    if args.command == "prepare-build":
+        adapter_id, source = _split(args.locator)
+        if adapter_id == "hermes":
+            adapter = _hermes(args.hermes_binary)
+        elif adapter_id == "dsh":
+            adapter = _dsh(args.dsh_binary, args.dsh_node_binary, args.dsh_home)
+        elif adapter_id == "openclaw":
+            adapter = _openclaw(args.openclaw_binary, args.openclaw_node_binary, args.openclaw_workspace_root)
+        elif adapter_id == "vharness":
+            adapter = _vharness(args.vharness_source_root, args.vharness_node_binary, args.vharness_home)
+        else:
+            adapter = _external_adapter(adapter_id)
+        return execute_prepare_build(args, adapter, source=source)
+    if args.command == "recover-prepared":
+        return execute_recover_prepared(args)
+    if args.command == "publish-prepared":
+        return execute_publish_prepared(args)
     if args.command == "inspect":
         return inspect_image(args.image)
     if args.command == "verify":
