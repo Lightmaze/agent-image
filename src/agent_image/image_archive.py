@@ -16,6 +16,12 @@ from agent_image.errors import AgentImageError
 from agent_image.manifest import dump_yaml, load_yaml_bytes, validate_manifest
 from agent_image.paths import validate_archive_path
 from agent_image.scanner import secret_filename_reason, structured_secret_findings
+from agent_image.structured_native import (
+    NATIVE_CAPSULE_MEDIA_TYPE,
+    diff_structured_native_payloads,
+    verify_structured_native_layer,
+    verify_structured_native_layers,
+)
 
 
 REQUIRED_CONTROL_PATHS = {
@@ -188,6 +194,7 @@ def _verify_entries(entries: Mapping[str, bytes]) -> tuple[dict[str, Any], dict[
         raise AgentImageError("E_IMAGE_CORRUPT", f"Invalid index.json: {error}") from error
     if index != _index_for(manifest["layers"]):
         raise AgentImageError("E_IMAGE_CORRUPT", "index.json does not match the manifest.")
+    structured_native: list[dict[str, Any]] = []
     for layer in manifest["layers"]:
         data = entries[layer["path"]]
         if len(data) != layer["size"] or sha256_bytes(data) != layer["digest"]:
@@ -200,6 +207,9 @@ def _verify_entries(entries: Mapping[str, bytes]) -> tuple[dict[str, Any], dict[
                 f"Secret material detected in layer {layer['id']}.",
                 details={"filename": reason, "structured_keys": keys},
             )
+        native_summary = verify_structured_native_layer(layer, data)
+        if native_summary is not None:
+            structured_native.append(native_summary)
     root = layer_root_digest(manifest["layers"])
     if manifest["image"]["digest"] != root:
         raise AgentImageError("E_DIGEST_MISMATCH", "Image content digest does not match layer descriptors.")
@@ -215,7 +225,19 @@ def _verify_entries(entries: Mapping[str, bytes]) -> tuple[dict[str, Any], dict[
             except (UnicodeDecodeError, json.JSONDecodeError) as error:
                 raise AgentImageError("E_IMAGE_CORRUPT", f"Invalid report {report_path}: {error}") from error
             _operation_report(report, report_path)
-    return manifest, {"valid": True, "spec": manifest["spec"], "image_digest": root, "layers": len(manifest["layers"])}
+    verification: dict[str, Any] = {
+        "valid": True,
+        "spec": manifest["spec"],
+        "image_digest": root,
+        "layers": len(manifest["layers"]),
+    }
+    if structured_native:
+        verification["structured_native"] = {
+            "count": len(structured_native),
+            "layers": structured_native,
+            "profile_semantics": "not-validated-by-core",
+        }
+    return manifest, verification
 
 
 def inspect_image(image: Path) -> dict[str, Any]:
@@ -234,7 +256,7 @@ def inspect_image(image: Path) -> dict[str, Any]:
         }
         for layer in document.manifest["layers"]
     ]
-    return {
+    result = {
         "spec": document.manifest["spec"],
         "image": document.manifest["image"],
         "runtime": document.manifest.get("runtime"),
@@ -248,6 +270,14 @@ def inspect_image(image: Path) -> dict[str, Any]:
         "evaluations": document.manifest.get("evaluations", []),
         "lineage": document.manifest.get("lineage"),
     }
+    structured_native = verify_structured_native_layers(document.manifest, document.entries)
+    if structured_native:
+        result["structured_native"] = {
+            "count": len(structured_native),
+            "layers": structured_native,
+            "profile_semantics": "not-validated-by-core",
+        }
+    return result
 
 
 def redact_image(image: Path, output: Path) -> dict[str, Any]:
@@ -271,6 +301,7 @@ def redact_image(image: Path, output: Path) -> dict[str, Any]:
         "operation": "redact",
         "inventory_count": len(outcomes),
         "outcomes": outcomes,
+        "structured_native_policy": "whole-layer-no-inner-rewrite",
     }
     export = AdapterExport(manifest=manifest, payloads=payloads, source_report=report)
     if output.exists():
@@ -290,8 +321,10 @@ def _layer_state_projection(layer: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def diff_images(before: Path, after: Path) -> dict[str, Any]:
-    left = load_image(before).manifest
-    right = load_image(after).manifest
+    left_document = load_image(before)
+    right_document = load_image(after)
+    left = left_document.manifest
+    right = right_document.manifest
     left_layers = {layer["id"]: layer for layer in left["layers"]}
     right_layers = {layer["id"]: layer for layer in right["layers"]}
     added = sorted(set(right_layers) - set(left_layers))
@@ -305,7 +338,20 @@ def diff_images(before: Path, after: Path) -> dict[str, Any]:
     )
     state_changed_set = set(state_changed)
     metadata_changed = sorted(layer_id for layer_id in changed if layer_id not in state_changed_set)
-    return {
+    structured_native: dict[str, Any] = {}
+    for layer_id in sorted(shared):
+        left_layer = left_layers[layer_id]
+        right_layer = right_layers[layer_id]
+        if (
+            left_layer["media_type"] == NATIVE_CAPSULE_MEDIA_TYPE
+            and right_layer["media_type"] == NATIVE_CAPSULE_MEDIA_TYPE
+            and left_layer["digest"] != right_layer["digest"]
+        ):
+            structured_native[layer_id] = diff_structured_native_payloads(
+                left_document.entries[left_layer["path"]],
+                right_document.entries[right_layer["path"]],
+            )
+    result = {
         "spec": {"before": left["spec"], "after": right["spec"]},
         "layer_state_projection": {
             "version": LAYER_STATE_PROJECTION_VERSION,
@@ -322,3 +368,6 @@ def diff_images(before: Path, after: Path) -> dict[str, Any]:
         "evaluations": {"before": left.get("evaluations", []), "after": right.get("evaluations", [])},
         "privacy": {"before": left["privacy"], "after": right["privacy"]},
     }
+    if structured_native:
+        result["structured_native"] = structured_native
+    return result
