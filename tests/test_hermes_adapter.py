@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 import gzip
+import json
+import os
+import subprocess
+import sys
 import io
 import tarfile
 from pathlib import Path
@@ -251,3 +255,89 @@ def test_prepared_workspace_publishes_exact_candidate_without_reopening_source(
     assert published["adapter_reinvoked"] is False
     assert prepared["prepared_subject"]["archive_digest"] == published["archive_digest"]
     assert verify_image(output)["valid"] is True
+
+
+# B29 / R90: real package, valid Hermes image, independent publisher processes.
+
+def _run_two_publishers(worker: str, first: Path, second: Path) -> list[dict[str, str]]:
+    env = os.environ.copy()
+    repo_src = str(Path(__file__).resolve().parents[1] / "src")
+    env["PYTHONPATH"] = os.pathsep.join(filter(None, [repo_src, env.get("PYTHONPATH", "")]))
+    children = [
+        subprocess.Popen(
+            [sys.executable, "-c", worker, str(first), str(second)],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env,
+        )
+        for _ in range(2)
+    ]
+    reports = []
+    for child in children:
+        stdout, stderr = child.communicate(timeout=40)
+        assert child.returncode == 0, stderr
+        reports.append(json.loads(stdout.strip()))
+    return reports
+
+
+def test_prepared_workspace_rejects_preexisting_empty_directory_before_capture(
+    hermes_source: Path, tmp_path: Path,
+) -> None:
+    workspace = tmp_path / "prepared"
+    workspace.mkdir()
+    cli = FakeHermesCLI("source", hermes_source)
+    adapter = HermesAdapter(cli=cli)
+    with pytest.raises(AgentImageError) as caught:
+        prepare_image_workspace(adapter, source="source", workspace=workspace, policy="private")
+    assert caught.value.code == "E_TARGET_EXISTS"
+    assert cli.show_calls == []
+
+
+def test_two_processes_publish_one_real_prepared_image_without_clobber(
+    hermes_source: Path, tmp_path: Path,
+) -> None:
+    cli = FakeHermesCLI("source", hermes_source)
+    adapter = HermesAdapter(cli=cli)
+    workspace = tmp_path / "prepared"
+    prepare_image_workspace(adapter, source="source", workspace=workspace, policy="private")
+    candidate = (workspace / "candidate.aimg").read_bytes()
+    output = tmp_path / "published.aimg"
+    worker = """
+import json, sys
+from pathlib import Path
+from agent_image.errors import AgentImageError
+from agent_image.prepared_workspace import publish_prepared_workspace
+try:
+    result = publish_prepared_workspace(Path(sys.argv[1]), output=Path(sys.argv[2]))
+    print(json.dumps({"code": "OK", "digest": result["archive_digest"]}))
+except AgentImageError as error:
+    print(json.dumps({"code": error.code}))
+"""
+    reports = _run_two_publishers(worker, workspace, output)
+    assert sorted(item["code"] for item in reports) == ["E_TARGET_EXISTS", "OK"]
+    assert output.read_bytes() == candidate
+    assert verify_image(output)["valid"] is True
+
+
+def test_two_processes_commit_one_real_prepared_receipt_without_clobber(
+    hermes_source: Path, tmp_path: Path,
+) -> None:
+    cli = FakeHermesCLI("source", hermes_source)
+    adapter = HermesAdapter(cli=cli)
+    workspace = tmp_path / "prepared"
+    prepare_image_workspace(adapter, source="source", workspace=workspace, policy="private")
+    control = workspace / "receipt.json"
+    output = tmp_path / "saved-receipt.json"
+    worker = """
+import json, sys
+from pathlib import Path
+from agent_image.errors import AgentImageError
+from agent_image.prepared_build import load_prepared_build_receipt, save_prepared_build_receipt
+try:
+    receipt = load_prepared_build_receipt(Path(sys.argv[1]))
+    save_prepared_build_receipt(receipt, Path(sys.argv[2]))
+    print(json.dumps({"code": "OK"}))
+except AgentImageError as error:
+    print(json.dumps({"code": error.code}))
+"""
+    reports = _run_two_publishers(worker, control, output)
+    assert sorted(item["code"] for item in reports) == ["E_TARGET_EXISTS", "OK"]
+    assert output.read_bytes() == control.read_bytes()

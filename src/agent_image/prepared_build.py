@@ -12,6 +12,7 @@ from agent_image.canonical import canonical_json_bytes, sha256_bytes
 from agent_image.errors import AgentImageError
 from agent_image.image_archive import load_image, publish_image
 from agent_image.native_export_planner import finalize_structured_native_export
+from agent_image.prepared_namespace import publish_prepared_control_bytes_exclusive
 
 
 PREPARED_BUILD_SPEC = "agent-image-prepared-build/v0.1"
@@ -210,13 +211,8 @@ def prepare_build_candidate(
 
 def save_prepared_build_receipt(receipt: Mapping[str, Any], path: Path) -> dict[str, Any]:
     verified = verify_prepared_build_receipt(receipt)
-    if path.exists():
-        raise _fail("E_TARGET_EXISTS", f"Prepared build receipt already exists: {path}")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        path.write_bytes(canonical_json_bytes(verified) + b"\n")
-    except OSError as error:
-        raise _fail("E_IMAGE_CORRUPT", f"Could not persist prepared build receipt: {error}") from error
+    # All control bytes are staged before atomically claiming the final pathname.
+    publish_prepared_control_bytes_exclusive(path, canonical_json_bytes(verified) + b"\n")
     return verified
 
 
@@ -227,9 +223,6 @@ def publish_prepared_candidate(
     output: Path,
 ) -> dict[str, Any]:
     verified_receipt = verify_prepared_build_receipt(receipt)
-    if output.exists():
-        raise _fail("E_TARGET_EXISTS", f"Output already exists: {output}")
-
     try:
         candidate_bytes = prepared_path.read_bytes()
     except OSError as error:
@@ -264,10 +257,15 @@ def publish_prepared_candidate(
         staged_digest = sha256_bytes(staged.read_bytes())
         if staged_digest != subject["archive_digest"]:
             raise _fail("E_PREPARED_STALE", "Staged publish bytes changed after verification.")
+        # Commit by exclusive hard link: output may never replace a rival's file.
         try:
-            os.replace(staged, output)
+            with staged.open("rb") as stream:
+                os.fsync(stream.fileno())
+            os.link(staged, output, follow_symlinks=False)
+        except FileExistsError as error:
+            raise _fail("E_TARGET_EXISTS", f"Output already exists: {output}") from error
         except OSError as error:
-            raise _fail("E_IMAGE_CORRUPT", f"Could not publish prepared candidate atomically: {error}") from error
+            raise _fail("E_IMAGE_CORRUPT", f"No-clobber prepared publication failed: {error}") from error
 
     return {
         "operation": "publish-prepared-build",

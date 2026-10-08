@@ -9,6 +9,7 @@ from agent_image.adapter_contract import ProductionAdapter
 from agent_image.canonical import canonical_json_bytes, sha256_bytes
 from agent_image.errors import AgentImageError
 from agent_image.image_archive import load_image
+from agent_image.prepared_namespace import claim_new_prepared_workspace
 from agent_image.prepared_build import (
     mint_prepared_build_receipt,
     prepare_build_candidate,
@@ -131,11 +132,8 @@ def prepare_build_workspace(
     include_workspace: bool = False,
     approved_plan: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    if workspace.exists():
-        if not workspace.is_dir() or any(workspace.iterdir()):
-            raise _fail("E_TARGET_EXISTS", f"Prepared workspace is not empty: {workspace}")
-    else:
-        workspace.mkdir(parents=True)
+    # Never adopt a pre-existing, even empty, workspace.
+    claim_new_prepared_workspace(workspace)
 
     seal_path, candidate_path, receipt_path = _paths(workspace)
     receipt = prepare_build_candidate(
