@@ -341,3 +341,40 @@ except AgentImageError as error:
     reports = _run_two_publishers(worker, control, output)
     assert sorted(item["code"] for item in reports) == ["E_TARGET_EXISTS", "OK"]
     assert output.read_bytes() == control.read_bytes()
+
+
+def test_prepared_workspace_binds_valid_receipt_to_exact_seal(
+    hermes_source: Path, tmp_path: Path,
+) -> None:
+    # A receipt can be self-valid and bind the correct candidate bytes while
+    # claiming a different intent. Neither recovery nor publication may accept
+    # it as the receipt for a different, valid workspace seal.
+    from agent_image.canonical import canonical_json_bytes, sha256_bytes
+    from agent_image.prepared_build import (
+        load_prepared_build_receipt, verify_prepared_build_receipt,
+    )
+    from agent_image.prepared_workspace import recover_prepared_workspace
+
+    cli = FakeHermesCLI("source", hermes_source)
+    adapter = HermesAdapter(cli=cli)
+    workspace = tmp_path / "prepared"
+    prepare_image_workspace(adapter, source="source", workspace=workspace, policy="private")
+    receipt_path = workspace / "receipt.json"
+    original = load_prepared_build_receipt(receipt_path)
+    altered = dict(original)
+    altered["intent"] = dict(original["intent"])
+    altered["intent"]["include_workspace"] = not original["intent"]["include_workspace"]
+    body = {key: altered[key] for key in altered if key != "receipt_digest"}
+    altered["receipt_digest"] = sha256_bytes(canonical_json_bytes(body))
+    assert verify_prepared_build_receipt(altered)["receipt_digest"] == altered["receipt_digest"]
+    receipt_path.write_bytes(canonical_json_bytes(altered) + b"\n")
+
+    with pytest.raises(AgentImageError) as recovery:
+        recover_prepared_workspace(workspace)
+    assert recovery.value.code == "E_PREPARED_STALE"
+
+    output = tmp_path / "must-not-publish.aimg"
+    with pytest.raises(AgentImageError) as publishing:
+        publish_prepared_workspace_image(workspace=workspace, output=output)
+    assert publishing.value.code == "E_PREPARED_STALE"
+    assert not output.exists()

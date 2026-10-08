@@ -84,6 +84,12 @@ def _verify_seal(value: Mapping[str, Any]) -> dict[str, Any]:
     return dict(value)
 
 
+def _require_seal_matches_receipt(seal: Mapping[str, Any], receipt: Mapping[str, Any]) -> None:
+    """Reject independently valid controls referring to different capture intents."""
+    if dict(seal) != _mint_seal(receipt):
+        raise _fail("E_PREPARED_STALE", "Prepared receipt does not match the exact workspace seal.")
+
+
 def _load_json(path: Path) -> dict[str, Any]:
     try:
         value = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_unique_json_object)
@@ -166,6 +172,8 @@ def recover_prepared_workspace(workspace: Path) -> dict[str, Any]:
     if state["state"] == "complete":
         from agent_image.prepared_build import load_prepared_build_receipt
         receipt = load_prepared_build_receipt(receipt_path)
+        seal = _verify_seal(_load_json(seal_path))
+        _require_seal_matches_receipt(seal, receipt)
         return {
             "operation": "recover-prepared-workspace",
             "workspace": str(workspace.resolve()),
@@ -225,8 +233,9 @@ def publish_prepared_workspace(workspace: Path, *, output: Path) -> dict[str, An
     state = inspect_prepared_workspace(workspace)
     if state["state"] != "complete":
         raise _fail("E_PREPARED_STALE", f"Prepared workspace is not complete: {state['state']}.")
-    _verify_seal(_load_json(seal_path))
+    seal = _verify_seal(_load_json(seal_path))
     receipt = load_prepared_build_receipt(receipt_path)
+    _require_seal_matches_receipt(seal, receipt)
     result = publish_prepared_candidate(candidate_path, receipt=receipt, output=output)
     result["workspace"] = str(workspace.resolve())
     return result
