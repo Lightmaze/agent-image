@@ -244,7 +244,12 @@ def publish_prepared_candidate(
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".agent-image-prepared-publish-", dir=output.parent) as temporary:
         staged = Path(temporary) / "candidate.aimg"
-        staged.write_bytes(candidate_bytes)
+        # Flush staged bytes using a writable handle before validation.
+        # Windows os.fsync() rejects read-only file descriptors.
+        with staged.open("wb") as stream:
+            stream.write(candidate_bytes)
+            stream.flush()
+            os.fsync(stream.fileno())
         document = load_image(staged)
         if document.manifest["image"]["digest"] != subject["image_digest"]:
             raise _fail("E_PREPARED_STALE", "Prepared candidate image digest changed from reviewed receipt.")
@@ -259,8 +264,6 @@ def publish_prepared_candidate(
             raise _fail("E_PREPARED_STALE", "Staged publish bytes changed after verification.")
         # Commit by exclusive hard link: output may never replace a rival's file.
         try:
-            with staged.open("rb") as stream:
-                os.fsync(stream.fileno())
             os.link(staged, output, follow_symlinks=False)
         except FileExistsError as error:
             raise _fail("E_TARGET_EXISTS", f"Output already exists: {output}") from error
