@@ -51,32 +51,49 @@ def pack_entries(
         raise AgentImageError("E_IMAGE_CORRUPT", f"Could not pack image: {error}") from error
 
 
-def read_entries(image: Path) -> dict[str, bytes]:
+def _read_archive_entries(archive: tarfile.TarFile) -> dict[str, bytes]:
+    """Shared member validator for path and exact-byte archive inputs."""
     entries: dict[str, bytes] = {}
     total_size = 0
+    for member in archive:
+        validate_archive_path(member.name)
+        if member.name in entries:
+            raise AgentImageError("E_IMAGE_CORRUPT", f"Duplicate archive path: {member.name}")
+        if not member.isfile():
+            raise AgentImageError("E_UNSAFE_PATH", f"Only regular files are allowed: {member.name}")
+        if member.size < 0 or member.size > MAX_FILE_SIZE:
+            raise AgentImageError("E_IMAGE_CORRUPT", f"Archive entry size is outside limits: {member.name}")
+        total_size += member.size
+        if len(entries) + 1 > MAX_ENTRIES or total_size > MAX_TOTAL_SIZE:
+            raise AgentImageError("E_IMAGE_CORRUPT", "Archive exceeds v0.1 safety limits.")
+        stream = archive.extractfile(member)
+        if stream is None:
+            raise AgentImageError("E_IMAGE_CORRUPT", f"Cannot read archive entry: {member.name}")
+        data = stream.read(MAX_FILE_SIZE + 1)
+        if len(data) != member.size:
+            raise AgentImageError("E_IMAGE_CORRUPT", f"Archive entry size mismatch: {member.name}")
+        entries[member.name] = data
+    return entries
+
+
+def read_entries(image: Path) -> dict[str, bytes]:
     try:
         with tarfile.open(image, mode="r:gz") as archive:
-            for member in archive:
-                validate_archive_path(member.name)
-                if member.name in entries:
-                    raise AgentImageError("E_IMAGE_CORRUPT", f"Duplicate archive path: {member.name}")
-                if not member.isfile():
-                    raise AgentImageError("E_UNSAFE_PATH", f"Only regular files are allowed: {member.name}")
-                if member.size < 0 or member.size > MAX_FILE_SIZE:
-                    raise AgentImageError("E_IMAGE_CORRUPT", f"Archive entry size is outside limits: {member.name}")
-                total_size += member.size
-                if len(entries) + 1 > MAX_ENTRIES or total_size > MAX_TOTAL_SIZE:
-                    raise AgentImageError("E_IMAGE_CORRUPT", "Archive exceeds v0.1 safety limits.")
-                stream = archive.extractfile(member)
-                if stream is None:
-                    raise AgentImageError("E_IMAGE_CORRUPT", f"Cannot read archive entry: {member.name}")
-                data = stream.read(MAX_FILE_SIZE + 1)
-                if len(data) != member.size:
-                    raise AgentImageError("E_IMAGE_CORRUPT", f"Archive entry size mismatch: {member.name}")
-                entries[member.name] = data
+            return _read_archive_entries(archive)
     except AgentImageError:
         raise
     except (OSError, EOFError, tarfile.TarError) as error:
         raise AgentImageError("E_IMAGE_CORRUPT", f"Cannot read Agent Image: {error}") from error
-    return entries
 
+
+def read_entries_bytes(image_bytes: bytes) -> dict[str, bytes]:
+    """Run the same exact-member verifier on already-captured archive bytes."""
+    if not isinstance(image_bytes, bytes):
+        raise AgentImageError("E_IMAGE_CORRUPT", "Archive input must be bytes.")
+    try:
+        with tarfile.open(fileobj=io.BytesIO(image_bytes), mode="r:gz") as archive:
+            return _read_archive_entries(archive)
+    except AgentImageError:
+        raise
+    except (OSError, EOFError, tarfile.TarError) as error:
+        raise AgentImageError("E_IMAGE_CORRUPT", f"Cannot read Agent Image: {error}") from error

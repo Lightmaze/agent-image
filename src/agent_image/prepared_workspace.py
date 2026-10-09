@@ -8,7 +8,7 @@ from typing import Any, Mapping
 from agent_image.adapter_contract import ProductionAdapter
 from agent_image.canonical import canonical_json_bytes, sha256_bytes
 from agent_image.errors import AgentImageError
-from agent_image.image_archive import load_image
+from agent_image.image_archive import load_image, validate_image_bytes
 from agent_image.prepared_namespace import claim_new_prepared_workspace
 from agent_image.prepared_build import (
     mint_prepared_build_receipt,
@@ -166,14 +166,68 @@ def prepare_build_workspace(
     }
 
 
+def _verify_candidate_for_workspace_recovery(
+    candidate_path: Path,
+    seal: Mapping[str, Any],
+) -> tuple[bytes, dict[str, Any]]:
+    """Validate one exact sealed candidate snapshot without workspace scratch."""
+    subject = seal["prepared_subject"]
+    expected_size = subject["archive_size"]
+    # This bounds receiver memory, not the portable Image protocol itself.
+    if (
+        not isinstance(expected_size, int)
+        or isinstance(expected_size, bool)
+        or expected_size < 0
+        or expected_size > 2 * 1024 * 1024 * 1024
+    ):
+        raise _fail("E_PREPARED_STALE", "Sealed candidate size is outside the receiver bound.")
+    try:
+        with candidate_path.open("rb") as stream:
+            candidate_bytes = stream.read(expected_size + 1)
+    except OSError as error:
+        raise _fail("E_PREPARED_STALE", f"Could not read prepared candidate: {error}") from error
+
+    if (
+        len(candidate_bytes) != expected_size
+        or sha256_bytes(candidate_bytes) != subject["archive_digest"]
+    ):
+        raise _fail("E_PREPARED_STALE", "Prepared candidate bytes do not match the workspace seal.")
+
+    try:
+        manifest = validate_image_bytes(candidate_bytes)
+    except AgentImageError as error:
+        raise _fail(
+            "E_PREPARED_STALE",
+            f"Prepared candidate archive validation failed: {error.code}",
+        ) from error
+
+    if manifest["image"]["digest"] != subject["image_digest"]:
+        raise _fail("E_PREPARED_STALE", "Prepared candidate semantic image digest does not match the workspace seal.")
+    if len(manifest["layers"]) != subject["layer_count"]:
+        raise _fail("E_PREPARED_STALE", "Prepared candidate layer count does not match the workspace seal.")
+    if bool(manifest["privacy"]["public_build"]) != subject["public_build"]:
+        raise _fail("E_PREPARED_STALE", "Prepared candidate privacy mode does not match the workspace seal.")
+    if int(manifest["privacy"]["unresolved_items"]) != subject["unresolved_items"]:
+        raise _fail("E_PREPARED_STALE", "Prepared candidate unresolved privacy count does not match the workspace seal.")
+    return candidate_bytes, manifest
+
+
 def recover_prepared_workspace(workspace: Path) -> dict[str, Any]:
     seal_path, candidate_path, receipt_path = _paths(workspace)
     state = inspect_prepared_workspace(workspace)
+    if state["state"] not in {"complete", "recoverable-receipt"}:
+        raise _fail(
+            "E_PREPARED_STALE",
+            f"Prepared workspace is not recoverable without recapture: {state['state']}.",
+        )
+
+    seal = _verify_seal(_load_json(seal_path))
     if state["state"] == "complete":
         from agent_image.prepared_build import load_prepared_build_receipt
+
         receipt = load_prepared_build_receipt(receipt_path)
-        seal = _verify_seal(_load_json(seal_path))
         _require_seal_matches_receipt(seal, receipt)
+        _verify_candidate_for_workspace_recovery(candidate_path, seal)
         return {
             "operation": "recover-prepared-workspace",
             "workspace": str(workspace.resolve()),
@@ -182,39 +236,18 @@ def recover_prepared_workspace(workspace: Path) -> dict[str, Any]:
             "recovered": False,
             "source_reopened": False,
         }
-    if state["state"] != "recoverable-receipt":
-        raise _fail(
-            "E_PREPARED_STALE",
-            f"Prepared workspace is not recoverable without recapture: {state['state']}.",
-        )
 
-    seal = _verify_seal(_load_json(seal_path))
-    try:
-        candidate_bytes = candidate_path.read_bytes()
-    except OSError as error:
-        raise _fail("E_PREPARED_STALE", f"Could not read prepared candidate: {error}") from error
-
-    subject = seal["prepared_subject"]
-    if len(candidate_bytes) != subject["archive_size"] or sha256_bytes(candidate_bytes) != subject["archive_digest"]:
-        raise _fail("E_PREPARED_STALE", "Prepared candidate bytes do not match the workspace seal.")
-
-    with tempfile.TemporaryDirectory(prefix=".agent-image-workspace-recover-", dir=workspace) as temporary:
-        snapshot = Path(temporary) / CANDIDATE_NAME
-        snapshot.write_bytes(candidate_bytes)
-        document = load_image(snapshot)
-        if document.manifest["image"]["digest"] != subject["image_digest"]:
-            raise _fail("E_PREPARED_STALE", "Prepared candidate semantic image digest does not match the workspace seal.")
-        if len(document.manifest["layers"]) != subject["layer_count"]:
-            raise _fail("E_PREPARED_STALE", "Prepared candidate layer count does not match the workspace seal.")
-        receipt = mint_prepared_build_receipt(
-            adapter_subject=seal["adapter"],
-            source_locator_digest=seal["source_locator_digest"],
-            intent=seal["intent"],
-            pre_capture_plan_digest=seal["pre_capture_plan_digest"],
-            candidate_bytes=candidate_bytes,
-            manifest=document.manifest,
-        )
-
+    candidate_bytes, manifest = _verify_candidate_for_workspace_recovery(
+        candidate_path, seal
+    )
+    receipt = mint_prepared_build_receipt(
+        adapter_subject=seal["adapter"],
+        source_locator_digest=seal["source_locator_digest"],
+        intent=seal["intent"],
+        pre_capture_plan_digest=seal["pre_capture_plan_digest"],
+        candidate_bytes=candidate_bytes,
+        manifest=manifest,
+    )
     save_prepared_build_receipt(receipt, receipt_path)
     return {
         "operation": "recover-prepared-workspace",

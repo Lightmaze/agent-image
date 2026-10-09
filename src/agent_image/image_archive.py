@@ -11,7 +11,7 @@ from typing import Any, Mapping
 
 from agent_image.adapter_contract import AdapterExport
 from agent_image.canonical import canonical_json_bytes, pretty_json_bytes, sha256_bytes
-from agent_image.container import pack_entries, read_entries
+from agent_image.container import pack_entries, read_entries, read_entries_bytes
 from agent_image.errors import AgentImageError
 from agent_image.manifest import dump_yaml, load_yaml_bytes, validate_manifest
 from agent_image.paths import validate_archive_path
@@ -117,6 +117,20 @@ def _entries_for(
     return entries
 
 
+def _commit_new_image_name(candidate: Path, output: Path, *, operation: str) -> None:
+    """Publish a verified staged image with an atomic create-if-absent name claim.
+
+    The staged candidate and output must be on one supported trusted filesystem.
+    No overwrite fallback or crash-durability claim is allowed.
+    """
+    try:
+        os.link(candidate, output, follow_symlinks=False)
+    except FileExistsError as error:
+        raise AgentImageError("E_TARGET_EXISTS", f"{operation} output already exists: {output}") from error
+    except OSError as error:
+        raise AgentImageError("E_IMAGE_CORRUPT", f"Could not publish {operation} image without clobber: {error}") from error
+
+
 def publish_image(
     export: AdapterExport,
     output: Path,
@@ -131,10 +145,7 @@ def publish_image(
         candidate = Path(temporary) / "candidate.aimg"
         pack_entries(entries, candidate)
         verify_image(candidate)
-        try:
-            os.replace(candidate, output)
-        except OSError as error:
-            raise AgentImageError("E_IMAGE_CORRUPT", f"Could not publish image atomically: {error}") from error
+        _commit_new_image_name(candidate, output, operation="build")
 
 
 def _validate_checksums(entries: Mapping[str, bytes]) -> None:
@@ -165,6 +176,12 @@ def load_image(image: Path) -> ImageDocument:
     entries = read_entries(image)
     manifest, _ = _verify_entries(entries)
     return ImageDocument(path=image, manifest=manifest, entries=entries)
+
+
+def validate_image_bytes(archive_bytes: bytes) -> dict[str, Any]:
+    """Validate one exact archive byte snapshot with Core's shared verifier."""
+    manifest, _ = _verify_entries(read_entries_bytes(archive_bytes))
+    return manifest
 
 
 def verify_image(image: Path) -> dict[str, Any]:
@@ -312,7 +329,7 @@ def redact_image(image: Path, output: Path) -> dict[str, Any]:
         candidate = Path(temporary) / "candidate.aimg"
         pack_entries(entries, candidate)
         verify_image(candidate)
-        os.replace(candidate, output)
+        _commit_new_image_name(candidate, output, operation="redact")
     return {"operation": "redact", "output": str(output.resolve()), "layers": len(kept), "verified": True}
 
 
